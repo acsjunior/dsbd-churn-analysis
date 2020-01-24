@@ -47,13 +47,12 @@ count_missing_values <- function(df) {
 }
 #--------------------------------------------------------------------------------------------------
 # Config:
-data_of_cut <- Sys.Date()
+date_of_cut <- Sys.Date()
 options(scipen=999)
 
 #--------------------------------------------------------------------------------------------------
-# Preparing data:
+# Preparing data about sellers:
 
-## Sellers
 df_sellers <- get_sellers()
 df_deal_sellers <- get_deals_sellers()
 
@@ -161,8 +160,9 @@ df_sellers <- df_sellers %>%
 
 
 ### Creating the variable is_churned:
+count_missing_values(df_sellers)
 df_sellers <- df_sellers %>%
-  mutate(is_churned = ifelse(lc_current_type == "Cancelamento", 1, 0))
+  mutate(is_churned = ifelse(lc_current_type %in% c("Cancelamento"), 1, 0))
 
 
 ### Creating the variable cashflow_ranges:
@@ -275,40 +275,66 @@ df_sellers <- df_sellers %>%
 rm(top_5_persona)
 
 
-### Portifolio 
+### Creating the variable portfolio_reg_rate
+df_sellers <- df_sellers %>%
+  mutate(df_portfolio_cadastravel = as.numeric(df_portfolio_cadastravel)) %>%
+  mutate(df_portfolio_cadastravel = ifelse(is.na(df_portfolio_cadastravel), 0, df_portfolio_cadastravel)) %>%
+  mutate(sp_n_products = as.numeric(sp_n_products)) %>%
+  mutate(sp_n_products = ifelse(is.na(sp_n_products), 0, sp_n_products)) %>%
+  mutate(portfolio_reg_rate = ifelse(df_portfolio_cadastravel > 0,
+                                     sp_n_products / df_portfolio_cadastravel,
+                                     1))
 
-# df_sellers %>%
-#   group_by(df_portfolio_lojista) %>%
-#   summarise(n = n()) %>%
-#   arrange(desc(n))
-# 
-# 
-# df_sellers %>%
-#   group_by(df_portfolio_cadastravel) %>%
-#   summarise(n = n()) %>%
-#   arrange(desc(n))
+rm(df_deal_sellers)
+
+#--------------------------------------------------------------------------------------------------
+# Preparing data about orders:
+
+df_orderitems <- get_order_item()
 
 
-# Onde encontrar o portfolio do lojista?
-# dar um count em products
+## Transform all blank values to NA:
+df_orderitems <- df_orderitems %>%
+  mutate_all(na_if, "")
 
-# select * from "olist-datalake-athena".products_api_seller_products_sellerproduct
-# 
-# select distinct approved from "olist-datalake-athena".products_api_seller_products_sellerproduct
-# -- true
-# -- false
-# 
-# select distinct status from "olist-datalake-athena".products_api_seller_products_sellerproduct
-# -- rejected
-# -- deleted
-# -- approved
-# -- moderation
-# -- created
-# 
-# select distinct active from "olist-datalake-athena".products_api_seller_products_sellerproduct
-# -- true
-# -- false
 
+## Aggregating orders by items:
+df_orderitems$oi_price <- as.numeric(df_orderitems$oi_price)
+df_orderitems$oi_freight_value <- as.numeric(df_orderitems$oi_freight_value)
+
+df_orders <- df_orderitems %>%
+  group_by(so_order_id, so_seller_id, so_purchase_timestamp) %>%
+  summarise(n_items = n(), oi_price = sum(oi_price), oi_freight_value = sum(oi_freight_value)) %>%
+  arrange(desc(n_items))
+
+
+## Getting ss_created_at from df_sellers:
+df_orders <- df_orders %>%
+  left_join(df_sellers %>%
+              select(ss_id, ss_created_at), by = c("so_seller_id" = "ss_id"))
+
+
+## Creating the variable order_relative_day:
+df_orders$so_purchase_timestamp <- as.Date(df_orders$so_purchase_timestamp)
+df_orders$ss_created_at <- as.Date(df_orders$ss_created_at)
+
+df_orders <- df_orders %>%
+  mutate(order_relative_day = as.integer(so_purchase_timestamp - ss_created_at))
+  
+
+## Creating the variable order_relative_month: 
+df_orders <- df_orders %>%
+  mutate(order_relative_month = as.integer(order_relative_day / 30))
+  
+  
+## Creating the variable order_relative_day_rev:
+df_orders <- df_orders %>%
+  mutate(order_relative_day_rev = as.integer(date_of_cut - so_purchase_timestamp))
+
+
+## Creating the variable order_relative_month_rev:
+df_orders <- df_orders %>%
+  mutate(order_relative_month_rev = as.integer(order_relative_day_rev / 30))
 
 
 

@@ -1,19 +1,21 @@
-#-----------------------------------------------------------------------------------------------------------------------------------
-# Script to get data from AWS Athena
+#--------------------------------------------------------------------------------------------------
+# Script to connect to AWS Athena
 #
-#                                                                                                                         A. Júnior 
-#                                                                                                          antonio.junior@olist.com
-#                                                                                                                      BS&A | Olist
-#                                                                                                2020-Jan-14 | Curitiba/PR - Brazil
-#-----------------------------------------------------------------------------------------------------------------------------------
-# Requirements
+#
+#                                                                       Antonio C. da Silva Júnior 
+#                                                                              juniorssz@gmail.com
+#                                                           https://www.linkedin.com/in/juniorssz/
+#                                                                    https://github.com/juniorssz/
+#                                                                   https://juniorssz.netlify.com/
+#                                                                2020-Jan-21 | Curitiba/PR - Brazil
+#--------------------------------------------------------------------------------------------------
+# Requirements:
 
 require(jsonlite)
 require(DBI)
 require(RAthena)
 
-#-----------------------------------------------------------------------------------------------------------------------------------
-
+#--------------------------------------------------------------------------------------------------
 get_credentials <- function() {
   AWS_CREDENTIALS <- fromJSON("Scripts/Conn/aws_credentials.json")
   return(AWS_CREDENTIALS)
