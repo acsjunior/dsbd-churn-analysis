@@ -14,7 +14,6 @@ source("Scripts/Data-wrangling/get-data-from-athena.R")
 require(dplyr)
 require(stringr)
 require(stringi)
-require(lubridate)
 require(ggplot2)
 
 #--------------------------------------------------------------------------------------------------
@@ -308,34 +307,118 @@ df_sellers <- df_sellers %>%
 #--------------------------------------------------------------------------------------------------
 # Preparing data about orders:
 
-df_orderitems <- get_order_item()
+df_orders <- get_orders()
+df_orderitems <- get_order_items()
 
 ## Keeping only orders related to df_sellers:
+df_orders <- df_orders %>%
+  filter(so_seller_id %in% df_sellers$ss_id)
+
 df_orderitems <- df_orderitems %>%
   filter(so_seller_id %in% df_sellers$ss_id)
 
 ## Transform all blank values to NA:
+df_orders <- df_orders %>%
+  mutate_all(na_if, "")
+
 df_orderitems <- df_orderitems %>%
   mutate_all(na_if, "")
 
-## Aggregating orders by items:
+
+## Aggregating items by orders:
 df_orderitems$oi_price <- as.numeric(df_orderitems$oi_price)
 df_orderitems$oi_freight_value <- as.numeric(df_orderitems$oi_freight_value)
 
-  df_orders <- df_orderitems %>%
-    group_by(so_order_id, so_seller_id, so_purchase_timestamp) %>%
-    summarise(n_items = n(), oi_price = sum(oi_price), oi_freight_value = sum(oi_freight_value)) %>%
-    arrange(desc(n_items))
+df_orders_group <- df_orderitems %>%
+  group_by(oi_seller_order_id) %>%
+  summarise(n_items = n(), 
+            oi_price = sum(oi_price), 
+            oi_freight_value = sum(oi_freight_value)) %>%
+  arrange(desc(n_items))
 
-  
+## Keeping only orders related to df_orders_group
+df_orders <- df_orders %>%
+  filter(so_id %in% df_orders_group$oi_seller_order_id)
+
+df_orders_group <- df_orders_group %>%
+  filter(oi_seller_order_id %in% df_orders$so_id)
+
+# Combining data
+df_orders <- df_orders %>%
+  left_join(df_orders_group, by = c("so_id" = "oi_seller_order_id"))
+
+rm(df_orders_group)
+
 ## Creating the variable order_relative_day (considering start_date as the first day)
 df_orders <- df_orders %>%
   mutate(order_relative_day = as.numeric(as.Date(so_purchase_timestamp) - as.Date(start_date)))
 
+## Checking order status
+df_orders %>%
+  group_by(so_status) %>%
+  summarise(n = n(),
+            shipped = sum(ifelse(!is.na(so_delivered_carrier_date), 1, 0)),
+            delivered = sum(ifelse(!is.na(so_delivered_customer_date), 1, 0))) %>%
+  arrange(desc(n))
 
-## Creating the variable order_relative_day_rev:
+## Filling delivered_carrier_date
 df_orders <- df_orders %>%
-  mutate(order_relative_day_rev = as.numeric(as.Date(date_of_cut) - as.Date(so_purchase_timestamp)))
+  mutate(so_delivered_carrier_date = ifelse((so_status == "delivered" | so_status == "shipped") & is.na(so_delivered_carrier_date),
+                                            so_shipping_limit_date,
+                                            so_delivered_carrier_date))
+
+## Filling delivered_customer_date
+df_orders <- df_orders %>%
+  mutate(so_delivered_customer_date = ifelse(so_status == "delivered" & is.na(so_delivered_customer_date),
+                                            so_estimated_delivery_date,
+                                            so_delivered_customer_date))
+
+## Replacing status
+new_status <- function(d_carrier, d_custom) {
+  if(is.na(d_custom)) {
+    if(is.na(d_carrier)) {
+      out <- "in progress"
+    } else {
+      out <- "shipped"
+    }
+  } else {
+    out <-"delivered"
+  }
+  return(out)
+}
+df_orders <- df_orders %>%
+  rowwise() %>%
+  mutate(order_status = new_status(so_delivered_carrier_date, so_delivered_customer_date))
+
+table(df_orders$so_status, df_orders$order_status)
+
+## Checking so_status == shipped & order_status == "delivered"
+# View(df_orders %>%
+#   filter(so_status == "shipped", order_status == "delivered"))
+# to keep!
+
+## Checking so_status == delivered & order_status == "shipped"
+View(df_orders %>%
+       filter(so_status == "delivered", order_status == "shipped"))
+# to remove!
+df_orders <- df_orders %>%
+  filter(!(so_status == "delivered" & order_status == "shipped"))
+
+## Creating the variables order_in_period, order_in_firsthalf, order_in_lasthalf
+df_orders <- df_orders %>%
+  mutate(order_in_period = ifelse(order_relative_day %in% 1:period_in_days, 1, 0),
+         order_in_firsthalf = ifelse(order_relative_day %in% 1:(period_in_days/2), 1, 0),
+         order_in_lasthalf = ifelse(order_relative_day > (period_in_days/2), 1, 0))
+
+
+
+## Calcular pedidos em atraso de postagem e pedidos em atraso de entrega
+
+
+
+# write.csv(df_sellers, "Temp/df_sellers.csv", row.names = F)
+# write.csv(df_orderitems, "Temp/df_orderitems.csv", row.names = F)
+# write.csv(df_orders, "Temp/df_orders.csv", row.names = F)
 
 #--------------------------------------------------------------------------------------------------
 # Exploring data about sellers:
@@ -346,69 +429,78 @@ df_orders_sellers <- df_orders %>%
   summarise(first_order = min(as.Date(so_purchase_timestamp)),
             last_order = max(as.Date(so_purchase_timestamp)),
             total_orders = n(),
-            orders_period = sum(ifelse(order_relative_day %in% (1:period_in_days), 1, 0)),
-            orders_first_half = sum(order_relative_day %in% (1:(period_in_days/2))),
-            orders_last_half = sum(order_relative_day > period_in_days/2),
             total_items = sum(n_items),
-            items_period = sum(ifelse(order_relative_day %in% (1:period_in_days), n_items, 0)),
-            items_first_half = sum(ifelse(order_relative_day %in% (1:(period_in_days/2)), n_items, 0)),
-            items_last_half = sum(ifelse(order_relative_day > period_in_days/2, n_items, 0)),
-            worked_days = n_distinct(so_purchase_timestamp),
-            workeddays_period = n_distinct(ifelse(order_relative_day %in% (1:period_in_days), so_purchase_timestamp, NA))-1,
-            workeddays_first_half = n_distinct(ifelse(order_relative_day %in% (1:(period_in_days/2)), so_purchase_timestamp, 0))-1,
-            workeddays_last_half = n_distinct(ifelse(order_relative_day > period_in_days/2, so_purchase_timestamp, 0))-1,
             total_price = sum(oi_price),
-            price_period = sum(ifelse(order_relative_day %in% (1:period_in_days), oi_price, 0)),
-            price_first_half = sum(ifelse(order_relative_day %in% (1:(period_in_days/2)), oi_price, 0)),
-            price_last_half = sum(ifelse(order_relative_day > period_in_days/2, oi_price, 0)),
             total_freight = sum(oi_freight_value),
-            freight_period = sum(ifelse(order_relative_day %in% (1:period_in_days), oi_freight_value, 0)),
-            freight_first_half = sum(ifelse(order_relative_day %in% (1:(period_in_days/2)), oi_freight_value, 0)),
-            freight_last_half = sum(ifelse(order_relative_day > period_in_days/2, oi_freight_value, 0)))
+            total_workeddays = n_distinct(as.Date(so_purchase_timestamp)),
+            total_delivered = sum(ifelse(order_status == "delivered", 1, 0)),
+            total_shipped = sum(ifelse(order_status == "shipped", 1, 0)),
+            total_inprogress = sum(ifelse(order_status == "in progress", 1, 0)),
+            period_orders = sum(order_in_period),
+            period_items = sum(ifelse(order_in_period == 1, n_items, 0)),
+            period_price = sum(ifelse(order_in_period == 1, oi_price, 0)),
+            period_freight = sum(ifelse(order_in_period == 1, oi_freight_value, 0)),
+            period_workeddays = n_distinct(ifelse(order_in_period == 1, as.Date(so_purchase_timestamp), NA))-1,
+            period_delivered = sum(ifelse(order_in_period == 1 & order_status == "delivered", 1, 0)),
+            period_shipped = sum(ifelse(order_in_period == 1 & order_status == "shipped", 1, 0)),
+            period_inprogress = sum(ifelse(order_in_period == 1 & order_status == "in progress", 1, 0)),
+            firsthalf_orders = sum(order_in_firsthalf),
+            firsthalf_items = sum(ifelse(order_in_firsthalf == 1, n_items, 0)),
+            firsthalf_price = sum(ifelse(order_in_firsthalf == 1, oi_price, 0)),
+            firsthalf_freight = sum(ifelse(order_in_firsthalf == 1, oi_freight_value, 0)),
+            firsthalf_workeddays = n_distinct(ifelse(order_in_firsthalf == 1, as.Date(so_purchase_timestamp), 0))-1,
+            firsthalf_delivered = sum(ifelse(order_in_firsthalf == 1 & order_status == "delivered", 1, 0)),
+            firsthalf_shipped = sum(ifelse(order_in_firsthalf == 1 & order_status == "shipped", 1, 0)),
+            firsthalf_inprogress = sum(ifelse(order_in_firsthalf == 1 & order_status == "in progress", 1, 0)),
+            lasthalf_orders = sum(order_in_lasthalf),
+            lasthalf_items = sum(ifelse(order_in_lasthalf == 1, n_items, 0)),
+            lasthalf_price = sum(ifelse(order_in_lasthalf == 1, oi_price, 0)),
+            lasthalf_freight = sum(ifelse(order_in_lasthalf == 1, oi_freight_value, 0)),
+            lasthalf_workeddays = n_distinct(ifelse(order_in_lasthalf == 1, as.Date(so_purchase_timestamp), 0))-1,
+            lasthalf_delivered = sum(ifelse(order_in_lasthalf == 1 & order_status == "delivered", 1, 0)),
+            lasthalf_shipped = sum(ifelse(order_in_lasthalf == 1 & order_status == "shipped", 1, 0)),
+            lasthalf_inprogress = sum(ifelse(order_in_lasthalf == 1 & order_status == "in progress", 1, 0)),)
 
-## Creating the variables GMV
+## Creating the variables gmv
 df_orders_sellers <- df_orders_sellers %>%
   mutate(total_gmv = total_price + total_freight,
-         gmv_period = price_period + freight_period,
-         gmv_first_half = price_first_half + freight_first_half,
-         gmv_last_half = price_last_half + freight_last_half)
+         period_gmv = period_price + period_freight,
+         firsthalf_gmv = firsthalf_price + first_half_freight,
+         lasthalf_gmv = lasthalf_price + lasthalf_freight)
 
-## Creating the variables freight_ratio
+## Creating the variables freightratio
 df_orders_sellers <- df_orders_sellers %>%
-  mutate(total_freight_ratio = ifelse(total_price > 0, total_freight / total_price, 0),
-         freight_ratio_period = ifelse(price_period > 0, freight_period / price_period, 0),
-         freight_ratio_first_half = ifelse(price_first_half > 0, freight_first_half / price_first_half, 0),
-         freight_ratio_last_half = ifelse(price_last_half > 0, freight_last_half / price_last_half, 0))
+  mutate(total_freightratio = ifelse(total_price > 0, total_freight / total_price, 0),
+         period_freightratio = ifelse(period_price > 0, period_freight / period_price, 0),
+         firsthalf_freightratio = ifelse(firsthalf_price > 0, first_half_freight / firsthalf_price, 0),
+         lasthalf_freightratio = ifelse(lasthalf_price > 0, lasthalf_freight / lasthalf_price, 0))
 
-## Creating the variables avg_ticket
+## Creating the variables avgticket
 df_orders_sellers <- df_orders_sellers %>%
-  mutate(total_avg_ticket = ifelse(total_items > 0, total_price / total_items, 0),
-         avg_ticket_period = ifelse(items_period > 0, price_period / items_period, 0),
-         avg_ticket_first_half = ifelse(items_first_half > 0, price_period / items_period, 0),
-         avg_ticket_last_half = ifelse(items_last_half > 0, price_period / items_period, 0))
+  mutate(total_avgticket = ifelse(total_items > 0, total_price / total_items, 0),
+         period_avgticket = ifelse(period_items > 0, period_price / period_items, 0),
+         firsthalf_avgticket = ifelse(firsthalf_items > 0, firsthalf_price / firsthalf_items, 0),
+         lasthalf_avgticket = ifelse(lasthalf_items > 0, lasthalf_price / lasthalf_items, 0))
 
-## Removing items, price and freight variables
-df_orders_sellers <- df_orders_sellers %>%
-  select(-total_price,
-         -total_freight,
-         -total_items,
-         -price_period,
-         -freight_period,
-         -items_period,
-         -price_first_half,
-         -freight_first_half,
-         -items_first_half,
-         -price_last_half,
-         -freight_last_half,
-         -items_last_half)
-
-
-
-
-
-
-
-
+## Creating the final dataset
+df <- df_sellers %>%
+  select(ss_id,
+         is_churned,
+         ss_created_at,
+         ss_status,
+         ss_origin,
+         ss_last_blocked_on,
+         ss_has_withdraw_rejection,
+         ss_plan_type,
+         sa_city,
+         sa_state,
+         region,
+         lc_current_churn_at,
+         np_last_score,
+         np_last_response_date,
+         sp_n_products,
+         seller_stage,
+         total_shipping_days)
 
 
 
@@ -497,7 +589,7 @@ df_sellers %>%
   filter(n_orders_last_90_days == 0, n_orders_first_90_days > 0) %>%
   group_by(is_churned) %>%
   summarise(n = n())
-  
+
 
 
 

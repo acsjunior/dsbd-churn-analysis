@@ -60,8 +60,14 @@ get_issues_claims <- function() {
   return(out)
 }
 
-get_order_item <- function() {
+get_order_items <- function() {
   sql <- read_file("Scripts/SQL/orderitems.sql")
+  out <- get_data_by_sql(sql)
+  return(out)
+}
+
+get_orders <- function() {
+  sql <- read_file("Scripts/SQL/orders.sql")
   out <- get_data_by_sql(sql)
   return(out)
 }
