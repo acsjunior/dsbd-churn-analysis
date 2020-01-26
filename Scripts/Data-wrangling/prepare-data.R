@@ -15,6 +15,7 @@ require(dplyr)
 require(stringr)
 require(stringi)
 require(lubridate)
+require(ggplot2)
 
 #--------------------------------------------------------------------------------------------------
 # Utilities:
@@ -49,6 +50,8 @@ count_missing_values <- function(df) {
 # Config:
 date_of_cut <- Sys.Date()
 options(scipen=999)
+main_colour = "#0C29D0"
+sec_colour = "#0DC78B"
 
 #--------------------------------------------------------------------------------------------------
 # Preparing data about sellers:
@@ -80,8 +83,8 @@ if(!is_ready_or_doc()) {
 df_sellers <- df_sellers %>%
   rowwise() %>%
   mutate(seller_stage = ifelse(!is.na(str_locate(ss_about, "-")[1]), 
-                            str_sub(ss_about, 1, str_locate(ss_about, "-")[1]-1), 
-                            NA)) %>%
+                               str_sub(ss_about, 1, str_locate(ss_about, "-")[1]-1), 
+                               NA)) %>%
   mutate(seller_stage = ifelse(is.na(seller_stage), ss_about, seller_stage))
 df_sellers$seller_stage <- str_trim(df_sellers$seller_stage)
 
@@ -118,9 +121,9 @@ df_sellers <- df_sellers %>%
 
 ### Identifying the top 3 states:
 top_3_states <- df_sellers %>%
-       group_by(sa_state) %>%
-       summarise(n = n()) %>%
-       arrange(desc(n))
+  group_by(sa_state) %>%
+  summarise(n = n()) %>%
+  arrange(desc(n))
 
 top_3_states <- top_3_states[(1:3),]
 top_3_states <- top_3_states$sa_state
@@ -258,8 +261,8 @@ df_sellers$df_id_persona <- str_trim(df_sellers$df_id_persona)
 df_sellers$df_id_persona <- str_to_title(df_sellers$df_id_persona)
 df_sellers <- df_sellers %>%
   mutate(df_id_persona = ifelse(df_id_persona %in% c("None", "", NA),
-                                      "Outro",
-                                      df_id_persona))
+                                "Outro",
+                                df_id_persona))
 
 top_5_persona <- df_sellers %>%
   group_by(df_id_persona) %>%
@@ -291,6 +294,7 @@ rm(df_deal_sellers)
 # Preparing data about orders:
 
 df_orderitems <- get_order_item()
+# write.csv(df_orderitems, "Temp/orderitems.csv", row.names = F)
 
 
 ## Transform all blank values to NA:
@@ -320,13 +324,13 @@ df_orders$ss_created_at <- as.Date(df_orders$ss_created_at)
 
 df_orders <- df_orders %>%
   mutate(order_relative_day = as.integer(so_purchase_timestamp - ss_created_at))
-  
+
 
 ## Creating the variable order_relative_month: 
 df_orders <- df_orders %>%
   mutate(order_relative_month = as.integer(order_relative_day / 30))
-  
-  
+
+
 ## Creating the variable order_relative_day_rev:
 df_orders <- df_orders %>%
   mutate(order_relative_day_rev = as.integer(date_of_cut - so_purchase_timestamp))
@@ -335,6 +339,122 @@ df_orders <- df_orders %>%
 ## Creating the variable order_relative_month_rev:
 df_orders <- df_orders %>%
   mutate(order_relative_month_rev = as.integer(order_relative_day_rev / 30))
+
+
+# write.csv(df_orders, "Temp/orders.csv", row.names = F)
+
+str(df_orders)
+
+## Grouping orders by seller
+df_orders_sellers <- df_orders %>%
+  group_by(so_seller_id) %>%
+  summarise(ss_created_at = min(ss_created_at),
+            n_orders = n(),
+            n_items = sum(n_items),
+            first_order = min(so_purchase_timestamp),
+            last_order = max(so_purchase_timestamp),
+            worked_days = n_distinct(so_purchase_timestamp),
+            total_price = sum(oi_price),
+            total_freight = sum(oi_freight_value),
+            n_orders_first_180_days = sum(order_relative_day < 180),
+            n_orders_first_90_days = sum(order_relative_day < 90),
+            n_orders_last_180_days = sum(order_relative_day_rev < 180),
+            n_orders_last_90_days = sum(order_relative_day_rev < 90),
+            n_items_first_180_days = sum(ifelse(order_relative_day < 180, n_items, 0)),
+            n_items_first_90_days = sum(ifelse(order_relative_day < 90, n_items, 0)),
+            n_items_last_180_days = sum(ifelse(order_relative_day_rev < 180, n_items, 0)),
+            n_items_last_90_days = sum(ifelse(order_relative_day_rev < 180, n_items, 0)),
+            price_first_180_days = sum(ifelse(order_relative_day < 180, oi_price, 0)),
+            price_first_90_days = sum(ifelse(order_relative_day < 90, oi_price, 0)),
+            price_last_180_days = sum(ifelse(order_relative_day_rev < 180, oi_price, 0)),
+            price_last_90_days = sum(ifelse(order_relative_day_rev < 180, oi_price, 0)),
+            freight_first_180_days = sum(ifelse(order_relative_day < 180, oi_freight_value, 0)),
+            freight_first_90_days = sum(ifelse(order_relative_day < 90, oi_freight_value, 0)),
+            freight_last_180_days = sum(ifelse(order_relative_day_rev < 180, oi_freight_value, 0)),
+            freight_last_90_days = sum(ifelse(order_relative_day_rev < 180, oi_freight_value, 0)),
+            workeddays_first_180_days = n_distinct(ifelse(order_relative_day < 180, so_purchase_timestamp, NA))-1,
+            workeddays_first_90_days = n_distinct(ifelse(order_relative_day < 90, so_purchase_timestamp, NA))-1,
+            workeddays_last_180_days = n_distinct(ifelse(order_relative_day_rev < 180, so_purchase_timestamp, NA))-1,
+            workeddays_last_90_days = n_distinct(ifelse(order_relative_day_rev < 180, so_purchase_timestamp, NA))-1)
+
+#--------------------------------------------------------------------------------------------------
+# Exploring data about sellers:
+
+## Combining with df_sellers
+df_orders_sellers <- df_orders_sellers %>%
+  select(-ss_created_at)
+
+df_sellers <- df_sellers %>%
+  left_join(df_orders_sellers, by = c("ss_id" = "so_seller_id"))
+
+## Replacing NA to zero in numeric variables
+df_sellers <- df_sellers %>%
+  mutate_if(is.numeric, ~replace(., is.na(.), 0))
+
+## Replacing the variable is_churned
+df_sellers <- df_sellers %>%
+  mutate(is_churned = ifelse(lc_current_type %in% c("Cancelamento"), 1, 0)) %>%
+  mutate(is_churned = ifelse(ss_status %in% c("documentation"), 1, is_churned))
+
+
+## Analyzing the best way to find the response variable
+
+## Blocked sellers
+df_sellers <- df_sellers %>%
+  mutate(ss_last_blocked_on = as.Date(ss_last_blocked_on))
+
+## Creating the variable blocked_date
+df_sellers <- df_sellers %>%
+  mutate(blocked_date = ifelse(ss_blocked, ss_last_blocked_on, NA))
+
+## Create the variable days_blocked
+df_sellers <- df_sellers %>%
+  mutate(days_blocked = as.numeric(date_of_cut - blocked_date)) %>%
+  mutate(days_blocked = ifelse(is.na(days_blocked), 0, days_blocked))
+
+## Comparing with is_churned
+df_sellers %>%
+  filter(days_blocked >= 180) %>%
+  group_by(is_churned) %>%
+  summarise(n = n(),
+            avg_orders_last180days = mean(n_orders_last_180_days))
+# Entre os sellers bloqueados a mais de 180 dias, 3590 estão considerados oficialmente churn
+# Por outra visão, 1214 sellers não considerados oficialmente churn estão bloqueados há mais de 180 dias
+
+df_sellers %>%
+  filter(days_blocked >= 90) %>%
+  group_by(is_churned) %>%
+  summarise(n = n(),
+            avg_orders_last90days = mean(n_orders_last_90_days))
+# Entre os sellers bloqueados a mais de 90 dias, 3832 estão considerados oficialmente churn
+# Por outra visão, 1356 sellers não considerados oficialmente churn estão bloqueados há mais de 180 dias
+(3832 + 1356) - (3590 + 1214)
+# Mudando a faixa de >= 180 dias para >= 90, a variação é de somente 384 sellers
+
+
+## Comparing is_churned x orders_last_90_days
+df_sellers %>%
+  mutate(n_orders_last_90_days = ifelse(is.na(n_orders_last_90_days), 0, n_orders_last_90_days)) %>%
+  group_by(is_churned) %>%
+  summarise(n = n(), 
+            n_orders_last90days = sum(n_orders_last_90_days)) %>%
+  mutate(orders_rate = n_orders_last90days / n)
+# Considerando toda base:
+# Média de 3,6 pedidos por seller nos últimos 90 dias quando is_churned = 1
+# Média de 71,5 pedidos por sellers nos último 90 dias quando is_churned = 0
+
+
+## Comparing is_churned x orders_last_180_days
+df_sellers %>%
+  mutate(n_orders_last_180_days = ifelse(is.na(n_orders_last_180_days), 0, n_orders_last_180_days)) %>%
+  group_by(is_churned) %>%
+  summarise(n = n(), 
+            n_orders_last180days = sum(n_orders_last_180_days)) %>%
+  mutate(orders_rate = n_orders_last180days / n)
+# Considerando toda base:
+# Média de 9,9 pedidos por seller nos últimos 90 dias quando is_churned = 1
+# Média de 123 pedidos por sellers nos últimos 90 dias quando is_churned = 0
+
 
 
 

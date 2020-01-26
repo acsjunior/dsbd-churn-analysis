@@ -4,5 +4,6 @@
 .Ruserdata
 .DS_Store
 *.sql
+*.csv
 aws_credentials.json
 pipedrive_token.json
