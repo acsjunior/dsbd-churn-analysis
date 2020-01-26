@@ -49,6 +49,8 @@ count_missing_values <- function(df) {
 #--------------------------------------------------------------------------------------------------
 # Config:
 date_of_cut <- Sys.Date()
+start_date <- date_of_cut - 180
+period_in_days <- as.numeric(date_of_cut - start_date)
 options(scipen=999)
 main_colour = "#0C29D0"
 sec_colour = "#0DC78B"
@@ -57,27 +59,39 @@ sec_colour = "#0DC78B"
 # Preparing data about sellers:
 
 df_sellers <- get_sellers()
-df_deal_sellers <- get_deals_sellers()
+# df_deal_sellers <- get_deals_sellers()
+
+## Keeping only sellers with more than 180 days working
+df_sellers <- df_sellers %>%
+  filter(as.Date(ss_created_at) <= start_date)
 
 ## Transform all blank values to NA:
 df_sellers <- df_sellers %>%
   mutate_all(na_if, "")
 
-df_deal_sellers <- df_deal_sellers %>%
-  mutate_all(na_if, "")
+# df_deal_sellers <- df_deal_sellers %>%
+#   mutate_all(na_if, "")
 
-### Combining the datasets:
-if(is_unique_id("ss_id", df_sellers) & is_unique_id("ds_id_seller", df_deal_sellers)) {
-  df_sellers <- df_sellers %>%
-    left_join(df_deal_sellers, by = c("ss_id" = "ds_id_seller"))
-} else {
-  print("ERROR: Check if the datasets have unique IDs")
-}
+## Replacing NA to zero in numeric variables
+df_sellers <- df_sellers %>%
+  mutate_if(is.numeric, ~replace(., is.na(.), 0))
+
+# df_deal_sellers <- df_deal_sellers %>%
+#   mutate_if(is.numeric, ~replace(., is.na(.), 0))
+
+# ### Combining the datasets:
+# if(is_unique_id("ss_id", df_sellers) & is_unique_id("ds_id_seller", df_deal_sellers)) {
+#   df_sellers <- df_sellers %>%
+#     left_join(df_deal_sellers, by = c("ss_id" = "ds_id_seller"))
+# } else {
+#   print("ERROR: Check if the datasets have unique IDs")
+# }
 
 ### Checking status:
 if(!is_ready_or_doc()) {
   print("ERROR: Check if the seller status is only ready or documentation")
 }
+
 
 ### Splitting ss_about to create seller_stage variable:
 df_sellers <- df_sellers %>%
@@ -87,6 +101,7 @@ df_sellers <- df_sellers %>%
                                NA)) %>%
   mutate(seller_stage = ifelse(is.na(seller_stage), ss_about, seller_stage))
 df_sellers$seller_stage <- str_trim(df_sellers$seller_stage)
+df_sellers$ss_about <- NULL
 
 
 ### Identifying the top 3 seller_stage:
@@ -161,224 +176,243 @@ rm(top_3_cities)
 df_sellers <- df_sellers %>%
   mutate(total_shipping_days = sf_shipping_days + sf_extra_transit_time)
 
+df_sellers$sf_shipping_days <- NULL
+df_sellers$sf_extra_transit_time <- NULL
 
 ### Creating the variable is_churned:
-count_missing_values(df_sellers)
 df_sellers <- df_sellers %>%
-  mutate(is_churned = ifelse(lc_current_type %in% c("Cancelamento"), 1, 0))
+  mutate(is_churned = ifelse(lc_current_type %in% c("Cancelamento"), 1, 0)) %>%
+  mutate(is_churned = ifelse(ss_status %in% c("documentation"), 1, is_churned))
 
+# ### Creating the variable cashflow_ranges:
+# df_sellers <- df_sellers %>%
+#   mutate(ds_cashflow = ifelse(ds_cashflow == 0 | is.na(ds_cashflow), "Desconhecido", ds_cashflow))
+# 
+# cashflow <- df_sellers %>%
+#   filter(ds_cashflow != "Desconhecido")
+# cashflow_median <- median(as.numeric(cashflow$ds_cashflow))
+# cashflow_quantile3 <- as.numeric(quantile(as.numeric(cashflow$ds_cashflow), 0.75))
+# cashflow_max <- max(as.numeric(cashflow$ds_cashflow))
+# 
+# cashflow$cashflow_ranges <- cut(as.numeric(cashflow$ds_cashflow), breaks = c(1, cashflow_median, cashflow_quantile3, cashflow_max))
+# df_sellers <- df_sellers %>%
+#   left_join((cashflow %>%
+#                select(ss_id, cashflow_ranges)), by = "ss_id")
+# df_sellers$cashflow_ranges <- as.character(df_sellers$cashflow_ranges)
+# df_sellers <- df_sellers %>%
+#   mutate(cashflow_ranges = ifelse(is.na(cashflow_ranges), ds_cashflow, cashflow_ranges))
+# rm(cashflow, cashflow_max, cashflow_median, cashflow_quantile3)
+# 
+# 
+# ### Simplifying df_revenue into 4 classes:
+# 
+# df_sellers <- df_sellers %>%
+#   mutate(df_revenue = str_to_title(str_trim(df_revenue)))
+# range_1 <- c("De 500k A 3.6mi Ano (40 A 300k Mês)",
+#              "De 480k A 3.6mi Ano (40k A 300k Mês)",
+#              "De 500k A 3.6mi Ano (40 A 300k Mes)",
+#              "Entre R$500k Aa E R$3.600mi Aa (Entre R$40k Am E R$300kam)")
+# value_1 <- "De 500k a 3.6mi ano"
+# 
+# range_2 <- c("De 60 A 500k Ano (5 A 40k Mês)",
+#              "De 60k A 480k Ano (5k A 40k Mês)",
+#              "De 60 A 500k Ano (5 A 40k Mes)",
+#              "Entre R$ 60k Aa E R$500k Am (Entre R$5k E R$40k Am)")
+# value_2 <- "De 60k a 500k ano"
+# 
+# range_3 <- c("Até 60k Ano (5k Mês)",
+#              "Até R$ 60k Aa (Até R$ 5k Am)",
+#              "De 60 A 500k Ano (5 A 40k Mes)")
+# value_3 <- "Até 60k ano"
+# 
+# range_4 <- c("Acima De 3.6mi Ano (300k Mês)",
+#              "De 3.6mi A 8.4mi Ano (300k A 800k Mês)",
+#              "De 8.4mi A 72mi Ano (800k A 6mi Mês)",
+#              "Acima De 3.6mi Ano (300k Mes)",
+#              "Acima De R$3.600mi Aa (Acima De R$300k Am)",
+#              "Acima De 72mi Ano (6mi Mês)")
+# value_4 <- "Acima de 3.6mi ano"
+# 
+# all <- c(value_1, value_2, value_3, value_4)
+# 
+# df_sellers <- df_sellers %>%
+#   mutate(df_revenue = ifelse(df_revenue %in% range_1, value_1, df_revenue)) %>%
+#   mutate(df_revenue = ifelse(df_revenue %in% range_2, value_2, df_revenue)) %>%
+#   mutate(df_revenue = ifelse(df_revenue %in% range_3, value_3, df_revenue)) %>%
+#   mutate(df_revenue = ifelse(df_revenue %in% range_4, value_4, df_revenue)) %>%
+#   mutate(df_revenue = ifelse(df_revenue %in% all, df_revenue, "Desconhecido"))
+# 
+# rm(all, range_1, range_2, range_3, range_4, value_1, value_2, value_3, value_4)
+# 
+# 
+# ### Identifying the top 5 behavior profile:
+# 
+# df_sellers$df_behavior_profile <- str_trim(df_sellers$df_behavior_profile)
+# df_sellers$df_behavior_profile <- str_to_title(df_sellers$df_behavior_profile)
+# df_sellers$df_behavior_profile <- stri_trans_general(df_sellers$df_behavior_profile, "Latin-ASCII")
+# df_sellers$df_behavior_profile <- str_replace_all(df_sellers$df_behavior_profile, " ", "")
+# df_sellers$df_behavior_profile <- str_replace_all(df_sellers$df_behavior_profile, ",", "/")
+# df_sellers <- df_sellers %>%
+#   mutate(df_behavior_profile = ifelse(df_behavior_profile %in% c("None", "", NA),
+#                                       "Outro",
+#                                       df_behavior_profile))
+# 
+# top_5_behavior <- df_sellers %>%
+#   group_by(df_behavior_profile) %>%
+#   summarise(n = n()) %>%
+#   arrange(desc(n))
+# 
+# top_5_behavior <- top_5_behavior[(1:5),]
+# top_5_behavior <- top_5_behavior$df_behavior_profile
+# 
+# ### Simplifying behavior profile into 5 classes:
+# df_sellers <- df_sellers %>%
+#   mutate(df_behavior_profile = ifelse(df_behavior_profile %in% top_5_behavior, df_behavior_profile, "Outro"))
+# rm(top_5_behavior)
+# 
+# 
+# ### Identifying the top 5 persona:
+# 
+# df_sellers$df_id_persona <- str_trim(df_sellers$df_id_persona)
+# df_sellers$df_id_persona <- str_to_title(df_sellers$df_id_persona)
+# df_sellers <- df_sellers %>%
+#   mutate(df_id_persona = ifelse(df_id_persona %in% c("None", "", NA),
+#                                 "Outro",
+#                                 df_id_persona))
+# 
+# top_5_persona <- df_sellers %>%
+#   group_by(df_id_persona) %>%
+#   summarise(n = n()) %>%
+#   arrange(desc(n))
+# 
+# top_5_persona <- top_5_persona[(1:5),]
+# top_5_persona <- top_5_persona$df_id_persona
+# 
+# ### Simplifying persona into 5 classes:
+# df_sellers <- df_sellers %>%
+#   mutate(df_id_persona = ifelse(df_id_persona %in% top_5_persona, df_id_persona, "Outro"))
+# rm(top_5_persona)
+# 
+# 
+# ### Creating the variable portfolio_reg_rate
+# df_sellers <- df_sellers %>%
+#   mutate(df_portfolio_cadastravel = as.numeric(df_portfolio_cadastravel)) %>%
+#   mutate(df_portfolio_cadastravel = ifelse(is.na(df_portfolio_cadastravel), 0, df_portfolio_cadastravel)) %>%
+#   mutate(sp_n_products = as.numeric(sp_n_products)) %>%
+#   mutate(sp_n_products = ifelse(is.na(sp_n_products), 0, sp_n_products)) %>%
+#   mutate(portfolio_reg_rate = ifelse(df_portfolio_cadastravel > 0,
+#                                      sp_n_products / df_portfolio_cadastravel,
+#                                      1))
 
-### Creating the variable cashflow_ranges:
-df_sellers <- df_sellers %>%
-  mutate(ds_cashflow = ifelse(ds_cashflow == 0 | is.na(ds_cashflow), "Desconhecido", ds_cashflow))
-
-cashflow <- df_sellers %>%
-  filter(ds_cashflow != "Desconhecido")
-cashflow_median <- median(as.numeric(cashflow$ds_cashflow))
-cashflow_quantile3 <- as.numeric(quantile(as.numeric(cashflow$ds_cashflow), 0.75))
-cashflow_max <- max(as.numeric(cashflow$ds_cashflow))
-
-cashflow$cashflow_ranges <- cut(as.numeric(cashflow$ds_cashflow), breaks = c(1, cashflow_median, cashflow_quantile3, cashflow_max))
-df_sellers <- df_sellers %>%
-  left_join((cashflow %>%
-               select(ss_id, cashflow_ranges)), by = "ss_id")
-df_sellers$cashflow_ranges <- as.character(df_sellers$cashflow_ranges)
-df_sellers <- df_sellers %>%
-  mutate(cashflow_ranges = ifelse(is.na(cashflow_ranges), ds_cashflow, cashflow_ranges))
-rm(cashflow, cashflow_max, cashflow_median, cashflow_quantile3)
-
-
-### Simplifying df_revenue into 4 classes:
-
-df_sellers <- df_sellers %>%
-  mutate(df_revenue = str_to_title(str_trim(df_revenue)))
-range_1 <- c("De 500k A 3.6mi Ano (40 A 300k Mês)",
-             "De 480k A 3.6mi Ano (40k A 300k Mês)",
-             "De 500k A 3.6mi Ano (40 A 300k Mes)",
-             "Entre R$500k Aa E R$3.600mi Aa (Entre R$40k Am E R$300kam)")
-value_1 <- "De 500k a 3.6mi ano"
-
-range_2 <- c("De 60 A 500k Ano (5 A 40k Mês)",
-             "De 60k A 480k Ano (5k A 40k Mês)",
-             "De 60 A 500k Ano (5 A 40k Mes)",
-             "Entre R$ 60k Aa E R$500k Am (Entre R$5k E R$40k Am)")
-value_2 <- "De 60k a 500k ano"
-
-range_3 <- c("Até 60k Ano (5k Mês)",
-             "Até R$ 60k Aa (Até R$ 5k Am)",
-             "De 60 A 500k Ano (5 A 40k Mes)")
-value_3 <- "Até 60k ano"
-
-range_4 <- c("Acima De 3.6mi Ano (300k Mês)",
-             "De 3.6mi A 8.4mi Ano (300k A 800k Mês)",
-             "De 8.4mi A 72mi Ano (800k A 6mi Mês)",
-             "Acima De 3.6mi Ano (300k Mes)",
-             "Acima De R$3.600mi Aa (Acima De R$300k Am)",
-             "Acima De 72mi Ano (6mi Mês)")
-value_4 <- "Acima de 3.6mi ano"
-
-all <- c(value_1, value_2, value_3, value_4)
-
-df_sellers <- df_sellers %>%
-  mutate(df_revenue = ifelse(df_revenue %in% range_1, value_1, df_revenue)) %>%
-  mutate(df_revenue = ifelse(df_revenue %in% range_2, value_2, df_revenue)) %>%
-  mutate(df_revenue = ifelse(df_revenue %in% range_3, value_3, df_revenue)) %>%
-  mutate(df_revenue = ifelse(df_revenue %in% range_4, value_4, df_revenue)) %>%
-  mutate(df_revenue = ifelse(df_revenue %in% all, df_revenue, "Desconhecido"))
-
-rm(all, range_1, range_2, range_3, range_4, value_1, value_2, value_3, value_4)
-
-
-### Identifying the top 5 behavior profile:
-
-df_sellers$df_behavior_profile <- str_trim(df_sellers$df_behavior_profile)
-df_sellers$df_behavior_profile <- str_to_title(df_sellers$df_behavior_profile)
-df_sellers$df_behavior_profile <- stri_trans_general(df_sellers$df_behavior_profile, "Latin-ASCII")
-df_sellers$df_behavior_profile <- str_replace_all(df_sellers$df_behavior_profile, " ", "")
-df_sellers$df_behavior_profile <- str_replace_all(df_sellers$df_behavior_profile, ",", "/")
-df_sellers <- df_sellers %>%
-  mutate(df_behavior_profile = ifelse(df_behavior_profile %in% c("None", "", NA),
-                                      "Outro",
-                                      df_behavior_profile))
-
-top_5_behavior <- df_sellers %>%
-  group_by(df_behavior_profile) %>%
-  summarise(n = n()) %>%
-  arrange(desc(n))
-
-top_5_behavior <- top_5_behavior[(1:5),]
-top_5_behavior <- top_5_behavior$df_behavior_profile
-
-### Simplifying behavior profile into 5 classes:
-df_sellers <- df_sellers %>%
-  mutate(df_behavior_profile = ifelse(df_behavior_profile %in% top_5_behavior, df_behavior_profile, "Outro"))
-rm(top_5_behavior)
-
-
-### Identifying the top 5 persona:
-
-df_sellers$df_id_persona <- str_trim(df_sellers$df_id_persona)
-df_sellers$df_id_persona <- str_to_title(df_sellers$df_id_persona)
-df_sellers <- df_sellers %>%
-  mutate(df_id_persona = ifelse(df_id_persona %in% c("None", "", NA),
-                                "Outro",
-                                df_id_persona))
-
-top_5_persona <- df_sellers %>%
-  group_by(df_id_persona) %>%
-  summarise(n = n()) %>%
-  arrange(desc(n))
-
-top_5_persona <- top_5_persona[(1:5),]
-top_5_persona <- top_5_persona$df_id_persona
-
-### Simplifying persona into 5 classes:
-df_sellers <- df_sellers %>%
-  mutate(df_id_persona = ifelse(df_id_persona %in% top_5_persona, df_id_persona, "Outro"))
-rm(top_5_persona)
-
-
-### Creating the variable portfolio_reg_rate
-df_sellers <- df_sellers %>%
-  mutate(df_portfolio_cadastravel = as.numeric(df_portfolio_cadastravel)) %>%
-  mutate(df_portfolio_cadastravel = ifelse(is.na(df_portfolio_cadastravel), 0, df_portfolio_cadastravel)) %>%
-  mutate(sp_n_products = as.numeric(sp_n_products)) %>%
-  mutate(sp_n_products = ifelse(is.na(sp_n_products), 0, sp_n_products)) %>%
-  mutate(portfolio_reg_rate = ifelse(df_portfolio_cadastravel > 0,
-                                     sp_n_products / df_portfolio_cadastravel,
-                                     1))
-
-rm(df_deal_sellers)
 
 #--------------------------------------------------------------------------------------------------
 # Preparing data about orders:
 
 df_orderitems <- get_order_item()
-# write.csv(df_orderitems, "Temp/orderitems.csv", row.names = F)
 
+## Keeping only orders related to df_sellers:
+df_orderitems <- df_orderitems %>%
+  filter(so_seller_id %in% df_sellers$ss_id)
 
 ## Transform all blank values to NA:
 df_orderitems <- df_orderitems %>%
   mutate_all(na_if, "")
 
-
 ## Aggregating orders by items:
 df_orderitems$oi_price <- as.numeric(df_orderitems$oi_price)
 df_orderitems$oi_freight_value <- as.numeric(df_orderitems$oi_freight_value)
 
-df_orders <- df_orderitems %>%
-  group_by(so_order_id, so_seller_id, so_purchase_timestamp) %>%
-  summarise(n_items = n(), oi_price = sum(oi_price), oi_freight_value = sum(oi_freight_value)) %>%
-  arrange(desc(n_items))
+  df_orders <- df_orderitems %>%
+    group_by(so_order_id, so_seller_id, so_purchase_timestamp) %>%
+    summarise(n_items = n(), oi_price = sum(oi_price), oi_freight_value = sum(oi_freight_value)) %>%
+    arrange(desc(n_items))
 
-
-## Getting ss_created_at from df_sellers:
+  
+## Creating the variable order_relative_day (considering start_date as the first day)
 df_orders <- df_orders %>%
-  left_join(df_sellers %>%
-              select(ss_id, ss_created_at), by = c("so_seller_id" = "ss_id"))
-
-
-## Creating the variable order_relative_day:
-df_orders$so_purchase_timestamp <- as.Date(df_orders$so_purchase_timestamp)
-df_orders$ss_created_at <- as.Date(df_orders$ss_created_at)
-
-df_orders <- df_orders %>%
-  mutate(order_relative_day = as.integer(so_purchase_timestamp - ss_created_at))
-
-
-## Creating the variable order_relative_month: 
-df_orders <- df_orders %>%
-  mutate(order_relative_month = as.integer(order_relative_day / 30))
+  mutate(order_relative_day = as.numeric(as.Date(so_purchase_timestamp) - as.Date(start_date)))
 
 
 ## Creating the variable order_relative_day_rev:
 df_orders <- df_orders %>%
-  mutate(order_relative_day_rev = as.integer(date_of_cut - so_purchase_timestamp))
+  mutate(order_relative_day_rev = as.numeric(as.Date(date_of_cut) - as.Date(so_purchase_timestamp)))
 
-
-## Creating the variable order_relative_month_rev:
-df_orders <- df_orders %>%
-  mutate(order_relative_month_rev = as.integer(order_relative_day_rev / 30))
-
-
-# write.csv(df_orders, "Temp/orders.csv", row.names = F)
-
-str(df_orders)
+#--------------------------------------------------------------------------------------------------
+# Exploring data about sellers:
 
 ## Grouping orders by seller
 df_orders_sellers <- df_orders %>%
   group_by(so_seller_id) %>%
-  summarise(ss_created_at = min(ss_created_at),
-            n_orders = n(),
-            n_items = sum(n_items),
-            first_order = min(so_purchase_timestamp),
-            last_order = max(so_purchase_timestamp),
+  summarise(first_order = min(as.Date(so_purchase_timestamp)),
+            last_order = max(as.Date(so_purchase_timestamp)),
+            total_orders = n(),
+            orders_period = sum(ifelse(order_relative_day %in% (1:period_in_days), 1, 0)),
+            orders_first_half = sum(order_relative_day %in% (1:(period_in_days/2))),
+            orders_last_half = sum(order_relative_day > period_in_days/2),
+            total_items = sum(n_items),
+            items_period = sum(ifelse(order_relative_day %in% (1:period_in_days), n_items, 0)),
+            items_first_half = sum(ifelse(order_relative_day %in% (1:(period_in_days/2)), n_items, 0)),
+            items_last_half = sum(ifelse(order_relative_day > period_in_days/2, n_items, 0)),
             worked_days = n_distinct(so_purchase_timestamp),
+            workeddays_period = n_distinct(ifelse(order_relative_day %in% (1:period_in_days), so_purchase_timestamp, NA))-1,
+            workeddays_first_half = n_distinct(ifelse(order_relative_day %in% (1:(period_in_days/2)), so_purchase_timestamp, 0))-1,
+            workeddays_last_half = n_distinct(ifelse(order_relative_day > period_in_days/2, so_purchase_timestamp, 0))-1,
             total_price = sum(oi_price),
+            price_period = sum(ifelse(order_relative_day %in% (1:period_in_days), oi_price, 0)),
+            price_first_half = sum(ifelse(order_relative_day %in% (1:(period_in_days/2)), oi_price, 0)),
+            price_last_half = sum(ifelse(order_relative_day > period_in_days/2, oi_price, 0)),
             total_freight = sum(oi_freight_value),
-            n_orders_first_180_days = sum(order_relative_day < 180),
-            n_orders_first_90_days = sum(order_relative_day < 90),
-            n_orders_last_180_days = sum(order_relative_day_rev < 180),
-            n_orders_last_90_days = sum(order_relative_day_rev < 90),
-            n_items_first_180_days = sum(ifelse(order_relative_day < 180, n_items, 0)),
-            n_items_first_90_days = sum(ifelse(order_relative_day < 90, n_items, 0)),
-            n_items_last_180_days = sum(ifelse(order_relative_day_rev < 180, n_items, 0)),
-            n_items_last_90_days = sum(ifelse(order_relative_day_rev < 180, n_items, 0)),
-            price_first_180_days = sum(ifelse(order_relative_day < 180, oi_price, 0)),
-            price_first_90_days = sum(ifelse(order_relative_day < 90, oi_price, 0)),
-            price_last_180_days = sum(ifelse(order_relative_day_rev < 180, oi_price, 0)),
-            price_last_90_days = sum(ifelse(order_relative_day_rev < 180, oi_price, 0)),
-            freight_first_180_days = sum(ifelse(order_relative_day < 180, oi_freight_value, 0)),
-            freight_first_90_days = sum(ifelse(order_relative_day < 90, oi_freight_value, 0)),
-            freight_last_180_days = sum(ifelse(order_relative_day_rev < 180, oi_freight_value, 0)),
-            freight_last_90_days = sum(ifelse(order_relative_day_rev < 180, oi_freight_value, 0)),
-            workeddays_first_180_days = n_distinct(ifelse(order_relative_day < 180, so_purchase_timestamp, NA))-1,
-            workeddays_first_90_days = n_distinct(ifelse(order_relative_day < 90, so_purchase_timestamp, NA))-1,
-            workeddays_last_180_days = n_distinct(ifelse(order_relative_day_rev < 180, so_purchase_timestamp, NA))-1,
-            workeddays_last_90_days = n_distinct(ifelse(order_relative_day_rev < 180, so_purchase_timestamp, NA))-1)
+            freight_period = sum(ifelse(order_relative_day %in% (1:period_in_days), oi_freight_value, 0)),
+            freight_first_half = sum(ifelse(order_relative_day %in% (1:(period_in_days/2)), oi_freight_value, 0)),
+            freight_last_half = sum(ifelse(order_relative_day > period_in_days/2, oi_freight_value, 0)))
 
-#--------------------------------------------------------------------------------------------------
-# Exploring data about sellers:
+## Creating the variables GMV
+df_orders_sellers <- df_orders_sellers %>%
+  mutate(total_gmv = total_price + total_freight,
+         gmv_period = price_period + freight_period,
+         gmv_first_half = price_first_half + freight_first_half,
+         gmv_last_half = price_last_half + freight_last_half)
+
+## Creating the variables freight_ratio
+df_orders_sellers <- df_orders_sellers %>%
+  mutate(total_freight_ratio = ifelse(total_price > 0, total_freight / total_price, 0),
+         freight_ratio_period = ifelse(price_period > 0, freight_period / price_period, 0),
+         freight_ratio_first_half = ifelse(price_first_half > 0, freight_first_half / price_first_half, 0),
+         freight_ratio_last_half = ifelse(price_last_half > 0, freight_last_half / price_last_half, 0))
+
+## Creating the variables avg_ticket
+df_orders_sellers <- df_orders_sellers %>%
+  mutate(total_avg_ticket = ifelse(total_items > 0, total_price / total_items, 0),
+         avg_ticket_period = ifelse(items_period > 0, price_period / items_period, 0),
+         avg_ticket_first_half = ifelse(items_first_half > 0, price_period / items_period, 0),
+         avg_ticket_last_half = ifelse(items_last_half > 0, price_period / items_period, 0))
+
+## Removing items, price and freight variables
+df_orders_sellers <- df_orders_sellers %>%
+  select(-total_price,
+         -total_freight,
+         -total_items,
+         -price_period,
+         -freight_period,
+         -items_period,
+         -price_first_half,
+         -freight_first_half,
+         -items_first_half,
+         -price_last_half,
+         -freight_last_half,
+         -items_last_half)
+
+
+
+
+
+
+
+
+
+
+
+
 
 ## Combining with df_sellers
 df_orders_sellers <- df_orders_sellers %>%
@@ -387,14 +421,15 @@ df_orders_sellers <- df_orders_sellers %>%
 df_sellers <- df_sellers %>%
   left_join(df_orders_sellers, by = c("ss_id" = "so_seller_id"))
 
-## Replacing NA to zero in numeric variables
-df_sellers <- df_sellers %>%
-  mutate_if(is.numeric, ~replace(., is.na(.), 0))
+# ## Replacing the variable is_churned
+# df_sellers <- df_sellers %>%
+#   mutate(is_churned = ifelse(lc_current_type %in% c("Cancelamento"), 1, 0)) %>%
+#   mutate(is_churned = ifelse(ss_status %in% c("documentation"), 1, is_churned))
 
-## Replacing the variable is_churned
+## Creating the variable active_days
 df_sellers <- df_sellers %>%
-  mutate(is_churned = ifelse(lc_current_type %in% c("Cancelamento"), 1, 0)) %>%
-  mutate(is_churned = ifelse(ss_status %in% c("documentation"), 1, is_churned))
+  mutate(active_days = as.numeric(date_of_cut - as.Date(ss_created_at))) %>%
+  mutate(active_days = ifelse(is.na(active_days), 0, active_days))
 
 
 ## Analyzing the best way to find the response variable
@@ -434,7 +469,6 @@ df_sellers %>%
 
 ## Comparing is_churned x orders_last_90_days
 df_sellers %>%
-  mutate(n_orders_last_90_days = ifelse(is.na(n_orders_last_90_days), 0, n_orders_last_90_days)) %>%
   group_by(is_churned) %>%
   summarise(n = n(), 
             n_orders_last90days = sum(n_orders_last_90_days)) %>%
@@ -446,7 +480,6 @@ df_sellers %>%
 
 ## Comparing is_churned x orders_last_180_days
 df_sellers %>%
-  mutate(n_orders_last_180_days = ifelse(is.na(n_orders_last_180_days), 0, n_orders_last_180_days)) %>%
   group_by(is_churned) %>%
   summarise(n = n(), 
             n_orders_last180days = sum(n_orders_last_180_days)) %>%
@@ -454,6 +487,17 @@ df_sellers %>%
 # Considerando toda base:
 # Média de 9,9 pedidos por seller nos últimos 90 dias quando is_churned = 1
 # Média de 123 pedidos por sellers nos últimos 90 dias quando is_churned = 0
+
+
+
+
+
+
+df_sellers %>%
+  filter(n_orders_last_90_days == 0, n_orders_first_90_days > 0) %>%
+  group_by(is_churned) %>%
+  summarise(n = n())
+  
 
 
 
