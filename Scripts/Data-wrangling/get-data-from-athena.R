@@ -24,8 +24,14 @@ get_data_by_sql <- function(sql) {
   return(out)
 }
 
-get_sellers <- function() {
-  sql <- read_file("Scripts/SQL/sellers.sql")
+# get_sellers <- function() {
+#   sql <- read_file("Scripts/SQL/sellers.sql")
+#   out <- get_data_by_sql(sql)
+#   return(out)
+# }
+
+get_sellers_deals <- function() {
+  sql <- read_file("Scripts/SQL/sellers-deals.sql")
   out <- get_data_by_sql(sql)
   return(out)
 }
@@ -48,11 +54,11 @@ get_sellers_churn_history <- function() {
   return(out)
 }
 
-get_deals_sellers <- function() {
-  sql <- read_file("Scripts/SQL/deals-sellers.sql")
-  out <- get_data_by_sql(sql)
-  return(out)
-}
+# get_deals_sellers <- function() {
+#   sql <- read_file("Scripts/SQL/deals-sellers.sql")
+#   out <- get_data_by_sql(sql)
+#   return(out)
+# }
 
 get_issues_claims <- function() {
   sql <- read_file("Scripts/SQL/issues-claims.sql")
