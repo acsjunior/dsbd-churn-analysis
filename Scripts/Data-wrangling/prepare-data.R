@@ -613,10 +613,677 @@ table(df_sellers$is_churned_noordersperiod)
 prop.table(table(df_sellers$is_churned_noordersperiod))
 
 
+## Replacing NA to zero in numeric variables
+df_sellers <- df_sellers %>%
+  mutate_if(is.numeric, ~replace(., is.na(.), 0))
+
+
+write.csv(df_sellers, "Temp/df_sellers.csv", row.names = F)
+
+#--------------------------------------------------------------------------------------------------
+# Exploring data about sellers:
+
+
+## origin
+
+### is_churned
+prop.table(table(df_sellers$ss_origin, df_sellers$is_churned), 1)
+# 78% da origem v1 é churn
+
+### noorderslasthalf
+prop.table(table(df_sellers$ss_origin, df_sellers$noorders_lasthalf), 1)
+# 86% da origem v1 é churn
+
+
+### noordersperiod
+prop.table(table(df_sellers$ss_origin, df_sellers$noorders_period), 1)
+# 85% da origem v1 é churn
+
+
+
+## plan_type
+
+### is_churned
+prop.table(table(df_sellers$ss_plan_type, df_sellers$is_churned), 1)
+# brand, branded_seller e mid possuem baixo percentual de churn
+
+### noorderslasthalf
+prop.table(table(df_sellers$ss_plan_type, df_sellers$noorders_lasthalf), 1)
+# branded_seller possui percentua de churn mais significativo
+# small possui mais de 60% de churn
+
+### noordersperiod
+prop.table(table(df_sellers$ss_plan_type, df_sellers$noorders_period), 1)
+# Similar ao anterior
 
 
 
 
+## City
+
+### is_churned
+prop.table(table(df_sellers$sa_city, df_sellers$is_churned), 1)
+# Todas as cidades com percentual parecido de churn
+
+### noorderslasthalf
+prop.table(table(df_sellers$sa_city, df_sellers$noorders_lasthalf), 1)
+# Todas as cidades com percentual parecido de churn
+
+### noordersperiod
+prop.table(table(df_sellers$sa_city, df_sellers$noorders_period), 1)
+# Todas as cidades com percentual parecido de churn
+
+
+
+## state
+
+### is_churned
+prop.table(table(df_sellers$sa_state, df_sellers$is_churned), 1)
+# Todas os estados com percentual parecido de churn
+
+### noorderslasthalf
+prop.table(table(df_sellers$sa_state, df_sellers$noorders_lasthalf), 1)
+# Todas os estados com percentual parecido de churn
+
+### noordersperiod
+prop.table(table(df_sellers$sa_state, df_sellers$noorders_period), 1)
+# Todas os estados com percentual parecido de churn
+
+
+
+## region
+
+### is_churned
+prop.table(table(df_sellers$region, df_sellers$is_churned), 1)
+# Todas as regiões com percentual parecido de churn
+
+### noorderslasthalf
+prop.table(table(df_sellers$region, df_sellers$noorders_lasthalf), 1)
+# Região norte com 86% de churn se destaca entre as demais
+
+### noordersperiod
+prop.table(table(df_sellers$region, df_sellers$noorders_period), 1)
+# Região norte com 83% de churn se destaca entre as demais
+
+
+
+
+## has_withdraw_rejection
+
+### is_churned
+prop.table(table(df_sellers$ss_has_withdraw_rejection, df_sellers$is_churned), 1)
+# Sem diferença significante
+
+### noorderslasthalf
+prop.table(table(df_sellers$ss_has_withdraw_rejection, df_sellers$noorders_lasthalf), 1)
+# TRUE possue 83% de churn
+
+### noordersperiod
+prop.table(table(df_sellers$ss_has_withdraw_rejection, df_sellers$noorders_period), 1)
+# TRUE possue 76% de churn
+
+
+
+
+## nps last_score
+
+### is_churned
+prop.table(table(df_sellers$np_last_score, df_sellers$is_churned), 1)
+# Quanto maior a nota do NPS, menor a probabilidade de churn
+
+### noorderslasthalf
+prop.table(table(df_sellers$np_last_score, df_sellers$noorders_lasthalf), 1)
+# Quanto maior a nota do NPS, menor a probabilidade de churn, porem com menor intensidade que o caso anterior
+
+### noordersperiod
+prop.table(table(df_sellers$np_last_score, df_sellers$noorders_period), 1)
+# Quanto maior a nota do NPS, menor a probabilidade de churn
+
+
+
+## n_products
+
+### is_churned
+cor(df_sellers[c("sp_n_products", "is_churned")])
+# fraca correlação negativa (10%)
+
+### noorderslasthalf
+cor(df_sellers[c("sp_n_products", "noorders_lasthalf")])
+# fraca correlação negativa (20%)
+
+### noordersperiod
+cor(df_sellers[c("sp_n_products", "noorders_period")])
+# fraca correlação negativa (20%)
+
+
+
+
+## cashflow
+
+### is_churned
+prop.table(table(df_sellers$cashflow_ranges, df_sellers$is_churned), 1)
+# 2 categorias com menor probabilidade de churn
+
+### noorderslasthalf
+prop.table(table(df_sellers$cashflow_ranges, df_sellers$noorders_lasthalf), 1)
+# 1 categoria com maior probabilidade de churn
+
+### noordersperiod
+prop.table(table(df_sellers$cashflow_ranges, df_sellers$noorders_period), 1)
+# 1 categoria com maior probabilidade de churn
+
+
+
+## revenue
+
+### is_churned
+prop.table(table(df_sellers$df_revenue, df_sellers$is_churned), 1)
+# Nenhuma categoria se destaca
+
+### noorderslasthalf
+prop.table(table(df_sellers$df_revenue, df_sellers$noorders_lasthalf), 1)
+# A categoria "desconhecido" possui 70% de churn
+
+### noordersperiod
+prop.table(table(df_sellers$df_revenue, df_sellers$noorders_period), 1)
+# A categoria "desconhecido" possui 66% de churn
+
+
+
+
+## behavior profile
+
+### is_churned
+prop.table(table(df_sellers$df_behavior_profile, df_sellers$is_churned), 1)
+# Nenhuma categoria se destaca
+
+### noorderslasthalf
+prop.table(table(df_sellers$df_behavior_profile, df_sellers$noorders_lasthalf), 1)
+# Nenhuma categoria se destaca
+
+### noordersperiod
+prop.table(table(df_sellers$df_behavior_profile, df_sellers$noorders_period), 1)
+# Nenhuma categoria se destaca
+
+
+
+
+## persona
+
+### is_churned
+prop.table(table(df_sellers$df_id_persona, df_sellers$is_churned), 1)
+# Nenhuma categoria se destaca
+
+### noorderslasthalf
+prop.table(table(df_sellers$df_id_persona, df_sellers$noorders_lasthalf), 1)
+# Personas 155 e 156 possuem maior probabilidade de churn
+
+### noordersperiod
+prop.table(table(df_sellers$df_id_persona, df_sellers$noorders_period), 1)
+# Personas 155 e 156 possuem maior probabilidade de churn
+
+
+
+
+## seller_stage
+
+### is_churned
+prop.table(table(df_sellers$seller_stage, df_sellers$is_churned), 1)
+# Ativação possui maior probabilidade de churn
+
+### noorderslasthalf
+prop.table(table(df_sellers$seller_stage, df_sellers$noorders_lasthalf), 1)
+# Ativação possui maior probabilidade de churn
+
+### noordersperiod
+prop.table(table(df_sellers$seller_stage, df_sellers$noorders_period), 1)
+# Ativação possui maior probabilidade de churn
+
+
+## orders
+
+### is_churned
+cor(df_sellers %>%
+      select(total_orders,
+             period_orders,
+             firsthalf_orders,
+             lasthalf_orders,
+             is_churned))
+# fraca correlação negativa (12%)
+
+### noorderslasthalf
+cor(df_sellers %>%
+      select(total_orders,
+             period_orders,
+             firsthalf_orders,
+             lasthalf_orders,
+             noorders_lasthalf))
+# fraca correlação negativa (20%)
+
+### noordersperiod
+cor(df_sellers %>%
+      select(total_orders,
+             period_orders,
+             firsthalf_orders,
+             lasthalf_orders,
+             noorders_period))
+# fraca correlação negativa (20%)
+
+
+
+## gmv
+
+### is_churned
+cor(df_sellers %>%
+      select(total_gmv,
+             period_gmv,
+             firsthalf_gmv,
+             lasthalf_gmv,
+             is_churned))
+# fraca correlação negativa (14%)
+
+### noorderslasthalf
+cor(df_sellers %>%
+      select(total_gmv,
+             period_gmv,
+             firsthalf_gmv,
+             lasthalf_gmv,
+             noorders_lasthalf))
+# fraca correlação negativa (25%)
+
+### noordersperiod
+cor(df_sellers %>%
+      select(total_gmv,
+             period_gmv,
+             firsthalf_gmv,
+             lasthalf_gmv,
+             noorders_period))
+# fraca correlação negativa (25%)
+
+
+
+## worked days
+
+### is_churned
+cor(df_sellers %>%
+      select(total_workeddays,
+             period_workeddays,
+             firsthalf_workeddays,
+             lasthalf_workeddays,
+             is_churned))
+# fraca correlação negativa (35%)
+
+### noorderslasthalf
+cor(df_sellers %>%
+      select(total_workeddays,
+             period_workeddays,
+             firsthalf_workeddays,
+             lasthalf_workeddays,
+             noorders_lasthalf))
+# correlação negativa moderada (66%)
+
+### noordersperiod
+cor(df_sellers %>%
+      select(total_workeddays,
+             period_workeddays,
+             firsthalf_workeddays,
+             lasthalf_workeddays,
+             noorders_period))
+# fraca correlação negativa (60%)
+
+
+
+
+## shipped late
+
+### is_churned
+cor(df_sellers %>%
+      select(total_shippedlate,
+             period_shippedlate,
+             firsthalf_shippedlate,
+             lasthalf_shippedlate,
+             is_churned))
+# fraca correlação negativa (12%)
+
+### noorderslasthalf
+cor(df_sellers %>%
+      select(total_shippedlate,
+             period_shippedlate,
+             firsthalf_shippedlate,
+             lasthalf_shippedlate,
+             noorders_lasthalf))
+# fraca correlação negativa(20%)
+
+### noordersperiod
+cor(df_sellers %>%
+      select(total_shippedlate,
+             period_shippedlate,
+             firsthalf_shippedlate,
+             lasthalf_shippedlate,
+             noorders_period))
+# fraca correlação negativa(20%)
+
+
+
+
+## delivery late
+
+### is_churned
+cor(df_sellers %>%
+      select(total_deliverylate,
+             period_deliverylate,
+             firsthalf_deliverylate,
+             lasthalf_deliverylate,
+             is_churned))
+# fraca correlação negativa (10%)
+
+### noorderslasthalf
+cor(df_sellers %>%
+      select(total_deliverylate,
+             period_deliverylate,
+             firsthalf_deliverylate,
+             lasthalf_deliverylate,
+             noorders_lasthalf))
+# fraca correlação negativa(15%)
+
+### noordersperiod
+cor(df_sellers %>%
+      select(total_deliverylate,
+             period_deliverylate,
+             firsthalf_deliverylate,
+             lasthalf_deliverylate,
+             noorders_period))
+# fraca correlação negativa(15%)
+
+
+
+
+## suspended
+
+### is_churned
+cor(df_sellers %>%
+      select(total_suspended,
+             period_suspended,
+             firsthalf_suspended,
+             lasthalf_suspended,
+             is_churned))
+# not work
+
+### noorderslasthalf
+cor(df_sellers %>%
+      select(total_suspended,
+             period_suspended,
+             firsthalf_suspended,
+             lasthalf_suspended,
+             noorders_lasthalf))
+# not work
+
+### noordersperiod
+cor(df_sellers %>%
+      select(total_suspended,
+             period_suspended,
+             firsthalf_suspended,
+             lasthalf_suspended,
+             noorders_period))
+# not work
+
+
+
+## canceled
+
+### is_churned
+cor(df_sellers %>%
+      select(total_canceled,
+             period_canceled,
+             firsthalf_canceled,
+             lasthalf_canceled,
+             is_churned))
+# not work
+
+### noorderslasthalf
+cor(df_sellers %>%
+      select(total_canceled,
+             period_canceled,
+             firsthalf_canceled,
+             lasthalf_canceled,
+             noorders_lasthalf))
+# not work
+
+### noordersperiod
+cor(df_sellers %>%
+      select(total_canceled,
+             period_canceled,
+             firsthalf_canceled,
+             lasthalf_canceled,
+             noorders_period))
+# not work
+
+
+
+
+## avg ticket
+
+### is_churned
+cor(df_sellers %>%
+      select(total_avgticket,
+             period_avgticket,
+             firsthalf_avgticket,
+             lasthalf_avgticket,
+             is_churned))
+# fraca correlação negativa (15%)
+
+### noorderslasthalf
+cor(df_sellers %>%
+      select(total_avgticket,
+             period_avgticket,
+             firsthalf_avgticket,
+             lasthalf_avgticket,
+             noorders_lasthalf))
+# fraca correlação negativa (30%)
+
+### noordersperiod
+cor(df_sellers %>%
+      select(total_avgticket,
+             period_avgticket,
+             firsthalf_avgticket,
+             lasthalf_avgticket,
+             noorders_period))
+# fraca correlação negativa (35%)
+
+
+
+
+## freight ratio
+
+### is_churned
+cor(df_sellers %>%
+      select(total_freightratio,
+             period_freightratio,
+             firsthalf_freightratio,
+             lasthalf_freightratio,
+             is_churned))
+# fraca correlação negativa (35%)
+
+### noorderslasthalf
+cor(df_sellers %>%
+      select(total_freightratio,
+             period_freightratio,
+             firsthalf_freightratio,
+             lasthalf_freightratio,
+             noorders_lasthalf))
+# correlação negativa moderada (70%)
+
+### noordersperiod
+cor(df_sellers %>%
+      select(total_freightratio,
+             period_freightratio,
+             firsthalf_freightratio,
+             lasthalf_freightratio,
+             noorders_period))
+# correlação negativa moderada (63%)
+
+
+
+## active days
+
+### is_churned
+cor(df_sellers %>%
+      select(active_days,
+             is_churned))
+# correlação positiva moderada (44%)
+
+### noorderslasthalf
+cor(df_sellers %>%
+      select(active_days,
+             noorders_lasthalf))
+# fraca correlação positiva (34%)
+
+### noordersperiod
+cor(df_sellers %>%
+      select(active_days,
+             noorders_period))
+# correlação negativa moderada (40%)
+
+
+
+
+## blocked days
+
+### is_churned
+cor(df_sellers %>%
+      select(blocked_days,
+             is_churned))
+# correlação positiva moderada (68%)
+
+### noorderslasthalf
+cor(df_sellers %>%
+      select(blocked_days,
+             noorders_lasthalf))
+# fraca correlação positiva (62%)
+
+### noordersperiod
+cor(df_sellers %>%
+      select(blocked_days,
+             noorders_period))
+# correlação negativa moderada (68%)
+
+
+
+## Considering noorders_lasthalf as response:
+
+df_simulation <- df_sellers %>%
+  select(noorders_lasthalf,
+         ss_origin,
+         ss_plan_type,
+         ss_has_withdraw_rejection,
+         sp_n_products,
+         cashflow_ranges,
+         df_revenue,
+         df_id_persona,
+         seller_stage,
+         firsthalf_workeddays,
+         active_days,
+         blocked_days)
+
+
+## Simulate a logistic regression
+fit_simulate <- glm(formula = noorders_lasthalf ~., 
+                   data = df_simulation, 
+                   family = binomial(link = 'logit'))
+
+summary(fit_simulate)
+
+
+
+fit_simulate2 <- step(fit_simulate, direction = "both", data = df_simulation, k = 2)
+summary(fit_simulate2)
+
+
+
+## Diagnosis
+
+library(statmod)
+library(pROC)
+
+get_res_pred <- function(model) {
+  res <- qres.binom(model)
+  pred <- predict(model)
+  out <- data.frame(res, pred)
+}
+
+plot_fit_resid <- function(df_res_pred, GGPLOT_COLOR) {
+  plt <- ggplot(df_res_pred, aes(x = pred, y = res)) +
+    geom_point(color = GGPLOT_COLOR, alpha = 0.6, size = 2) +
+    stat_smooth(method = "loess", color = "red") +
+    labs(x = "Fitted values", y = "Residuals")
+  print(plt)
+}
+
+plot_qqplot <- function(df_res_pred, GGPLOT_COLOR) {
+  ggplot(df_res_pred, aes(sample = res)) +
+    stat_qq(color = GGPLOT_COLOR, alpha = 0.6, size = 2) +
+    stat_qq_line(color = "red") +
+    labs(x = "Theorical quantiles", y = "Sample quantiles")
+}
+
+get_predicts_response <- function(model, df_test) {
+  out <- predict(model, newdata = df_test, type = 'response')
+}
+
+plot_fit_histogram <- function(df, GGPLOT_COLOR) {
+  plt <- ggplot(df, aes(x = fitted)) +
+    geom_histogram(bins = 30, fill = GGPLOT_COLOR, alpha = 0.6, color = GGPLOT_COLOR) +
+    labs(x = "Valores ajustados", y = "Frequência")
+  plt
+}
+
+get_predicts_response <- function(model, df_test) {
+  out <- predict(model, newdata = df_test, type = 'response')
+}
+
+plot_confusionMatrix <- function(df_test, threshold) {
+  df_test$churn <- factor(df_test$noorders_lasthalf, labels = c("not churn", "churn"))
+  tab_pred <- table(ifelse(df_test$fitted < threshold, 'not churn', 'churn'), df_test$churn)
+  tab_pred <- as.data.frame(tab_pred)
+  names(tab_pred) <- c("Predict", "Actual", "Freq")
+
+  threshold <- round(threshold, 2)
+  plt_title <- str_c("Confusion Matrix (threshold: ", threshold, ")", sep = "")
+
+  plt <- ggplot(tab_pred, aes(x = Actual, y = Predict)) +
+    geom_tile(fill = "white", color = MAIN_COLOUR) +
+    geom_text(aes(x = Actual, y = Predict, label = Freq), color = MAIN_COLOUR) +
+    theme(legend.position = "none") +
+    ggtitle(plt_title)
+  plt
+}
+
+
+MODEL <- fit_simulate2
+DATASET <- df_simulation
+DATASET_TRAIN <- df_simulation
+DATASET_TEST <- df_simulation
+df_res_pred <- get_res_pred(MODEL)
+plot_fit_resid(df_res_pred, MAIN_COLOUR)
+plot_qqplot(df_res_pred, MAIN_COLOUR)
+#hnp(MODEL)
+rm(df_res_pred)
+
+
+## Prediction
+
+DATASET_TEST$fitted <- get_predicts_response(MODEL, DATASET_TEST)
+plot_fit_histogram(DATASET_TEST, MAIN_COLOUR)
+roc_curve <- roc(DATASET_TEST$noorders_lasthalf, DATASET_TEST$fitted, plot=F, ci=T, ci.sp = T)
+prev <- prop.table(table(DATASET$noorders_lasthalf))[2] # prevalência
+threshold <- as.numeric(max(coords(roc_curve, x = "best", best.method = "youden", best.weights=c(1, prev), transpose = F)[1]))
+plot_ggroc(DATASET_TEST, GGPLOT_COLOR)
+coords(roc_curve, x = threshold, ret = c("sensitivity", "specificity", "accuracy"), transpose = F)
+plot_confusionMatrix(DATASET_TEST, threshold)
+
+
+
+summary(fit_simulate2)
 
 
 
