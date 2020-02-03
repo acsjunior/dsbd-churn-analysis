@@ -19,6 +19,7 @@ require(ggplot2)
 #--------------------------------------------------------------------------------------------------
 # Utilities:
 
+
 ## Function to check if IDs are unique:
 is_unique_id <- function(var_id, df) {
   out <- length(unique(df[, var_id])) == nrow(df)
@@ -55,17 +56,60 @@ MAIN_COLOUR = "#0C29D0"
 SEC_COLOUR = "#0DC78B"
 
 #--------------------------------------------------------------------------------------------------
-# Preparing data about sellers:
-
+# Loading data
 df_sellers <- get_sellers_deals()
+df_orders <- get_orders()
+df_orderitems <- get_order_items()
+
+
+# Preparing data about sellers:
 
 ## Keeping only sellers with more than 180 days working
 df_sellers <- df_sellers %>%
   filter(as.Date(ss_created_at) <= START_DATE)
 
+df_orders <- df_orders %>%
+  filter(so_seller_id %in% df_sellers$ss_id)
+
+df_orderitems <- df_orderitems %>%
+  filter(oi_seller_order_id %in% df_orders$so_id)
+
 ## Transform all blank values to NA:
 df_sellers <- df_sellers %>%
   mutate_all(na_if, "")
+
+df_orders <- df_orders %>%
+  mutate_all(na_if, "")
+
+df_orderitems <- df_orderitems %>%
+  mutate_all(na_if, "")
+
+## Replacing NA to zero in numeric variables
+df_sellers <- df_sellers %>%
+  mutate_if(is.numeric, ~replace(., is.na(.), 0))
+
+df_orders <- df_orders %>%
+  mutate_if(is.numeric, ~replace(., is.na(.), 0))
+
+df_orderitems <- df_orderitems %>%
+  mutate_if(is.numeric, ~replace(., is.na(.), 0))
+
+
+## To get first and last order
+df_sellers_orders <- df_orders %>%
+  group_by(so_seller_id) %>%
+  summarise(first_order = min(as.Date(so_purchase_timestamp)),
+            last_order = max(as.Date(so_purchase_timestamp)),
+            total_orders = n())
+
+df_sellers <- df_sellers %>%
+  left_join(df_sellers_orders, by = c("ss_id" = "so_seller_id"))
+
+
+## Creating the variable working_range
+df_sellers <- df_sellers %>%
+  mutate(working_range = as.numeric(last_order - first_order)+1)
+
 
 ## Replacing NA to zero in numeric variables
 df_sellers <- df_sellers %>%
@@ -76,6 +120,7 @@ df_sellers <- df_sellers %>%
 if(!is_ready_or_doc()) {
   print("ERROR: Check if the seller status is only ready or documentation")
 }
+
 
 ### Splitting ss_about to create seller_stage variable:
 df_sellers <- df_sellers %>%
@@ -163,10 +208,6 @@ df_sellers <- df_sellers %>%
 df_sellers$sf_shipping_days <- NULL
 df_sellers$sf_extra_transit_time <- NULL
 
-### Creating the variable is_churned:
-df_sellers <- df_sellers %>%
-  mutate(is_churned = ifelse(lc_current_type %in% c("Cancelamento"), 1, 0)) %>%
-  mutate(is_churned = ifelse(ss_status %in% c("documentation"), 1, is_churned))
 
 ### Creating the variable cashflow_ranges:
 df_sellers <- df_sellers %>%
@@ -277,28 +318,182 @@ df_sellers <- df_sellers %>%
 df_sellers <- df_sellers %>%
   mutate_if(is.numeric, ~replace(., is.na(.), 0))
 
-count_missing_values(df_sellers)
+
+### Creating the variable is_churned:
+
+
+# When status = documentation, lc_type != cancelamento, (last_blocked_on >= last_order | total_orders = 0):
+# is_churned = 1
+# churn_date = last_blocked_on
+df_sellers <- df_sellers %>%
+  mutate(churn_date = ifelse(ss_status == "documentation" & 
+                               lc_current_type != "Cancelamento" & 
+                               (as.Date(ss_last_blocked_on) >= last_order | total_orders == 0), 
+                             ss_last_blocked_on,
+                             NA),
+         is_churned = ifelse(ss_status == "documentation" & 
+                               lc_current_type != "Cancelamento" & 
+                               (as.Date(ss_last_blocked_on) >= last_order | total_orders == 0), 
+                             1,
+                             NA))
+
+# View(df_sellers %>%
+#   filter(ss_status == "documentation" &
+#            lc_current_type != "Cancelamento" &
+#            (as.Date(ss_last_blocked_on) >= last_order | total_orders == 0)))
+
+
+# When status lc_type == cancelamento, (last_churn_at >= last_order | total_orders = 0):
+# is_churned = 1
+# churn_date = last_churn_at 
+df_sellers <- df_sellers %>%
+  mutate(churn_date = ifelse(lc_current_type == "Cancelamento" & 
+                               (as.Date(lc_current_churn_at) >= last_order | total_orders == 0), 
+                             lc_current_churn_at,
+                             churn_date),
+         is_churned = ifelse(lc_current_type == "Cancelamento" &
+                               (as.Date(lc_current_churn_at) >= last_order | total_orders == 0), 
+                             1,
+                             is_churned))
+
+# View(df_sellers %>%
+#   filter(lc_current_type == "Cancelamento" &
+#            (as.Date(lc_current_churn_at) >= last_order | total_orders == 0)))
+
+# df_sellers_bkp <- df_sellers
+
+# When status lc_type == cancelamento, status == "documentation", last_churn_at < last_order, last_blocked >= last_order):
+# is_churned = 1
+# churn_date = last_blocked 
+df_sellers <- df_sellers %>%
+  mutate(churn_date = ifelse(is.na(is_churned) &
+                               lc_current_type == "Cancelamento" &
+                               ss_status == "documentation" &
+                               as.Date(lc_current_churn_at) < last_order &
+                               as.Date(ss_last_blocked_on) >= last_order, 
+                             ss_last_blocked_on,
+                             churn_date),
+         is_churned = ifelse(is.na(is_churned) &
+                               lc_current_type == "Cancelamento" &
+                               ss_status == "documentation" &
+                               as.Date(lc_current_churn_at) < last_order &
+                               as.Date(ss_last_blocked_on) >= last_order, 
+                             1,
+                             is_churned))
+
+
+# View(df_sellers %>%
+#   filter(is.na(is_churned) &
+#            lc_current_type == "Cancelamento" &
+#            ss_status == "documentation" &
+#            as.Date(lc_current_churn_at) < last_order &
+#            as.Date(ss_last_blocked_on) >= last_order))
+
+
+
+# When status lc_type == cancelamento, status == "documentation", last_order > lc_current_curn, last_order > last_blocked:
+# is_churned = 1
+# churn_date = last_current_churn
+df_sellers <- df_sellers %>%
+  mutate(churn_date = ifelse(is.na(is_churned) &
+                               lc_current_type == "Cancelamento" &
+                               ss_status == "documentation" &
+                               last_order > as.Date(lc_current_churn_at) &
+                               last_order > as.Date(ss_last_blocked_on), 
+                             lc_current_churn_at,
+                             churn_date),
+         is_churned = ifelse(is.na(is_churned) &
+                               lc_current_type == "Cancelamento" &
+                               ss_status == "documentation" &
+                               last_order > as.Date(lc_current_churn_at) &
+                               last_order > as.Date(ss_last_blocked_on), 
+                             1,
+                             is_churned))
+
+# View(df_sellers %>%
+#   filter(is.na(is_churned) &
+#            lc_current_type == "Cancelamento" &
+#            ss_status == "documentation" &
+#            last_order > as.Date(lc_current_churn_at) &
+#            last_order > as.Date(ss_last_blocked_on)))
+
+
+# When status lc_type == cancelamento, status == "ready", last_order > lc_current_curn, last_order > last_blocked
+# is_churned = 0
+# churn_date = NA
+df_sellers <- df_sellers %>%
+  mutate(churn_date = ifelse(is.na(is_churned) &
+                               lc_current_type == "Cancelamento" &
+                               ss_status == "ready" &
+                               last_order > as.Date(lc_current_churn_at), 
+                             NA,
+                             churn_date),
+         is_churned = ifelse(is.na(is_churned) &
+                               lc_current_type == "Cancelamento" &
+                               ss_status == "ready" &
+                               last_order > as.Date(lc_current_churn_at), 
+                             0,
+                             is_churned))
+
+# View(df_sellers %>%
+#   filter(is.na(is_churned) &
+#            lc_current_type == "Cancelamento" &
+#            ss_status == "ready" &
+#            last_order > as.Date(lc_current_churn_at)))
+
+
+# When status lc_type != cancelamento, status == "documentation", last_blocked >= last_order | total_orders == 0
+# is_churned = 1
+# churn_date = last_blocked
+df_sellers <- df_sellers %>%
+  mutate(churn_date = ifelse(is.na(is_churned) &
+                               ss_status == "documentation" &
+                               (as.Date(ss_last_blocked_on) >= last_order | total_orders == 0), 
+                             ss_last_blocked_on,
+                             churn_date),
+         is_churned = ifelse(is.na(is_churned) &
+                               ss_status == "documentation" &
+                               (as.Date(ss_last_blocked_on) >= last_order | total_orders == 0), 
+                             1,
+                             is_churned))
+
+
+# Other documentation sellers
+df_sellers <- df_sellers %>%
+  mutate(churn_date = ifelse(is.na(is_churned) &
+                               ss_status == "documentation" &
+                               (as.Date(ss_last_blocked_on) < last_order), 
+                             ss_last_blocked_on,
+                             churn_date),
+         is_churned = ifelse(is.na(is_churned) &
+                               ss_status == "documentation" &
+                               (as.Date(ss_last_blocked_on) < last_order), 
+                             1,
+                             is_churned))
+
+# Other ready sellers
+df_sellers <- df_sellers %>%
+  mutate(churn_date = ifelse(is.na(is_churned) &
+                               ss_status == "ready", 
+                             NA,
+                             churn_date),
+         is_churned = ifelse(is.na(is_churned) &
+                               ss_status == "ready", 
+                             0,
+                             is_churned))
+
+
+# Creating the varible data_of_cut
+df_sellers <- df_sellers %>%
+  mutate(date_of_cut = as.Date(ifelse(is_churned == 1, churn_date, as.character(DATE_OF_CUT))))
+
+
+# Creating the variable start_date 
+df_sellers <- df_sellers %>%
+  mutate(start_date = date_of_cut - 180)
 
 #--------------------------------------------------------------------------------------------------
 # Preparing data about orders:
-
-df_orders <- get_orders()
-df_orderitems <- get_order_items()
-
-## Keeping only orders related to df_sellers:
-df_orders <- df_orders %>%
-  filter(so_seller_id %in% df_sellers$ss_id)
-
-df_orderitems <- df_orderitems %>%
-  filter(so_seller_id %in% df_sellers$ss_id)
-
-## Transform all blank values to NA:
-df_orders <- df_orders %>%
-  mutate_all(na_if, "")
-
-df_orderitems <- df_orderitems %>%
-  mutate_all(na_if, "")
-
 
 ## Aggregating items by orders:
 df_orderitems$oi_price <- as.numeric(df_orderitems$oi_price)
@@ -315,8 +510,6 @@ df_orders_group <- df_orderitems %>%
 df_orders <- df_orders %>%
   filter(so_id %in% df_orders_group$oi_seller_order_id)
 
-df_orders_group <- df_orders_group %>%
-  filter(oi_seller_order_id %in% df_orders$so_id)
 
 # Combining data
 df_orders <- df_orders %>%
@@ -326,23 +519,33 @@ rm(df_orders_group)
 
 ## Creating the variable order_relative_day (considering start_date as the first day)
 df_orders <- df_orders %>%
-  mutate(order_relative_day = as.numeric(as.Date(so_purchase_timestamp) - as.Date(START_DATE)))
+  left_join(df_sellers %>%
+              dplyr::select(ss_id, start_date, date_of_cut), by = c("so_seller_id" = "ss_id"))
+
+
+df_orders <- df_orders %>%
+  mutate(order_relative_day = as.numeric(as.Date(so_purchase_timestamp) - start_date))
+
 
 ## Checking order status
-df_orders %>%
-  group_by(so_status) %>%
-  summarise(n = n(),
-            shipped = sum(ifelse(!is.na(so_delivered_carrier_date), 1, 0)),
-            delivered = sum(ifelse(!is.na(so_delivered_customer_date), 1, 0))) %>%
-  arrange(desc(n))
+# df_orders %>%
+#   group_by(so_status) %>%
+#   summarise(n = n(),
+#             shipped = sum(ifelse(!is.na(so_delivered_carrier_date), 1, 0)),
+#             delivered = sum(ifelse(!is.na(so_delivered_customer_date), 1, 0))) %>%
+#   arrange(desc(n))
 
 ## Filling delivered_carrier_date
+# If status == delivered or shipped and no delivered_carrier_date
+# delivered_carrier_dae = shipping_limit_date
 df_orders <- df_orders %>%
   mutate(so_delivered_carrier_date = ifelse((so_status == "delivered" | so_status == "shipped") & is.na(so_delivered_carrier_date),
                                             so_shipping_limit_date,
                                             so_delivered_carrier_date))
 
 ## Filling delivered_customer_date
+# If status = delivered and no delivered_customer_date
+# deliverd_customer_date = estimated_delivery_date
 df_orders <- df_orders %>%
   mutate(so_delivered_customer_date = ifelse(so_status == "delivered" & is.na(so_delivered_customer_date),
                                             so_estimated_delivery_date,
@@ -379,9 +582,9 @@ df_orders <- df_orders %>%
 
 ## Creating the variables order_in_period, order_in_firsthalf, order_in_lasthalf
 df_orders <- df_orders %>%
-  mutate(order_in_period = ifelse(order_relative_day %in% 1:PERIOD_IN_DAYS, 1, 0),
-         order_in_firsthalf = ifelse(order_relative_day %in% 1:(PERIOD_IN_DAYS/2), 1, 0),
-         order_in_lasthalf = ifelse(order_relative_day > (PERIOD_IN_DAYS/2), 1, 0))
+  mutate(order_in_period = ifelse(order_relative_day %in% 1:as.integer(PERIOD_IN_DAYS), 1, 0),
+         order_in_firsthalf = ifelse(order_relative_day %in% 1:as.integer(PERIOD_IN_DAYS/2), 1, 0),
+         order_in_lasthalf = ifelse(order_relative_day > as.integer(PERIOD_IN_DAYS/2), 1, 0))
 
 ## Calculating days late (shipping and delivery)
 df_orders$so_shipping_limit_date <- as.Date(df_orders$so_shipping_limit_date)
@@ -434,10 +637,7 @@ df_orders <- df_orders %>%
 ## Grouping orders by seller
 df_orders_sellers <- df_orders %>%
   group_by(so_seller_id) %>%
-  summarise(first_order = min(as.Date(so_purchase_timestamp)),
-            last_order = max(as.Date(so_purchase_timestamp)),
-            total_orders = n(),
-            total_items = sum(n_items),
+  summarise(total_items = sum(n_items),
             total_price = sum(oi_price),
             total_freight = sum(oi_freight_value),
             total_workeddays = n_distinct(as.Date(so_purchase_timestamp)),
@@ -524,7 +724,7 @@ df_sellers <- df_sellers %>%
 
 ## Creating the variable active_days
 df_sellers <- df_sellers %>%
-  mutate(active_days = as.numeric(DATE_OF_CUT - as.Date(ss_created_at))) %>%
+  mutate(active_days = as.numeric(date_of_cut - as.Date(ss_created_at))) %>%
   mutate(active_days = ifelse(is.na(active_days), 0, active_days))
 
 
@@ -541,17 +741,17 @@ df_sellers <- df_sellers %>%
 
 ## Create the variable days_blocked
 df_sellers <- df_sellers %>%
-  mutate(blocked_days = as.numeric(DATE_OF_CUT - blocked_date)) %>%
+  mutate(blocked_days = as.numeric(date_of_cut - blocked_date)) %>%
   mutate(blocked_days = ifelse(ss_blocked == F, 0, blocked_days))
 
-## Comparing with is_churned
+## Comparing with is_churned *******************************************************************
 df_sellers %>%
   filter(blocked_days >= PERIOD_IN_DAYS) %>%
   group_by(is_churned) %>%
   summarise(n = n(),
             avg_orders_period = mean(period_orders))
-# Entre os sellers bloqueados a mais de 180 dias, 3070 estão considerados oficialmente churn
-# Por outra visão, 1133 sellers não considerados oficialmente churn estão bloqueados há pelo menos 180 dias
+# Entre os sellers bloqueados a mais de 180 dias, 104 estão considerados oficialmente churn
+# Por outra visão, 1017 sellers não considerados oficialmente churn estão bloqueados há pelo menos 180 dias
 # e obviamente ficaram sem realizar pedidos durante este período
 
 # df_sellers %>%
@@ -559,15 +759,7 @@ df_sellers %>%
 #   group_by(ss_blocked_reason) %>%
 #   summarise(n = n()) %>%
 #   arrange(desc(n))
-# 
-# df_sellers %>%
-#   filter(is_churned == 0, blocked_days >= 0) %>%
-#   group_by(ss_blocked_reason) %>%
-#   summarise(n = n()) %>%
-#   arrange(desc(n))
-# 
-# View(df_sellers %>%
-#   filter(is_churned == 0, ss_blocked_reason == "churn"))
+# A maioria dos sellers bloqueados sem estar considerado churn foram bloquedos pelo motivo "inactivity"
 
 
 df_sellers %>%
@@ -575,11 +767,9 @@ df_sellers %>%
   group_by(is_churned) %>%
   summarise(n = n(),
             avg_orders_lasthalf = mean(lasthalf_orders))
-# Entre os sellers bloqueados a mais de 90 dias, 3275 estão considerados oficialmente churn
-# Por outra visão, 1246 sellers não considerados oficialmente churn estão bloqueados há mais de 90 dias
+# Entre os sellers bloqueados a mais de 90 dias, 242 estão considerados oficialmente churn
+# Por outra visão, 1132 sellers não considerados oficialmente churn estão bloqueados há mais de 90 dias
 # e obviamente ficaram sem realizar pedidos durante este período
-(3275 + 1246) - (3070 + 1133)
-# Mudando a faixa de >= 180 dias para >= 90, a variação é de somente 318 sellers
 
 
 ## Creating the variables noorders_lasthalf and noorders_period
@@ -602,15 +792,30 @@ table(df_sellers$noorders_lasthalf)
 table(df_sellers$noorders_lasthalf, df_sellers$is_churned)
 
 
-## Creating the variables is_churned_block180 and is_churned_noordersperiod
+## Creating the variables is_churned_block180, is_churned_noorderslasthalf, is_churned_noordersperiod
 df_sellers <- df_sellers %>%
   mutate(is_churned_block180 = ifelse(is_churned == 1 | blocked_days >= PERIOD_IN_DAYS, 1, 0),
-         is_churned_noordersperiod = ifelse(is_churned == 1 | noorders_period == 1, 1, 0))
+         is_churned_noordersperiod = ifelse(is_churned == 1 | noorders_period == 1, 1, 0),
+         is_churned_noorderslasthalf = ifelse(is_churned == 1 | noorders_lasthalf == 1, 1, 0))
+
+## Creating the variable is_churned_full
+df_sellers <- df_sellers %>%
+  mutate(is_churned_full = ifelse((is_churned + 
+                                    is_churned_block180 + 
+                                    is_churned_noordersperiod + 
+                                    is_churned_noorderslasthalf) > 0, 1, 0))
 
 table(df_sellers$is_churned_block180)
+prop.table(table(df_sellers$is_churned_block180))
 
 table(df_sellers$is_churned_noordersperiod)
 prop.table(table(df_sellers$is_churned_noordersperiod))
+
+table(df_sellers$is_churned_noorderslasthalf)
+prop.table(table(df_sellers$is_churned_noorderslasthalf))
+
+table(df_sellers$is_churned_full)
+prop.table(table(df_sellers$is_churned_full))
 
 
 ## Replacing NA to zero in numeric variables
@@ -619,92 +824,50 @@ df_sellers <- df_sellers %>%
 
 
 write.csv(df_sellers, "Temp/df_sellers.csv", row.names = F)
+# df_sellers <- read.csv("Temp/df_sellers.csv")
 
+rm(df_sellers_orders, df_orders_sellers)
 #--------------------------------------------------------------------------------------------------
 # Exploring data about sellers:
 
 
 ## origin
 
-### is_churned
+### is_churned *******************************************************
 prop.table(table(df_sellers$ss_origin, df_sellers$is_churned), 1)
-# 78% da origem v1 é churn
-
-### noorderslasthalf
-prop.table(table(df_sellers$ss_origin, df_sellers$noorders_lasthalf), 1)
-# 86% da origem v1 é churn
-
-
-### noordersperiod
-prop.table(table(df_sellers$ss_origin, df_sellers$noorders_period), 1)
-# 85% da origem v1 é churn
+# 77% da origem v1 é churn
 
 
 
 ## plan_type
 
-### is_churned
+### is_churned *******************************************************
 prop.table(table(df_sellers$ss_plan_type, df_sellers$is_churned), 1)
-# brand, branded_seller e mid possuem baixo percentual de churn
-
-### noorderslasthalf
-prop.table(table(df_sellers$ss_plan_type, df_sellers$noorders_lasthalf), 1)
-# branded_seller possui percentua de churn mais significativo
-# small possui mais de 60% de churn
-
-### noordersperiod
-prop.table(table(df_sellers$ss_plan_type, df_sellers$noorders_period), 1)
-# Similar ao anterior
-
-
+# brand, branded_seller e mid possuem percentual de churn muito baixo
+# small possui 38% de churn (mais ou menos compatível com a taxa geral)
 
 
 ## City
 
 ### is_churned
 prop.table(table(df_sellers$sa_city, df_sellers$is_churned), 1)
-# Todas as cidades com percentual parecido de churn
-
-### noorderslasthalf
-prop.table(table(df_sellers$sa_city, df_sellers$noorders_lasthalf), 1)
-# Todas as cidades com percentual parecido de churn
-
-### noordersperiod
-prop.table(table(df_sellers$sa_city, df_sellers$noorders_period), 1)
-# Todas as cidades com percentual parecido de churn
-
+# O percentual de churn em Curitiba é ligeiramente maior
 
 
 ## state
 
 ### is_churned
 prop.table(table(df_sellers$sa_state, df_sellers$is_churned), 1)
-# Todas os estados com percentual parecido de churn
-
-### noorderslasthalf
-prop.table(table(df_sellers$sa_state, df_sellers$noorders_lasthalf), 1)
-# Todas os estados com percentual parecido de churn
-
-### noordersperiod
-prop.table(table(df_sellers$sa_state, df_sellers$noorders_period), 1)
-# Todas os estados com percentual parecido de churn
-
+# Todas os estados com percentual parecido de churn, proximo da taxa geral
 
 
 ## region
 
 ### is_churned
 prop.table(table(df_sellers$region, df_sellers$is_churned), 1)
-# Todas as regiões com percentual parecido de churn
-
-### noorderslasthalf
-prop.table(table(df_sellers$region, df_sellers$noorders_lasthalf), 1)
-# Região norte com 86% de churn se destaca entre as demais
-
-### noordersperiod
-prop.table(table(df_sellers$region, df_sellers$noorders_period), 1)
-# Região norte com 83% de churn se destaca entre as demais
-
+# Na região norte o percentual de churn é 50%
+# Nas regiões nordeste e centro-oeste a taxa está ligeriamente acima da geral
+# Nas regiões sul e sudeste a taxa de churn está próxima da geral
 
 
 
@@ -714,15 +877,6 @@ prop.table(table(df_sellers$region, df_sellers$noorders_period), 1)
 prop.table(table(df_sellers$ss_has_withdraw_rejection, df_sellers$is_churned), 1)
 # Sem diferença significante
 
-### noorderslasthalf
-prop.table(table(df_sellers$ss_has_withdraw_rejection, df_sellers$noorders_lasthalf), 1)
-# TRUE possue 83% de churn
-
-### noordersperiod
-prop.table(table(df_sellers$ss_has_withdraw_rejection, df_sellers$noorders_period), 1)
-# TRUE possue 76% de churn
-
-
 
 
 ## nps last_score
@@ -730,15 +884,7 @@ prop.table(table(df_sellers$ss_has_withdraw_rejection, df_sellers$noorders_perio
 ### is_churned
 prop.table(table(df_sellers$np_last_score, df_sellers$is_churned), 1)
 # Quanto maior a nota do NPS, menor a probabilidade de churn
-
-### noorderslasthalf
-prop.table(table(df_sellers$np_last_score, df_sellers$noorders_lasthalf), 1)
-# Quanto maior a nota do NPS, menor a probabilidade de churn, porem com menor intensidade que o caso anterior
-
-### noordersperiod
-prop.table(table(df_sellers$np_last_score, df_sellers$noorders_period), 1)
-# Quanto maior a nota do NPS, menor a probabilidade de churn
-
+# entretanto, os NAs foram completados com zero
 
 
 ## n_products
@@ -746,15 +892,6 @@ prop.table(table(df_sellers$np_last_score, df_sellers$noorders_period), 1)
 ### is_churned
 cor(df_sellers[c("sp_n_products", "is_churned")])
 # fraca correlação negativa (10%)
-
-### noorderslasthalf
-cor(df_sellers[c("sp_n_products", "noorders_lasthalf")])
-# fraca correlação negativa (20%)
-
-### noordersperiod
-cor(df_sellers[c("sp_n_products", "noorders_period")])
-# fraca correlação negativa (20%)
-
 
 
 
@@ -764,30 +901,14 @@ cor(df_sellers[c("sp_n_products", "noorders_period")])
 prop.table(table(df_sellers$cashflow_ranges, df_sellers$is_churned), 1)
 # 2 categorias com menor probabilidade de churn
 
-### noorderslasthalf
-prop.table(table(df_sellers$cashflow_ranges, df_sellers$noorders_lasthalf), 1)
-# 1 categoria com maior probabilidade de churn
-
-### noordersperiod
-prop.table(table(df_sellers$cashflow_ranges, df_sellers$noorders_period), 1)
-# 1 categoria com maior probabilidade de churn
-
 
 
 ## revenue
 
 ### is_churned
 prop.table(table(df_sellers$df_revenue, df_sellers$is_churned), 1)
-# Nenhuma categoria se destaca
-
-### noorderslasthalf
-prop.table(table(df_sellers$df_revenue, df_sellers$noorders_lasthalf), 1)
-# A categoria "desconhecido" possui 70% de churn
-
-### noordersperiod
-prop.table(table(df_sellers$df_revenue, df_sellers$noorders_period), 1)
-# A categoria "desconhecido" possui 66% de churn
-
+# Acima de 3,6mi por ano tem taxa de churn bastante inferior
+# Pode ter relação com o plan type
 
 
 
@@ -797,16 +918,6 @@ prop.table(table(df_sellers$df_revenue, df_sellers$noorders_period), 1)
 prop.table(table(df_sellers$df_behavior_profile, df_sellers$is_churned), 1)
 # Nenhuma categoria se destaca
 
-### noorderslasthalf
-prop.table(table(df_sellers$df_behavior_profile, df_sellers$noorders_lasthalf), 1)
-# Nenhuma categoria se destaca
-
-### noordersperiod
-prop.table(table(df_sellers$df_behavior_profile, df_sellers$noorders_period), 1)
-# Nenhuma categoria se destaca
-
-
-
 
 ## persona
 
@@ -814,29 +925,12 @@ prop.table(table(df_sellers$df_behavior_profile, df_sellers$noorders_period), 1)
 prop.table(table(df_sellers$df_id_persona, df_sellers$is_churned), 1)
 # Nenhuma categoria se destaca
 
-### noorderslasthalf
-prop.table(table(df_sellers$df_id_persona, df_sellers$noorders_lasthalf), 1)
-# Personas 155 e 156 possuem maior probabilidade de churn
-
-### noordersperiod
-prop.table(table(df_sellers$df_id_persona, df_sellers$noorders_period), 1)
-# Personas 155 e 156 possuem maior probabilidade de churn
-
-
 
 
 ## seller_stage
 
-### is_churned
+### is_churned *****************************************************
 prop.table(table(df_sellers$seller_stage, df_sellers$is_churned), 1)
-# Ativação possui maior probabilidade de churn
-
-### noorderslasthalf
-prop.table(table(df_sellers$seller_stage, df_sellers$noorders_lasthalf), 1)
-# Ativação possui maior probabilidade de churn
-
-### noordersperiod
-prop.table(table(df_sellers$seller_stage, df_sellers$noorders_period), 1)
 # Ativação possui maior probabilidade de churn
 
 
@@ -851,26 +945,6 @@ cor(df_sellers %>%
              is_churned))
 # fraca correlação negativa (12%)
 
-### noorderslasthalf
-cor(df_sellers %>%
-      select(total_orders,
-             period_orders,
-             firsthalf_orders,
-             lasthalf_orders,
-             noorders_lasthalf))
-# fraca correlação negativa (20%)
-
-### noordersperiod
-cor(df_sellers %>%
-      select(total_orders,
-             period_orders,
-             firsthalf_orders,
-             lasthalf_orders,
-             noorders_period))
-# fraca correlação negativa (20%)
-
-
-
 ## gmv
 
 ### is_churned
@@ -880,27 +954,7 @@ cor(df_sellers %>%
              firsthalf_gmv,
              lasthalf_gmv,
              is_churned))
-# fraca correlação negativa (14%)
-
-### noorderslasthalf
-cor(df_sellers %>%
-      select(total_gmv,
-             period_gmv,
-             firsthalf_gmv,
-             lasthalf_gmv,
-             noorders_lasthalf))
-# fraca correlação negativa (25%)
-
-### noordersperiod
-cor(df_sellers %>%
-      select(total_gmv,
-             period_gmv,
-             firsthalf_gmv,
-             lasthalf_gmv,
-             noorders_period))
-# fraca correlação negativa (25%)
-
-
+# fraca correlação negativa (13%)
 
 ## worked days
 
@@ -911,27 +965,7 @@ cor(df_sellers %>%
              firsthalf_workeddays,
              lasthalf_workeddays,
              is_churned))
-# fraca correlação negativa (35%)
-
-### noorderslasthalf
-cor(df_sellers %>%
-      select(total_workeddays,
-             period_workeddays,
-             firsthalf_workeddays,
-             lasthalf_workeddays,
-             noorders_lasthalf))
-# correlação negativa moderada (66%)
-
-### noordersperiod
-cor(df_sellers %>%
-      select(total_workeddays,
-             period_workeddays,
-             firsthalf_workeddays,
-             lasthalf_workeddays,
-             noorders_period))
-# fraca correlação negativa (60%)
-
-
+# fraca correlação negativa (25%)
 
 
 ## shipped late
@@ -943,27 +977,7 @@ cor(df_sellers %>%
              firsthalf_shippedlate,
              lasthalf_shippedlate,
              is_churned))
-# fraca correlação negativa (12%)
-
-### noorderslasthalf
-cor(df_sellers %>%
-      select(total_shippedlate,
-             period_shippedlate,
-             firsthalf_shippedlate,
-             lasthalf_shippedlate,
-             noorders_lasthalf))
-# fraca correlação negativa(20%)
-
-### noordersperiod
-cor(df_sellers %>%
-      select(total_shippedlate,
-             period_shippedlate,
-             firsthalf_shippedlate,
-             lasthalf_shippedlate,
-             noorders_period))
-# fraca correlação negativa(20%)
-
-
+# fraca correlação negativa (2%)
 
 
 ## delivery late
@@ -975,90 +989,31 @@ cor(df_sellers %>%
              firsthalf_deliverylate,
              lasthalf_deliverylate,
              is_churned))
-# fraca correlação negativa (10%)
-
-### noorderslasthalf
-cor(df_sellers %>%
-      select(total_deliverylate,
-             period_deliverylate,
-             firsthalf_deliverylate,
-             lasthalf_deliverylate,
-             noorders_lasthalf))
-# fraca correlação negativa(15%)
-
-### noordersperiod
-cor(df_sellers %>%
-      select(total_deliverylate,
-             period_deliverylate,
-             firsthalf_deliverylate,
-             lasthalf_deliverylate,
-             noorders_period))
-# fraca correlação negativa(15%)
-
-
+# fraca correlação negativa (4%)
 
 
 ## suspended
 
 ### is_churned
-cor(df_sellers %>%
-      select(total_suspended,
-             period_suspended,
-             firsthalf_suspended,
-             lasthalf_suspended,
-             is_churned))
+# cor(df_sellers %>%
+#       select(total_suspended,
+#              period_suspended,
+#              firsthalf_suspended,
+#              lasthalf_suspended,
+#              is_churned))
 # not work
-
-### noorderslasthalf
-cor(df_sellers %>%
-      select(total_suspended,
-             period_suspended,
-             firsthalf_suspended,
-             lasthalf_suspended,
-             noorders_lasthalf))
-# not work
-
-### noordersperiod
-cor(df_sellers %>%
-      select(total_suspended,
-             period_suspended,
-             firsthalf_suspended,
-             lasthalf_suspended,
-             noorders_period))
-# not work
-
 
 
 ## canceled
 
 ### is_churned
-cor(df_sellers %>%
-      select(total_canceled,
-             period_canceled,
-             firsthalf_canceled,
-             lasthalf_canceled,
-             is_churned))
+# cor(df_sellers %>%
+#       select(total_canceled,
+#              period_canceled,
+#              firsthalf_canceled,
+#              lasthalf_canceled,
+#              is_churned))
 # not work
-
-### noorderslasthalf
-cor(df_sellers %>%
-      select(total_canceled,
-             period_canceled,
-             firsthalf_canceled,
-             lasthalf_canceled,
-             noorders_lasthalf))
-# not work
-
-### noordersperiod
-cor(df_sellers %>%
-      select(total_canceled,
-             period_canceled,
-             firsthalf_canceled,
-             lasthalf_canceled,
-             noorders_period))
-# not work
-
-
 
 
 ## avg ticket
@@ -1070,27 +1025,7 @@ cor(df_sellers %>%
              firsthalf_avgticket,
              lasthalf_avgticket,
              is_churned))
-# fraca correlação negativa (15%)
-
-### noorderslasthalf
-cor(df_sellers %>%
-      select(total_avgticket,
-             period_avgticket,
-             firsthalf_avgticket,
-             lasthalf_avgticket,
-             noorders_lasthalf))
-# fraca correlação negativa (30%)
-
-### noordersperiod
-cor(df_sellers %>%
-      select(total_avgticket,
-             period_avgticket,
-             firsthalf_avgticket,
-             lasthalf_avgticket,
-             noorders_period))
-# fraca correlação negativa (35%)
-
-
+# fraca correlação negativa (3%)
 
 
 ## freight ratio
@@ -1102,49 +1037,16 @@ cor(df_sellers %>%
              firsthalf_freightratio,
              lasthalf_freightratio,
              is_churned))
-# fraca correlação negativa (35%)
-
-### noorderslasthalf
-cor(df_sellers %>%
-      select(total_freightratio,
-             period_freightratio,
-             firsthalf_freightratio,
-             lasthalf_freightratio,
-             noorders_lasthalf))
-# correlação negativa moderada (70%)
-
-### noordersperiod
-cor(df_sellers %>%
-      select(total_freightratio,
-             period_freightratio,
-             firsthalf_freightratio,
-             lasthalf_freightratio,
-             noorders_period))
-# correlação negativa moderada (63%)
+# fraca correlação negativa (4%)
 
 
-
-## active days
+## active days ************************************************
 
 ### is_churned
 cor(df_sellers %>%
       select(active_days,
              is_churned))
-# correlação positiva moderada (44%)
-
-### noorderslasthalf
-cor(df_sellers %>%
-      select(active_days,
-             noorders_lasthalf))
-# fraca correlação positiva (34%)
-
-### noordersperiod
-cor(df_sellers %>%
-      select(active_days,
-             noorders_period))
-# correlação negativa moderada (40%)
-
-
+# correlação positiva moderada (46%)
 
 
 ## blocked days
@@ -1153,57 +1055,43 @@ cor(df_sellers %>%
 cor(df_sellers %>%
       select(blocked_days,
              is_churned))
-# correlação positiva moderada (68%)
-
-### noorderslasthalf
-cor(df_sellers %>%
-      select(blocked_days,
-             noorders_lasthalf))
-# fraca correlação positiva (62%)
-
-### noordersperiod
-cor(df_sellers %>%
-      select(blocked_days,
-             noorders_period))
-# correlação negativa moderada (68%)
+# baixa correlação negativa (26%)
 
 
-
-## Considering noorders_lasthalf as response:
+## Considering is_churned as response:
 
 df_simulation <- df_sellers %>%
-  select(noorders_lasthalf,
+  dplyr::select(is_churned,
          ss_origin,
          ss_plan_type,
-         ss_has_withdraw_rejection,
+         active_days,
+         seller_stage,
          sp_n_products,
          cashflow_ranges,
          df_revenue,
-         df_id_persona,
-         seller_stage,
+         #df_id_persona,
          firsthalf_workeddays,
-         active_days,
          blocked_days)
 
 
 ## Simulate a logistic regression
-fit_simulate <- glm(formula = noorders_lasthalf ~., 
+fit_simulate <- glm(formula = is_churned ~., 
                    data = df_simulation, 
                    family = binomial(link = 'logit'))
 
 summary(fit_simulate)
 
 
-
-fit_simulate2 <- step(fit_simulate, direction = "both", data = df_simulation, k = 2)
-summary(fit_simulate2)
-
+# fit_simulate2 <- step(fit_simulate, direction = "both", data = df_simulation, k = 2)
+# summary(fit_simulate2)
 
 
 ## Diagnosis
 
 library(statmod)
 library(pROC)
+library(hnp)
+library(plotROC)
 
 get_res_pred <- function(model) {
   res <- qres.binom(model)
@@ -1242,7 +1130,7 @@ get_predicts_response <- function(model, df_test) {
 }
 
 plot_confusionMatrix <- function(df_test, threshold) {
-  df_test$churn <- factor(df_test$noorders_lasthalf, labels = c("not churn", "churn"))
+  df_test$churn <- factor(df_test$is_churned, labels = c("not churn", "churn"))
   tab_pred <- table(ifelse(df_test$fitted < threshold, 'not churn', 'churn'), df_test$churn)
   tab_pred <- as.data.frame(tab_pred)
   names(tab_pred) <- c("Predict", "Actual", "Freq")
@@ -1258,15 +1146,24 @@ plot_confusionMatrix <- function(df_test, threshold) {
   plt
 }
 
+# Function to plot the ROC curve
+plot_ggroc <- function(df, GGPLOT_COLOR) {
+  plt <- ggplot(df, aes(d = is_churned, m = fitted)) +
+    geom_roc(cutoffs.at = c(1.5, 1, .5, 0, -.5), color = GGPLOT_COLOR, linealpha = 0.6) +
+    labs(x = "Specifity", y = "Sensibility") +
+    geom_abline(slope = 1, linetype = 2)
+  plt
+}
 
-MODEL <- fit_simulate2
+
+MODEL <- fit_simulate
 DATASET <- df_simulation
 DATASET_TRAIN <- df_simulation
 DATASET_TEST <- df_simulation
 df_res_pred <- get_res_pred(MODEL)
 plot_fit_resid(df_res_pred, MAIN_COLOUR)
 plot_qqplot(df_res_pred, MAIN_COLOUR)
-#hnp(MODEL)
+# hnp(MODEL)
 rm(df_res_pred)
 
 
@@ -1274,17 +1171,30 @@ rm(df_res_pred)
 
 DATASET_TEST$fitted <- get_predicts_response(MODEL, DATASET_TEST)
 plot_fit_histogram(DATASET_TEST, MAIN_COLOUR)
-roc_curve <- roc(DATASET_TEST$noorders_lasthalf, DATASET_TEST$fitted, plot=F, ci=T, ci.sp = T)
-prev <- prop.table(table(DATASET$noorders_lasthalf))[2] # prevalência
+roc_curve <- roc(DATASET_TEST$is_churned, DATASET_TEST$fitted, plot=F, ci=T, ci.sp = T)
+
+plot_ggroc(DATASET_TEST, MAIN_COLOUR)
+
+prev <- prop.table(table(DATASET$is_churned))[2] # prevalência
 threshold <- as.numeric(max(coords(roc_curve, x = "best", best.method = "youden", best.weights=c(1, prev), transpose = F)[1]))
-plot_ggroc(DATASET_TEST, GGPLOT_COLOR)
+
 coords(roc_curve, x = threshold, ret = c("sensitivity", "specificity", "accuracy"), transpose = F)
 plot_confusionMatrix(DATASET_TEST, threshold)
 
 
-
+## Best formula:
+# noorders_lasthalf ~ ss_has_withdraw_rejection + sp_n_products + 
+# seller_stage + firsthalf_workeddays + active_days + blocked_days
 summary(fit_simulate2)
 
+
+
+
+# Analisar o grupo que deu churn como foi a performance lasthalf e firsthalf (is_churned)
+
+# Analisar as taxas no firsthalf (noorders_lasthalf)
+
+#--------------------------------------------------------------------------------------------------
 
 
 
