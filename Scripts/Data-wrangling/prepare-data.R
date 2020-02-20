@@ -1063,7 +1063,7 @@ cor(df_sellers %>%
 df_simulation <- df_sellers %>%
   dplyr::select(is_churned,
          ss_origin,
-         ss_plan_type,
+         #ss_plan_type,
          active_days,
          seller_stage,
          sp_n_products,
@@ -1073,6 +1073,11 @@ df_simulation <- df_sellers %>%
          firsthalf_workeddays,
          blocked_days)
 
+df_b <- df_sellers %>%
+  dplyr::select(is_churned,
+                ss_origin,
+                ss_plan_type)
+
 
 ## Simulate a logistic regression
 fit_simulate <- glm(formula = is_churned ~., 
@@ -1080,6 +1085,12 @@ fit_simulate <- glm(formula = is_churned ~.,
                    family = binomial(link = 'logit'))
 
 summary(fit_simulate)
+
+
+fit_b <- update(fit_simulate, ~. -blocked_days -active_days)
+summary(fit_b)
+
+anova(fit_simulate, fit_b, test="Chisq")
 
 
 # fit_simulate2 <- step(fit_simulate, direction = "both", data = df_simulation, k = 2)
