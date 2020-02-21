@@ -12,6 +12,7 @@
 # Requirements:
 source("Scripts/Data-wrangling/get-data-from-athena.R")
 require(tidyverse)
+require(lubridate)
 require(stringi)
 require(caTools)
 
@@ -123,6 +124,8 @@ df_sellers_orders <- df_orders %>%
 df_sellers <- df_sellers %>%
   left_join(df_sellers_orders, by = c("ss_id" = "so_seller_id"))
 
+rm(df_sellers_orders)
+
 
 ## Creating the variable working_range
 df_sellers <- df_sellers %>%
@@ -193,13 +196,31 @@ df_sellers <- df_sellers %>%
 ## Creating the variable is_churned
 
 df_sellers <- df_sellers %>%
-  mutate(inactivity_days = ifelse(!is.na(last_order),
-                                  as.Date(DATE_OF_CUT) - as.Date(last_order),
-                                  as.Date(DATE_OF_CUT) - as.Date(ss_created_at)))
+  mutate(churn_date = ifelse(!is.na(last_order),
+                             as.Date(last_order) + (PERIOD_IN_DAYS / 2) - 1,
+                             as.Date(ss_created_at) + (PERIOD_IN_DAYS / 2) - 1)) %>%
+  mutate(churn_date = as.Date(as.POSIXct.Date(churn_date)),
+         inactivity_days = ifelse(!is.na(last_order),
+                                  as.numeric(DATE_OF_CUT - last_order),
+                                  as.numeric(DATE_OF_CUT - as.Date(ss_created_at)))) %>%
+  mutate(is_churned = ifelse(churn_date < DATE_OF_CUT, 1, 0))
 
 
-df_sellers <- df_sellers %>%
-  mutate(is_churned = ifelse(inactivity_days >= PERIOD_IN_DAYS, 1, 0))
+
+
+
+
+
+
+
+
+
+
+
+         
+
+
+
 
 
 
