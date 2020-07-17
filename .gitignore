@@ -1,9 +1,8 @@
+.DS_Store
 .Rproj.user
 .Rhistory
 .RData
 .Ruserdata
-.DS_Store
-*.sql
-*.csv
-aws_credentials.json
-pipedrive_token.json
+anon_datasets.R
+Data/df_train.csv
+Data/df_test.csv
