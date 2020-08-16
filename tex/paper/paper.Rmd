@@ -2,7 +2,7 @@
 title: "Untitled"
 output:
   bookdown::pdf_document2:
-    template: template.tex
+    template: rbef.tex
 bibliography: referencias.bib
 csl: abnt.csl
 lang: pt-BR
@@ -26,7 +26,7 @@ header-includes:
 knitr::opts_chunk$set(echo = TRUE)
 options(knitr.table.format = "latex")
 
-TABLE_FONT_SIZE <- 10
+TABLE_FONT_SIZE <- 8
 
 library(kableExtra)
 ```
@@ -34,9 +34,12 @@ library(kableExtra)
 # Introdução
 
 A importância do relacionamento de longo prazo entre cliente e empresa é um assunto vastamente discutido na literatura. Segundo Ganesh, Arnold e Reynolds [-@Ganesh2000], devido aos efeitos de aprendizado e à redução dos custos de manutenção, atender um cliente se torna menos dispendioso a cada ano adicional de relacionamento. Para Hennig-Thurau [-@HennigThurau2004], devido ao aumento dos custos para atração de novos clientes em um mercado competitivo e à potencial redução dos custos associados aos relacionamentos de longo prazo, a retenção de clientes se torna essencial para a sobrevivência e o sucesso econômico das empresas do setor de serviços. De acordo com Gallo [-@Gallo2014], dependendo do estudo e do segmento no qual a empresa está inserida, o custo para adquirir um novo cliente pode ser de cinco a vinte e cinco vezes superior ao da manutenção de um cliente já existente.
-	O desenvolvimento de estratégias para retenção de clientes se tornou uma prática comum entre empresas de diversos segmentos, e em consequência, antever o abandono de clientes passou a ser um anseio constante. Em um momento de concentração generalizada de esforços na direção da orientação a dados, os modelos preditivos para detecção de abandono de clientes, predominantemente utilizados por grandes companhias no setor de telecomunicações, se tornaram ferramentas populares nas empresas, independentemente da magnitude e da área de atuação.
-	A literatura comprova que a modelagem preditiva de abandono de clientes, também conhecida como modelagem preditiva de churn, é um tema bastante explorado e que possibilita inúmeras maneiras de desfecho: Botelho e Tostes [-@Botelho2010] ajustaram um modelo de regressão logística para predizer a probabilidade de churn em uma grande empresa de varejo; Vafeiadis et al. [-@Vafeiadis2015] tiveram sucesso, entre os métodos comparados, na classificação de churn através do SVM (kernel polinomial) com AdaBoost em uma empresa de telecomunicações; Com base nos dados de avaliações online de clientes, Kumar e Yadav [-@Kumar2020] propuseram um modelo preditivo de churn baseado em regras através de redes neurais artificiais e teoria dos conjuntos aproximados.
-	Com base nos dados de uma startup brasileira que tem como principal produto uma plataforma digital para conectar vendedores de diversos segmentos aos grandes marketplaces, a proposta deste artigo é apresentar um modelo preditivo que possibilite não só a classificação de vendedores propensos a abandonar a empresa, mas que também permita a interpretação dos motivos que possivelmente estejam impactando a predição. Diante da variedade de técnicas disponíveis e das particularidades de cada modelo de negócio, a escolha do algoritmo adequado se torna uma etapa crucial do processo de modelagem. Tendo como referência a abordagem de Silva Júnior, Almeida e Santos [-@Junior2020], que utilizaram uma modelagem híbrida multicritério considerando múltiplos decisores para a escolha de um modelo preditivo de churn, o algoritmo escolhido para desenvolver o classificador proposto foi a regressão logística.
+
+O desenvolvimento de estratégias para retenção de clientes se tornou uma prática comum entre empresas de diversos segmentos, e em consequência, antever o abandono de clientes passou a ser um anseio constante. Em um momento de concentração generalizada de esforços na direção da orientação a dados, os modelos preditivos para detecção de abandono de clientes, predominantemente utilizados por grandes companhias no setor de telecomunicações, se tornaram ferramentas populares nas empresas, independentemente da magnitude e da área de atuação.
+
+A literatura comprova que a modelagem preditiva de abandono de clientes, também conhecida como modelagem preditiva de churn, é um tema bastante explorado e que possibilita inúmeras maneiras de desfecho: Botelho e Tostes [-@Botelho2010] ajustaram um modelo de regressão logística para predizer a probabilidade de churn em uma grande empresa de varejo; Vafeiadis et al. [-@Vafeiadis2015] tiveram sucesso, entre os métodos comparados, na classificação de churn através do SVM (kernel polinomial) com AdaBoost em uma empresa de telecomunicações; Com base nos dados de avaliações online de clientes, Kumar e Yadav [-@Kumar2020] propuseram um modelo preditivo de churn baseado em regras através de redes neurais artificiais e teoria dos conjuntos aproximados.
+
+Com base nos dados de uma startup brasileira que tem como principal produto uma plataforma digital para conectar vendedores de diversos segmentos aos grandes marketplaces, a proposta deste artigo é apresentar um modelo preditivo que possibilite não só a classificação de vendedores propensos a abandonar a empresa, mas que também permita a interpretação dos motivos que possivelmente estejam impactando a predição. Diante da variedade de técnicas disponíveis e das particularidades de cada modelo de negócio, a escolha do algoritmo adequado se torna uma etapa crucial do processo de modelagem. Portanto, tendo como referência a abordagem de Silva Júnior, Almeida e Santos [-@Junior2020], que utilizaram uma modelagem híbrida multicritério considerando múltiplos decisores para a escolha de um modelo preditivo de churn, o algoritmo escolhido para desenvolver o classificador proposto foi a regressão logística.
 
 # Materiais e métodos
 
@@ -46,7 +49,9 @@ Os dados utilizados neste trabalho referem-se a clientes de uma startup paranaen
 
 ### Definição da resposta e covariáveis de desempenho
 
-Inicialmente foram definidos como churn = 1 os vendedores que estiveram inativos por 30 dias corridos desde a data da última atividade e permaneceram no mesmo estado definitivamente, considerando como atividade o acesso à plataforma digital ou a ocorrência de uma venda online. Em seguida, em função da data de corte estabelecida conforme a Tabela \@ref(tab:dataDeCorte), foram mantidos no conjunto de dados somente os vendedores com pelo menos 90 dias de histórico.
+Inicialmente foram definidos como churn = 1 os vendedores que estiveram inativos por 30 dias corridos desde a data da última atividade e permaneceram no mesmo estado definitivamente, considerando como atividade o acesso à plataforma digital ou a ocorrência de uma venda online. Em seguida, em função da data de corte estabelecida conforme a Tabela \@ref(tab:dataDeCorte), foram mantidos no conjunto de dados somente os vendedores com pelo menos 90 dias de histórico. O período de 90 dias, finalizado na data de corte, foi dividido igualmente em dois períodos, onde foram calculadas métricas como faturamento, ticket médio, quantidade de produtos publicados, quantidade de pedidos em cancelados, número de dias em atividade e etc., em cada um dos quadrantes. Em seguida, através da Equação \@ref(eq:desempenho), foi calculado desempenho do vendedor em função de diversas métricas, onde $V1$ e $V2$ são os valores calculados em cada período.
+
+As métricas desempenho, data à natureza da equação de origem, possuem o comportamento explicado pela Tabela \@ref(tab:metricas). Ao término desta etapa foi obtido um conjunto de dados composto pela variável resposta (churn) e, como covariáveis, 10 métricas de desempenho, onde cada observação representa um vendedor.
 
 ```{r dataDeCorte, echo=FALSE}
 tabela <- data.frame(Vendedor = c("Definido como churn", "Em atividade normal"),
@@ -58,13 +63,9 @@ kable(tabela, booktabs = T, caption = "Definição da data de corte") %>%
   kable_styling(font_size = TABLE_FONT_SIZE)
 ```
 
-O período de 90 dias, finalizado na data de corte, foi dividido igualmente em dois quadrantes, nomeados $Q1$ e $Q2$, onde foram calculadas métricas como faturamento, ticket médio, quantidade de produtos publicados, quantidade de pedidos em cancelados, número de dias com pelo menos 1 venda e etc., em cada um dos quadrantes. Em seguida, através da Equação \@ref(eq:desempenho), foi calculado desempenho do vendedor em função de diversas métricas, onde $V1$ e $V2$ são os valores calculados em $Q1$ e $Q2$.
-
 \begin{equation}
 Desempenho = \dfrac{V2}{V1+V2} (\#eq:desempenho)
 \end{equation}
-
-As métricas desempenho, data à natureza da equação de origem, possuem o comportamento explicado pela Tabela \@ref(tab:metricas).
 
 ```{r metricas, echo=FALSE}
 tabela <- data.frame(Valor = c("0,5", "> 0,5", "< 0,5"),
@@ -74,73 +75,51 @@ kable(tabela, booktabs = T, caption = "Interpretação das métricas de desempen
   kable_styling(font_size = TABLE_FONT_SIZE)
 ```
 
-Ao término desta etapa foi obtido um conjunto de dados composto pela variável resposta (churn) e, como covariáveis, 10 métricas de desempenho, onde cada observação representa um vendedor.
-
 ### Adição de outras covariáveis
 
-Foram adicionadas outras covariáveis como tipo de plano contratado, estágio, região de origem, faturamento total, e etc., resultando em um conjunto de dados com 26 covariáveis.
+Foram adicionadas covariáveis qualitativas que representam o estágio do vendedor, o plano contratado e a região de origem, bem como covariáveis quantitativas como o faturamento total, total de produtos publicados, quantidade total de pedidos e etc., resultando em um conjunto de dados com 26 covariáveis. 
 
 ### Criação de covariáveis binárias
 
-De acordo com Fávero e Belfiore [-@Favero2017], dada a necessidade de analisar o comportamento da variável resposta em função de uma covariável qualitativa com $n$ categorias, deve-se criar $n-1$ covariáveis binárias (dummies), que assumem valores iguais a 0 ou 1, ficando por conta do pesquisador decidir qual das categorias será a referência (dummy = 0). Portanto, as covariáveis estágio, foram transformadas em binárias, resultando em um conjunto de dados composto por 35 variáveis e 10.975 observações, representado através da tabela 3.
+De acordo com Fávero e Belfiore [-@Favero2017], dada a necessidade de analisar o comportamento da variável resposta em função de uma covariável qualitativa com $n$ categorias, deve-se criar $n-1$ covariáveis binárias (dummies), que assumem valores iguais a 0 ou 1, ficando por conta do pesquisador decidir qual das categorias será a referência (dummy = 0). Portanto, as covariáveis qualitativas adicionadas foram transformadas em binárias, resultando em um conjunto de dados composto por 35 variáveis e 11.131 observações, representado através da Tabela \@ref(tab:dicionario).
 
 ```{r dicionario, echo=FALSE}
-df <- read.csv("../../Data/anonymous_train.csv")
+dicionario <- read.csv("../../Data/reference_names.csv")
+dicionario <- dicionario[-1]
+names(dicionario) <- c("Variável", "Tipo", "Descrição")
+dicionario$Tipo <- ifelse(dicionario$Tipo == "integer", "binária", "numérica")
 
-df_orig <- read.csv("../../Data/df_train.csv")
-
-tipos <- as.data.frame(sapply(df, class))
-tipos <- tipos[[1]]
-tipos <- ifelse(tipos == "numeric", "decimal", ifelse(tipos == "integer", "binária", tipos))
-descr <- c("Churn (y=1)",
-           
-           "Fluxo de caixa",
-           "Quantidade de produtos no portfólio",
-           "Quantidade de produtos cadastrados",
-           "Quantidade de marcas cadastradas",
-           "Quantidade de categorias cadastradas",
-           "Necessita de dias adicionais para postagem (x6=1)",
-           "Preço médio dos produtos publicados",
-           "Quantidade de produtos publicados",
-           "Quantidade total de pedidos",
-           "Faturamento total",
-           
-           "Dias desde a contratação até a primeira venda",
-           "Dias desde a contratação até estar pronto para operar",
-           "Desempenho da quantidade de pedidos",
-           "Dias com pelo menos uma venda efetuada",
-           "Desempenho da quantidade de dias com pelo menos uma venda efetuada",
-           
-           "Desempenho da taxa de pedidos cancelados ou suspensos",
-           "Desempenho da taxa de pedidos enviados com atraso",
-           "Desempenho da média de dias de pedidos enviados com atraso",
-           "Desempenho da média de dias de pedidos entregues com atraso",
-           "Desempenho do faturamento",
-           "Desempenho da quantidade de produtos cadastrados",
-           "Desempenho da quantidade de categorias cadastradas",
-           
-           "Desempenho do ticket médio",
-           "Desempenho da razão dos preços do frete e do pedido",
-           "Estágio atual: B (x24 = 1)",
-           "Estágio atual: I (x25 = 1)",
-           "Estágio atual: R (x26 = 1)",
-           "Tipo de plano contratado: L (x27 = 1)",
-           "Tipo de plano contratado: M (x28 = 1)",
-           "Tipo de plano contratado: S (x29 = 1)",
-           "Região de origem: Nordeste (x30 = 1)",
-           "Região de origem: Norte (x31 = 1)",
-           "Região de origem: Sudeste (x32 = 1)",
-           "Região de origem: Sul (x34 = 1)")
-  
-  
-  
-  
-dic <- data.frame(Variável = names(df),
-                  Nome = names(df_orig)[-1],
-                  Tipo = tipos,
-                  Descrição = descr)
+kable(dicionario, booktabs = T, caption = "Dicionário do conjunto de dados estruturado") %>%
+  kable_styling(font_size = TABLE_FONT_SIZE, latex_table_env = "table*")
 ```
 
+## Modelos de regressão logística binária
+
+De acordo com Fávero e Belfiore [-@Favero2017], o objetivo da regressão logística binária é o estudo da probabilidade de ocorrência de um evento de interesse ($Y$), apresentado na forma dicotômica ($Y=1$ se o evento de interesse ocorrer; $Y=0$, caso contrário), em função de um vetor vetor de covariáveis ($X_1, ..., X_n$). Sua definição ocorre através da Equação \@ref(eq:logito), onde $\beta_j$ ($j = 0,1,2,...,p$) representam os parâmetros a serem estimados, sendo $\beta_0$ o intercepto e os demais, parâmetros de cada covariável, e o subscrito $i$ representa cada observação da amostra ($i = 1, 2,...,n$).
+\begin{equation}
+ln \left ( \dfrac{\pi_i}{1-\pi_i} \right ) = \beta_0 + \beta_1 X_{i1} + ... +  \beta_p X_{ip}(\#eq:logito)
+\end{equation}
+
+A Equação \@ref(eq:logito), conhecida como logito, modela a log-chance de ocorrência do evento de interesse. Portanto, para obter uma expressão para a probabilidade de ocorrência do evento, é necessário isolar matematicamente $\pi_i$, resultando na Equação \@ref(eq:probabilidade).
+\begin{equation}
+\pi_i = \dfrac{1}{1 + e^{-(\beta_0 + \beta_1 X_{i1} + ... +  \beta_p X_{ip})}}(\#eq:probabilidade)
+\end{equation}
+
+A estimação dos parâmetros $\beta_i$ é realizada por máxima verossimilhança, método que consiste em encontrar, através da programação linear, os parâmetros que maximizam a função de verossimilhança representada através da Equação \@ref(eq:verossimilhanca).
+\begin{equation}
+L =  \prod_{i=1}^{n} \left[ \pi^{Y_i} (1-\pi_i)^{1-Y_i} \right](\#eq:verossimilhanca)
+\end{equation}
+
+Entretanto, matematicamente é mais conveniente trabalhar com o logaritmo da função de verossimilhança, conhecido como função de log-verossimilhança, representado através da Equação \@ref(eq:logverossimilhanca), conforme destacam Fávero e Belfiore [-@Favero2017] e Botelho e Tostes [-@Botelho2010].
+\begin{equation}
+logL = \sum_{i=1}^{n} \left\{ \left[Y_iln(\pi_i)\right] + \left[(1-Y_i)ln(1-\pi_i)\right] \right\}(\#eq:logverossimilhanca)
+\end{equation}
+
+### Ajuste e análise dos modelos de regressão logística binária
+
+# Resultados
+
+# Conclusões
 
 # Referências
 
