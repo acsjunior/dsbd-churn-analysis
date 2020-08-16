@@ -6,3 +6,5 @@
 anon_datasets.R
 Data/df_train.csv
 Data/df_test.csv
+*.bak
+*.sav

@@ -90,7 +90,7 @@ names(dicionario) <- c("Variável", "Tipo", "Descrição")
 dicionario$Tipo <- ifelse(dicionario$Tipo == "integer", "binária", "numérica")
 
 kable(dicionario, booktabs = T, caption = "Dicionário do conjunto de dados estruturado") %>%
-  kable_styling(font_size = TABLE_FONT_SIZE, latex_table_env = "table*")
+  kable_styling(font_size = TABLE_FONT_SIZE)
 ```
 
 ## Modelos de regressão logística binária
@@ -115,7 +115,31 @@ Entretanto, matematicamente é mais conveniente trabalhar com o logaritmo da fun
 logL = \sum_{i=1}^{n} \left\{ \left[Y_iln(\pi_i)\right] + \left[(1-Y_i)ln(1-\pi_i)\right] \right\}(\#eq:logverossimilhanca)
 \end{equation}
 
-### Ajuste e análise dos modelos de regressão logística binária
+## Seleção de covariáveis através do algoritmo stepwise
+
+De acordo com Taconeli [-@Taconeli2019], a comparação entre dois modelos pode ser realizada através do Critério de Informação de Akaike (AIC), definido por $-2logL + 2p$, onde $logL$ é a log-verossimilhança maximizada e $p$ é o número de parâmetros do modelo, devendo-se selecionar o modelo que apresentar o menor valor de AIC. Entretanto, ele alerta que avaliar todas a regressões possíveis, mesmo para um número moderado de covariáveis, pode ser computacionalmente invivável, mas como alternativa é possível utilizar o algoritmo \textit{stepwise}, que funciona da seguinte forma:
+
+1. Ajuste do modelo com todas as covariáveis;
+
+2. Avaliação tanto a exclusão como a inclusão de cada covariável, através do cálculo do AIC;
+
+3. Exclusão (ou inclusão) da covariável cuja exclusão (ou inclusão) resulta em menor AIC;
+
+4. Repete-se os passos 1 a 3 para o novo modelo e o processo continua até que nenhuma exclusão (ou inclusão) que resulte em menor AIC.
+
+## Validação cruzada por K-fold
+
+## Ajuste e análise do modelo de regressão logística binária
+
+O conjunto de dados foi separado aleatoriamente em duas partes, garantindo a proporção de 47,3% de ocorrência de churn ($Y=1$) em ambas as amostras. A amostra maior, com 75% dos dados, foi utilizada para o ajuste do modelo de regressão logística através do algoritmo \textit{stepwise} e com validação cruzada por K-fold, ficando a amostra menor dedicada ao teste das predições.
+
+```{r echo=FALSE}
+df_train <- read.csv("../../Data/anonymous_train.csv")
+df_test <- read.csv("../../Data/anonymous_test.csv")
+
+
+```
+
 
 # Resultados
 

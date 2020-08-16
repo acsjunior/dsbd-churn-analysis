@@ -94,7 +94,7 @@
 }
 
 @InProceedings{Junior2020,
-  author    = {Antonio Carlos da Silva Junior and Isaque David Pereira de Almeida and Marcos dos Santos},
+  author    = {Antonio Carlos da Silva Júnior and Isaque David Pereira de Almeida and Marcos dos Santos},
   booktitle = {Congresso Internacional de Administração},
   title     = {Ordenação de algoritmos para modelagem preditiva de Churn: analisando o problema a partir dos métodos SAPEVO-M e VIKOR},
   year      = {2020},

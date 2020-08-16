@@ -115,4 +115,12 @@
   url       = {https://doi.org/10.1177/1473871611415994},
 }
 
+@Manual{Taconeli2019,
+  title        = {Data Science and Big Data - Modelos Lineares},
+  author       = {Cesar Augusto Taconeli},
+  month        = {aug},
+  organization = {Universidade Federal do Paraná},
+  year         = {2019},
+}
+
 @Comment{jabref-meta: databaseType:bibtex;}
