@@ -3,9 +3,11 @@ title: "Untitled"
 output:
   bookdown::pdf_document2:
     template: rbef.tex
+    pandoc_args: ["--natbib"]
 bibliography: referencias.bib
-csl: abnt.csl
-lang: pt-BR
+biblio-style: unsrt
+#csl: abnt.csl
+#lang: pt-BR
 header-includes:
 - \usepackage{booktabs}
 - \usepackage{longtable}
@@ -26,26 +28,28 @@ header-includes:
 knitr::opts_chunk$set(echo = TRUE)
 options(knitr.table.format = "latex")
 
-TABLE_FONT_SIZE <- 8
+TABLE_FONT_SIZE <- 10
 
 library(kableExtra)
 ```
 
+
+
 # Introdução
 
-A importância do relacionamento de longo prazo entre cliente e empresa é um assunto vastamente discutido na literatura. Segundo Ganesh, Arnold e Reynolds [-@Ganesh2000], devido aos efeitos de aprendizado e à redução dos custos de manutenção, atender um cliente se torna menos dispendioso a cada ano adicional de relacionamento. Para Hennig-Thurau [-@HennigThurau2004], devido ao aumento dos custos para atração de novos clientes em um mercado competitivo e à potencial redução dos custos associados aos relacionamentos de longo prazo, a retenção de clientes se torna essencial para a sobrevivência e o sucesso econômico das empresas do setor de serviços. De acordo com Gallo [-@Gallo2014], dependendo do estudo e do segmento no qual a empresa está inserida, o custo para adquirir um novo cliente pode ser de cinco a vinte e cinco vezes superior ao da manutenção de um cliente já existente.
+A importância do relacionamento de longo prazo entre cliente e empresa é um assunto vastamente discutido na literatura. evido aos efeitos de aprendizado e à redução dos custos de manutenção, atender um cliente se torna menos dispendioso a cada ano adicional de relacionamento \cite{Ganesh2000}. Por conta do aumento dos custos para atração de novos clientes em um mercado competitivo e à potencial redução dos custos associados aos relacionamentos de longo prazo, a retenção de clientes se torna essencial para a sobrevivência e o sucesso econômico das empresas do setor de serviços \cite{HennigThurau2004}. De acordo com \cite{Gallo2014}, dependendo do estudo e do segmento no qual a empresa está inserida, o custo para adquirir um novo cliente pode ser de cinco a vinte e cinco vezes superior ao da manutenção de um cliente já existente.
 
 O desenvolvimento de estratégias para retenção de clientes se tornou uma prática comum entre empresas de diversos segmentos, e em consequência, antever o abandono de clientes passou a ser um anseio constante. Em um momento de concentração generalizada de esforços na direção da orientação a dados, os modelos preditivos para detecção de abandono de clientes, predominantemente utilizados por grandes companhias no setor de telecomunicações, se tornaram ferramentas populares nas empresas, independentemente da magnitude e da área de atuação.
 
-A literatura comprova que a modelagem preditiva de abandono de clientes, também conhecida como modelagem preditiva de churn, é um tema bastante explorado e que possibilita inúmeras maneiras de desfecho: Botelho e Tostes [-@Botelho2010] ajustaram um modelo de regressão logística para predizer a probabilidade de churn em uma grande empresa de varejo; Vafeiadis et al. [-@Vafeiadis2015] tiveram sucesso, entre os métodos comparados, na classificação de churn através do SVM (kernel polinomial) com AdaBoost em uma empresa de telecomunicações; Com base nos dados de avaliações online de clientes, Kumar e Yadav [-@Kumar2020] propuseram um modelo preditivo de churn baseado em regras através de redes neurais artificiais e teoria dos conjuntos aproximados.
+A literatura comprova que a modelagem preditiva de abandono de clientes, também conhecida como modelagem preditiva de churn, é um tema bastante explorado e que possibilita inúmeras maneiras de desfecho: Botelho e Tostes \cite{Botelho2010} ajustaram um modelo de regressão logística para predizer a probabilidade de churn em uma grande empresa de varejo; Vafeiadis et al. \cite{Vafeiadis2015} tiveram sucesso, entre os métodos comparados, na classificação de churn através do SVM (kernel polinomial) com AdaBoost em uma empresa de telecomunicações; Baseados nos dados de avaliações online de clientes, Kumar e Yadav \cite{Kumar2020} propuseram um modelo preditivo de churn baseado em regras através de redes neurais artificiais e teoria dos conjuntos aproximados.
 
-Com base nos dados de uma startup brasileira que tem como principal produto uma plataforma digital para conectar vendedores de diversos segmentos aos grandes marketplaces, a proposta deste artigo é apresentar um modelo preditivo que possibilite não só a classificação de vendedores propensos a abandonar a empresa, mas que também permita a interpretação dos motivos que possivelmente estejam impactando a predição. Diante da variedade de técnicas disponíveis e das particularidades de cada modelo de negócio, a escolha do algoritmo adequado se torna uma etapa crucial do processo de modelagem. Portanto, tendo como referência a abordagem de Silva Júnior, Almeida e Santos [-@Junior2020], que utilizaram uma modelagem híbrida multicritério considerando múltiplos decisores para a escolha de um modelo preditivo de churn, o algoritmo escolhido para desenvolver o classificador proposto foi a regressão logística.
+Com base nos dados de uma startup brasileira que tem como principal produto uma plataforma digital para conectar vendedores de diversos segmentos aos grandes marketplaces, a proposta deste artigo é apresentar um modelo preditivo que possibilite não só a classificação de vendedores propensos a abandonar a empresa, mas que também permita a interpretação dos motivos que possivelmente estejam impactando a predição. Diante da variedade de técnicas disponíveis e das particularidades de cada modelo de negócio, a escolha do algoritmo adequado se torna uma etapa crucial do processo de modelagem. Portanto, tendo como referência a abordagem de \cite{Junior2020}, que utilizaram uma modelagem híbrida multicritério considerando múltiplos decisores para a escolha de um modelo preditivo de churn, o algoritmo escolhido para desenvolver o classificador proposto foi a regressão logística.
 
 # Materiais e métodos
 
 ## Estruturação do conjunto de dados
 
-Os dados utilizados neste trabalho referem-se a clientes de uma startup paranaense, anonimizados e com variáveis variáveis quantitativas padronizadas com média 0 e desvio padrão 1. Considerando que estes clientes contrataram uma plataforma digital que possibilita a venda de produtos nos principais marketplaces, neste trabalho eles serão chamados de vendedores. Devido às características da arquitetura do banco de dados e às particularidades do negócio da companhia, houve a necessidade de realizar um longo processo de data wrangling. De acordo com Kandel et al. [-@Kandel2011], este processo inicia-se por um diagnóstico preliminar dos dados, ou seja, se estão no formato adequado, se respondem as perguntas que motivaram a análise e o que é necessário para colocá-los no formato ideal. Em seguida avalia-se a ocorrência de dados faltantes, valores inconsistentes e duplicatas e, por fim, realiza-se um processo de limpeza e transformação, de modo a se obter um conjunto de dados adequado para o estudo.
+Os dados utilizados neste trabalho referem-se a clientes de uma startup paranaense, anonimizados e com variáveis variáveis quantitativas padronizadas com média 0 e desvio padrão 1. Considerando que estes clientes contrataram uma plataforma digital que possibilita a venda de produtos nos principais marketplaces, neste trabalho eles serão chamados de vendedores. Devido às características da arquitetura do banco de dados e às particularidades do negócio da companhia, houve a necessidade de realizar um longo processo de data wrangling. Este processo inicia-se por um diagnóstico preliminar dos dados, ou seja, se estão no formato adequado, se respondem as perguntas que motivaram a análise e o que é necessário para colocá-los no formato ideal. Em seguida avalia-se a ocorrência de dados faltantes, valores inconsistentes e duplicatas e, por fim, realiza-se um processo de limpeza e transformação, de modo a se obter um conjunto de dados adequado para o estudo \cite{Kandel2011}.
 
 ### Definição da resposta e covariáveis de desempenho
 
@@ -81,26 +85,29 @@ Foram adicionadas covariáveis qualitativas que representam o estágio do vended
 
 ### Criação de covariáveis binárias
 
-De acordo com Fávero e Belfiore [-@Favero2017], dada a necessidade de analisar o comportamento da variável resposta em função de uma covariável qualitativa com $n$ categorias, deve-se criar $n-1$ covariáveis binárias (dummies), que assumem valores iguais a 0 ou 1, ficando por conta do pesquisador decidir qual das categorias será a referência (dummy = 0). Portanto, as covariáveis qualitativas adicionadas foram transformadas em binárias, resultando em um conjunto de dados composto por 35 variáveis e 11.131 observações, representado através da Tabela \@ref(tab:dicionario).
+Dada a necessidade de analisar o comportamento da variável resposta em função de uma covariável qualitativa com $n$ categorias, deve-se criar $n-1$ covariáveis binárias (dummies), que assumem valores iguais a 0 ou 1, ficando por conta do pesquisador decidir qual das categorias será a referência (dummy = 0) \cite{Favero2017}. Portanto, as covariáveis qualitativas adicionadas foram transformadas em binárias, resultando em um conjunto de dados composto por 35 variáveis e 11.131 observações, representado através da Tabela \@ref(tab:dicionario).
 
 ```{r dicionario, echo=FALSE}
 dicionario <- read.csv("../../Data/reference_names.csv")
-dicionario <- dicionario[-1]
-names(dicionario) <- c("Variável", "Tipo", "Descrição")
-dicionario$Tipo <- ifelse(dicionario$Tipo == "integer", "binária", "numérica")
+dicionario <- dicionario[c(-1,-3)]
+names(dicionario) <- c("Variável", "Descrição", "Medição")
 
-kable(dicionario, booktabs = T, caption = "Dicionário do conjunto de dados estruturado") %>%
-  kable_styling(font_size = TABLE_FONT_SIZE)
+kable(dicionario, booktabs = T, caption = "Dicionário do conjunto de dados estruturado", table.env='table*') %>%
+  kable_styling(font_size = TABLE_FONT_SIZE) %>%
+  pack_rows("Resposta", 1,1) %>%
+  pack_rows("Métricas de desempenho", 2,12) %>%
+  pack_rows("Categóricas", 13, 23) %>%
+  pack_rows("Numéricas", 24, 35)
 ```
 
 ## Modelos de regressão logística binária
 
-De acordo com Fávero e Belfiore [-@Favero2017], o objetivo da regressão logística binária é o estudo da probabilidade de ocorrência de um evento de interesse ($Y$), apresentado na forma dicotômica ($Y=1$ se o evento de interesse ocorrer; $Y=0$, caso contrário), em função de um vetor vetor de covariáveis ($X_1, ..., X_n$). Sua definição ocorre através da Equação \@ref(eq:logito), onde $\beta_j$ ($j = 0,1,2,...,p$) representam os parâmetros a serem estimados, sendo $\beta_0$ o intercepto e os demais, parâmetros de cada covariável, e o subscrito $i$ representa cada observação da amostra ($i = 1, 2,...,n$).
+O objetivo da regressão logística binária é o estudo da probabilidade de ocorrência de um evento de interesse ($Y$), apresentado na forma dicotômica ($Y=1$ se o evento de interesse ocorrer; $Y=0$, caso contrário), em função de um vetor vetor de covariáveis ($X_1, ..., X_n$). Sua definição ocorre através da Equação \@ref(eq:logito), onde $\beta_j$ ($j = 0,1,2,...,p$) representam os parâmetros a serem estimados, sendo $\beta_0$ o intercepto e os demais, parâmetros de cada covariável, e o subscrito $i$ representa cada observação da amostra ($i = 1, 2,...,n$) \cite{Favero2017}.
 \begin{equation}
 ln \left ( \dfrac{\pi_i}{1-\pi_i} \right ) = \beta_0 + \beta_1 X_{i1} + ... +  \beta_p X_{ip}(\#eq:logito)
 \end{equation}
 
-A Equação \@ref(eq:logito), conhecida como logito, modela a log-chance de ocorrência do evento de interesse. Portanto, para obter uma expressão para a probabilidade de ocorrência do evento, é necessário isolar matematicamente $\pi_i$, resultando na Equação \@ref(eq:probabilidade).
+A Equação \@ref(eq:logito), conhecida como logito, modela a log-chance de ocorrência do evento de interesse. Portanto, para obter uma expressão para a probabilidade de ocorrência do evento é necessário isolar matematicamente $\pi_i$, resultando na Equação \@ref(eq:probabilidade).
 \begin{equation}
 \pi_i = \dfrac{1}{1 + e^{-(\beta_0 + \beta_1 X_{i1} + ... +  \beta_p X_{ip})}}(\#eq:probabilidade)
 \end{equation}
@@ -110,14 +117,15 @@ A estimação dos parâmetros $\beta_i$ é realizada por máxima verossimilhanç
 L =  \prod_{i=1}^{n} \left[ \pi^{Y_i} (1-\pi_i)^{1-Y_i} \right](\#eq:verossimilhanca)
 \end{equation}
 
-Entretanto, matematicamente é mais conveniente trabalhar com o logaritmo da função de verossimilhança, conhecido como função de log-verossimilhança, representado através da Equação \@ref(eq:logverossimilhanca), conforme destacam Fávero e Belfiore [-@Favero2017] e Botelho e Tostes [-@Botelho2010].
+Entretanto, matematicamente é mais conveniente trabalhar com o logaritmo da função de verossimilhança, conhecido como função de log-verossimilhança \cite{Favero2017,Botelho2010}, representado através da Equação \@ref(eq:logverossimilhanca).
+
 \begin{equation}
-logL = \sum_{i=1}^{n} \left\{ \left[Y_iln(\pi_i)\right] + \left[(1-Y_i)ln(1-\pi_i)\right] \right\}(\#eq:logverossimilhanca)
+logL = \sum_{i=1}^{n} \left\{ \big[Y_iln(\pi_i)\big] + \big[(1-Y_i)ln(1-\pi_i)\big] \right\}(\#eq:logverossimilhanca)
 \end{equation}
 
 ## Seleção de covariáveis através do algoritmo stepwise
 
-De acordo com Taconeli [-@Taconeli2019], a comparação entre dois modelos pode ser realizada através do Critério de Informação de Akaike (AIC), definido por $-2logL + 2p$, onde $logL$ é a log-verossimilhança maximizada e $p$ é o número de parâmetros do modelo, devendo-se selecionar o modelo que apresentar o menor valor de AIC. Entretanto, ele alerta que avaliar todas a regressões possíveis, mesmo para um número moderado de covariáveis, pode ser computacionalmente invivável, mas como alternativa é possível utilizar o algoritmo \textit{stepwise}, que funciona da seguinte forma:
+A comparação entre dois modelos pode ser realizada através do Critério de Informação de Akaike (AIC), definido por $-2logL + 2p$, onde $logL$ é a log-verossimilhança maximizada e $p$ é o número de parâmetros do modelo, devendo-se selecionar o modelo que apresentar o menor valor de AIC. Entretanto, avaliar todas a regressões possíveis, mesmo para um número moderado de covariáveis, pode ser computacionalmente invivável, mas como alternativa é possível utilizar o algoritmo \textit{stepwise}, que funciona da seguinte forma \cite{Taconeli2019}:
 
 1. Ajuste do modelo com todas as covariáveis;
 
@@ -129,9 +137,26 @@ De acordo com Taconeli [-@Taconeli2019], a comparação entre dois modelos pode 
 
 ## Validação cruzada por K-fold
 
+A validação cruzada por k-fold é uma técnica de reamostragem aplicada com o propósito de encontrar o modelo que apres 
+
+para separação dos dados de treino e validação na modelagem preditiva e tem como propósito a redução do vício e da variância. Ela funciona da seguinte forma: 
+
+1. Separa aleatoriamente os dados de treino em $k$ partições de tamanho aproximadamente igual (folds);
+
+2. Isola uma das partições e treina o modelo com os dados das demais concatenadas;
+
+3. Valida o modelo com os dados da partição isolada, através de determinada métrica de avaliação;
+
+4. Repete os passos 2 e 3 até que o modelo seja validado em todas as $k$ partições;
+
+5. A métricas de avaliação de cada iteração são resumidas, normalmente através da média.
+
+
+blablabla
+
 ## Ajuste e análise do modelo de regressão logística binária
 
-O conjunto de dados foi separado aleatoriamente em duas partes, garantindo a proporção de 47,3% de ocorrência de churn ($Y=1$) em ambas as amostras. A amostra maior, com 75% dos dados, foi utilizada para o ajuste do modelo de regressão logística através do algoritmo \textit{stepwise} e com validação cruzada por K-fold, ficando a amostra menor dedicada ao teste das predições.
+O conjunto de dados foi separado aleatoriamente em duas partes, garantindo a proporção de 47,3% de ocorrência de churn ($Y=1$) em ambas as amostras. A amostra maior, com 75% dos dados, foi utilizada para o ajuste do modelo de regressão logística através do algoritmo \textit{stepwise} e com validação cruzada por K-fold (5 folds), ficando a amostra menor dedicada ao teste das predições.
 
 ```{r echo=FALSE}
 df_train <- read.csv("../../Data/anonymous_train.csv")
@@ -140,10 +165,10 @@ df_test <- read.csv("../../Data/anonymous_test.csv")
 
 ```
 
-
 # Resultados
+
+asdfasd
 
 # Conclusões
 
-# Referências
-
+sfdaf

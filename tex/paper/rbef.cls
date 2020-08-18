@@ -146,6 +146,7 @@
 \RequirePackage{ccicons} % ícones creative commons
 \RequirePackage{multicol}
 \RequirePackage[bookmarks=true,breaklinks=true]{hyperref}
+
 \g@addto@macro{\UrlBreaks}{\UrlOrds} % incluído em 04-04-2016
 \RequirePackage[switch,columnwise]{lineno}
 \RequirePackage[blocks]{authblk} %blocks: always author/affiliation blocks

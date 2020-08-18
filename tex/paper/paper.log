@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.8.15)  16 AUG 2020 19:55
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.8.15)  17 AUG 2020 18:03
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1422,56 +1422,56 @@ LaTeX Warning: Unused global option(s):
 (./paper.aux)
 \openout1 = `paper.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 72.
-LaTeX Font Info:    ... okay on input line 72.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 72.
-LaTeX Font Info:    ... okay on input line 72.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 72.
-LaTeX Font Info:    ... okay on input line 72.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 72.
-LaTeX Font Info:    ... okay on input line 72.
-LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 72.
-LaTeX Font Info:    ... okay on input line 72.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 72.
-LaTeX Font Info:    ... okay on input line 72.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 72.
-LaTeX Font Info:    ... okay on input line 72.
-LaTeX Font Info:    Checking defaults for FML/futm/m/it on input line 72.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 76.
+LaTeX Font Info:    ... okay on input line 76.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 76.
+LaTeX Font Info:    ... okay on input line 76.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 76.
+LaTeX Font Info:    ... okay on input line 76.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 76.
+LaTeX Font Info:    ... okay on input line 76.
+LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 76.
+LaTeX Font Info:    ... okay on input line 76.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 76.
+LaTeX Font Info:    ... okay on input line 76.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 76.
+LaTeX Font Info:    ... okay on input line 76.
+LaTeX Font Info:    Checking defaults for FML/futm/m/it on input line 76.
 LaTeX Font Info:    Trying to load font information for FML+futm on input line 
-72.
+76.
 (/Users/acsjunior/Library/TinyTeX/texmf-dist/tex/latex/fourier/fmlfutm.fd
 File: fmlfutm.fd 2004/10/30 Fontinst v1.926 font definitions for FML/futm.
 )
-LaTeX Font Info:    ... okay on input line 72.
-LaTeX Font Info:    Checking defaults for FMS/futm/m/n on input line 72.
+LaTeX Font Info:    ... okay on input line 76.
+LaTeX Font Info:    Checking defaults for FMS/futm/m/n on input line 76.
 LaTeX Font Info:    Trying to load font information for FMS+futm on input line 
-72.
+76.
 (/Users/acsjunior/Library/TinyTeX/texmf-dist/tex/latex/fourier/fmsfutm.fd
 File: fmsfutm.fd 2004/10/30 Fontinst v1.926 font definitions for FMS/futm.
 )
-LaTeX Font Info:    ... okay on input line 72.
-LaTeX Font Info:    Checking defaults for FMX/futm/m/n on input line 72.
+LaTeX Font Info:    ... okay on input line 76.
+LaTeX Font Info:    Checking defaults for FMX/futm/m/n on input line 76.
 LaTeX Font Info:    Trying to load font information for FMX+futm on input line 
-72.
+76.
 (/Users/acsjunior/Library/TinyTeX/texmf-dist/tex/latex/fourier/fmxfutm.fd
 File: fmxfutm.fd futm-extension
 )
-LaTeX Font Info:    ... okay on input line 72.
-LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 72.
-LaTeX Font Info:    ... okay on input line 72.
-Package scrbase Info: activating brazil \abstractname on input line 72.
-LaTeX Font Info:    Redeclaring math accent \widehat on input line 72.
-LaTeX Font Info:    Redeclaring math accent \widetilde on input line 72.
+LaTeX Font Info:    ... okay on input line 76.
+LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 76.
+LaTeX Font Info:    ... okay on input line 76.
+Package scrbase Info: activating brazil \abstractname on input line 76.
+LaTeX Font Info:    Redeclaring math accent \widehat on input line 76.
+LaTeX Font Info:    Redeclaring math accent \widetilde on input line 76.
 \c@mv@tabular=\count366
 \c@mv@boldtabular=\count367
-LaTeX Info: Redefining \microtypecontext on input line 72.
+LaTeX Info: Redefining \microtypecontext on input line 76.
 Package microtype Info: Generating PDF output.
 Package microtype Info: Character protrusion enabled (level 2).
 Package microtype Info: Using default protrusion set `alltext'.
 Package microtype Info: Automatic font expansion enabled (level 2),
 (microtype)             stretch: 20, shrink: 20, step: 1, non-selected.
 Package microtype Info: Using default expansion set `basictext'.
-LaTeX Info: Redefining \showhyphens on input line 72.
+LaTeX Info: Redefining \showhyphens on input line 76.
 Package microtype Info: No adjustment of tracking.
 Package microtype Info: No adjustment of interword spacing.
 Package microtype Info: No adjustment of character kerning.
@@ -1531,7 +1531,7 @@ Package sidecap Warning: Package `ragged2e' not found -- expect bad formatting.
 
 \AtBeginShipoutBox=\box137
 ABD: EveryShipout initializing macros
-Package hyperref Info: Link coloring OFF on input line 72.
+Package hyperref Info: Link coloring OFF on input line 76.
 (/Users/acsjunior/Library/TinyTeX/texmf-dist/tex/latex/hyperref/nameref.sty
 Package: nameref 2019/09/16 v2.46 Cross-referencing by name of section
 (/Users/acsjunior/Library/TinyTeX/texmf-dist/tex/latex/refcount/refcount.sty
@@ -1543,9 +1543,9 @@ Package: gettitlestring 2019/12/15 v1.6 Cleanup title references (HO)
 )
 \c@section@level=\count368
 )
-LaTeX Info: Redefining \ref on input line 72.
-LaTeX Info: Redefining \pageref on input line 72.
-LaTeX Info: Redefining \nameref on input line 72.
+LaTeX Info: Redefining \ref on input line 76.
+LaTeX Info: Redefining \pageref on input line 76.
+LaTeX Info: Redefining \nameref on input line 76.
 (./paper.out) (./paper.out)
 \@outlinefile=\write4
 \openout4 = `paper.out'.
@@ -1557,7 +1557,7 @@ Class scrartcl Info: loading recommended package `bookmark'.
 (scrartcl)           `bookmarkpackage=false' before \begin{document} and
 (scrartcl)           you can avoid this message adding:
 (scrartcl)             \usepackage{bookmark}
-(scrartcl)           before \begin{document} on input line 72.
+(scrartcl)           before \begin{document} on input line 76.
 (/Users/acsjunior/Library/TinyTeX/texmf-dist/tex/latex/bookmark/bookmark.sty
 Package: bookmark 2019/12/03 v1.28 PDF bookmarks (HO)
 (/Users/acsjunior/Library/TinyTeX/texmf-dist/tex/latex/bookmark/bkm-pdftex.def
@@ -1580,32 +1580,32 @@ Package pdflscape Info: Auto-detected driver: pdftex on input line 81.
 <cover.pdf, id=7, 597.50829pt x 845.0471pt>
 File: cover.pdf Graphic file (type pdf)
 <use cover.pdf>
-Package pdftex.def Info: cover.pdf  used on input line 74.
+Package pdftex.def Info: cover.pdf  used on input line 78.
 (pdftex.def)             Requested size: 597.50682pt x 845.04504pt.
 File: cover.pdf Graphic file (type pdf)
 <use cover.pdf>
-Package pdftex.def Info: cover.pdf  used on input line 74.
+Package pdftex.def Info: cover.pdf  used on input line 78.
 (pdftex.def)             Requested size: 597.50682pt x 845.04504pt.
 <cover.pdf, id=10, page=1, 597.50829pt x 845.0471pt>
 File: cover.pdf Graphic file (type pdf)
 <use cover.pdf, page 1>
-Package pdftex.def Info: cover.pdf , page1 used on input line 74.
+Package pdftex.def Info: cover.pdf , page1 used on input line 78.
 (pdftex.def)             Requested size: 597.50682pt x 845.04504pt.
 File: cover.pdf Graphic file (type pdf)
 <use cover.pdf, page 1>
-Package pdftex.def Info: cover.pdf , page1 used on input line 74.
+Package pdftex.def Info: cover.pdf , page1 used on input line 78.
 (pdftex.def)             Requested size: 597.53416pt x 845.08372pt.
 File: cover.pdf Graphic file (type pdf)
 <use cover.pdf, page 1>
-Package pdftex.def Info: cover.pdf , page1 used on input line 74.
+Package pdftex.def Info: cover.pdf , page1 used on input line 78.
 (pdftex.def)             Requested size: 597.53416pt x 845.08372pt.
 File: cover.pdf Graphic file (type pdf)
 <use cover.pdf, page 1>
-Package pdftex.def Info: cover.pdf , page1 used on input line 74.
+Package pdftex.def Info: cover.pdf , page1 used on input line 78.
 (pdftex.def)             Requested size: 597.53416pt x 845.08372pt.
 File: cover.pdf Graphic file (type pdf)
 <use cover.pdf, page 1>
-Package pdftex.def Info: cover.pdf , page1 used on input line 74.
+Package pdftex.def Info: cover.pdf , page1 used on input line 78.
 (pdftex.def)             Requested size: 597.53416pt x 845.08372pt.
 [1
 
@@ -1614,22 +1614,22 @@ p/pdftex.map}>]
 <cover.pdf, id=37, page=2, 597.50829pt x 845.0471pt>
 File: cover.pdf Graphic file (type pdf)
 <use cover.pdf, page 2>
-Package pdftex.def Info: cover.pdf , page2 used on input line 74.
+Package pdftex.def Info: cover.pdf , page2 used on input line 78.
 (pdftex.def)             Requested size: 597.53416pt x 845.08372pt.
 File: cover.pdf Graphic file (type pdf)
 <use cover.pdf, page 2>
-Package pdftex.def Info: cover.pdf , page2 used on input line 74.
+Package pdftex.def Info: cover.pdf , page2 used on input line 78.
 (pdftex.def)             Requested size: 597.53416pt x 845.08372pt.
 File: cover.pdf Graphic file (type pdf)
 <use cover.pdf, page 2>
-Package pdftex.def Info: cover.pdf , page2 used on input line 74.
+Package pdftex.def Info: cover.pdf , page2 used on input line 78.
 (pdftex.def)             Requested size: 597.53416pt x 845.08372pt.
 [2 <./cover.pdf>]
 LaTeX Font Info:    Font shape `T1/FiraSans-LF/m/n' in size <10> not available
 (Font)              Font shape `T1/FiraSans-LF/regular/n' tried instead on inpu
-t line 76.
+t line 80.
 LaTeX Font Info:    Font shape `T1/FiraSans-LF/regular/n' will be
-(Font)              scaled to size 8.99994pt on input line 76.
+(Font)              scaled to size 8.99994pt on input line 80.
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `FiraSans-LF' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
@@ -1637,46 +1637,46 @@ Package microtype Info: Loading generic protrusion settings for font family
 <dsbd1x4.png, id=52, 642.4pt x 214.401pt>
 File: dsbd1x4.png Graphic file (type png)
 <use dsbd1x4.png>
-Package pdftex.def Info: dsbd1x4.png  used on input line 76.
+Package pdftex.def Info: dsbd1x4.png  used on input line 80.
 (pdftex.def)             Requested size: 71.99951pt x 24.0291pt.
 LaTeX Font Info:    Trying to load font information for FML+futmi on input line
- 76.
+ 80.
 (/Users/acsjunior/Library/TinyTeX/texmf-dist/tex/latex/fourier/fmlfutmi.fd
 File: fmlfutmi.fd 2004/10/30 Fontinst v1.926 font definitions for FML/futmi.
 )
 LaTeX Font Info:    Font shape `FMX/futm/m/n' will be
-(Font)              scaled to size 9.19998pt on input line 76.
+(Font)              scaled to size 9.19998pt on input line 80.
 LaTeX Font Info:    Font shape `FMX/futm/m/n' will be
-(Font)              scaled to size 6.99199pt on input line 76.
+(Font)              scaled to size 6.99199pt on input line 80.
 LaTeX Font Info:    Font shape `FMX/futm/m/n' will be
-(Font)              scaled to size 5.51999pt on input line 76.
-LaTeX Font Info:    Trying to load font information for U+msa on input line 76.
+(Font)              scaled to size 5.51999pt on input line 80.
+LaTeX Font Info:    Trying to load font information for U+msa on input line 80.
 
 (/Users/acsjunior/Library/TinyTeX/texmf-dist/tex/latex/amsfonts/umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 ) (/Users/acsjunior/Library/TinyTeX/texmf-dist/tex/latex/microtype/mt-msa.cfg
 File: mt-msa.cfg 2006/02/04 v1.1 microtype config. file: AMS symbols (a) (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+msb on input line 76.
+LaTeX Font Info:    Trying to load font information for U+msb on input line 80.
 
 (/Users/acsjunior/Library/TinyTeX/texmf-dist/tex/latex/amsfonts/umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 ) (/Users/acsjunior/Library/TinyTeX/texmf-dist/tex/latex/microtype/mt-msb.cfg
 File: mt-msb.cfg 2005/06/01 v1.0 microtype config. file: AMS symbols (b) (RS)
 )
-LaTeX Font Info:    Trying to load font information for U+rsfs on input line 76
+LaTeX Font Info:    Trying to load font information for U+rsfs on input line 80
 .
 (/Users/acsjunior/Library/TinyTeX/texmf-dist/tex/latex/jknapltx/ursfs.fd
 File: ursfs.fd 1998/03/24 rsfs font definition file (jk)
 )
 LaTeX Font Info:    Font shape `U/futm/m/n' will be
-(Font)              scaled to size 9.19998pt on input line 76.
+(Font)              scaled to size 9.19998pt on input line 80.
 LaTeX Font Info:    Font shape `U/futm/m/n' will be
-(Font)              scaled to size 6.99199pt on input line 76.
+(Font)              scaled to size 6.99199pt on input line 80.
 LaTeX Font Info:    Font shape `U/futm/m/n' will be
-(Font)              scaled to size 5.51999pt on input line 76.
+(Font)              scaled to size 5.51999pt on input line 80.
 LaTeX Font Info:    Trying to load font information for T1+FiraMono-TOsF on inp
-ut line 76.
+ut line 80.
 (/Users/acsjunior/Library/TinyTeX/texmf-dist/tex/latex/fira/T1FiraMono-TOsF.fd
 File: T1FiraMono-TOsF.fd 2019/10/10 (autoinst) Font definitions for T1/FiraMono
 -TOsF.
@@ -1684,15 +1684,15 @@ File: T1FiraMono-TOsF.fd 2019/10/10 (autoinst) Font definitions for T1/FiraMono
 LaTeX Font Info:    Font shape `T1/FiraMono-TOsF/m/n' in size <10> not availabl
 e
 (Font)              Font shape `T1/FiraMono-TOsF/regular/n' tried instead on in
-put line 76.
+put line 80.
 LaTeX Font Info:    Font shape `T1/FiraMono-TOsF/regular/n' will be
-(Font)              scaled to size 8.99994pt on input line 76.
+(Font)              scaled to size 8.99994pt on input line 80.
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `FiraMono-TOsF' (encoding: T1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 LaTeX Font Info:    Trying to load font information for TS1+FiraSans-LF on inpu
-t line 76.
+t line 80.
 (/Users/acsjunior/Library/TinyTeX/texmf-dist/tex/latex/fira/TS1FiraSans-LF.fd
 File: TS1FiraSans-LF.fd 2019/10/10 (autoinst) Font definitions for TS1/FiraSans
 -LF.
@@ -1700,38 +1700,38 @@ File: TS1FiraSans-LF.fd 2019/10/10 (autoinst) Font definitions for TS1/FiraSans
 LaTeX Font Info:    Font shape `TS1/FiraSans-LF/m/n' in size <10> not available
 
 (Font)              Font shape `TS1/FiraSans-LF/regular/n' tried instead on inp
-ut line 76.
+ut line 80.
 LaTeX Font Info:    Font shape `TS1/FiraSans-LF/regular/n' will be
-(Font)              scaled to size 8.99994pt on input line 76.
+(Font)              scaled to size 8.99994pt on input line 80.
 Package microtype Info: Loading generic protrusion settings for font family
 (microtype)             `FiraSans-LF' (encoding: TS1).
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
-Overfull \hbox (1.59029pt too wide) in paragraph at lines 76--76
+Overfull \hbox (1.59029pt too wide) in paragraph at lines 80--80
 []$[]$  $[]$ 
  []
 
 LaTeX Font Info:    Font shape `T1/FiraSans-LF/b/n' in size <10.95> not availab
 le
 (Font)              Font shape `T1/FiraSans-LF/bold/n' tried instead on input l
-ine 76.
+ine 80.
 LaTeX Font Info:    Font shape `T1/FiraSans-LF/bold/n' will be
-(Font)              scaled to size 9.85492pt on input line 76.
+(Font)              scaled to size 9.85492pt on input line 80.
 LaTeX Font Info:    Font shape `FMX/futm/m/n' will be
-(Font)              scaled to size 11.03998pt on input line 76.
+(Font)              scaled to size 11.03998pt on input line 80.
 LaTeX Font Info:    Font shape `FMX/futm/m/n' will be
-(Font)              scaled to size 8.27998pt on input line 76.
+(Font)              scaled to size 8.27998pt on input line 80.
 LaTeX Font Info:    Font shape `FMX/futm/m/n' will be
-(Font)              scaled to size 6.43999pt on input line 76.
+(Font)              scaled to size 6.43999pt on input line 80.
 LaTeX Font Info:    Font shape `U/futm/m/n' will be
-(Font)              scaled to size 11.03998pt on input line 76.
+(Font)              scaled to size 11.03998pt on input line 80.
 LaTeX Font Info:    Font shape `U/futm/m/n' will be
-(Font)              scaled to size 8.27998pt on input line 76.
+(Font)              scaled to size 8.27998pt on input line 80.
 LaTeX Font Info:    Font shape `U/futm/m/n' will be
-(Font)              scaled to size 6.43999pt on input line 76.
+(Font)              scaled to size 6.43999pt on input line 80.
 LaTeX Font Info:    Trying to load font information for TS1+futs on input line 
-76.
+80.
 (/Users/acsjunior/Library/TinyTeX/texmf-dist/tex/latex/fourier/ts1futs.fd
 File: ts1futs.fd 2003/09/14 Fontinst v1.801 font definitions for TS1/futs.
 )
@@ -1749,90 +1749,72 @@ Output:0.0pt
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 LaTeX Font Info:    Font shape `FMX/futm/m/n' will be
-(Font)              scaled to size 7.35999pt on input line 135.
+(Font)              scaled to size 7.35999pt on input line 139.
 LaTeX Font Info:    Font shape `FMX/futm/m/n' will be
-(Font)              scaled to size 6.25598pt on input line 135.
+(Font)              scaled to size 6.25598pt on input line 139.
 LaTeX Font Info:    Font shape `U/futm/m/n' will be
-(Font)              scaled to size 7.35999pt on input line 135.
+(Font)              scaled to size 7.35999pt on input line 139.
 LaTeX Font Info:    Font shape `U/futm/m/n' will be
-(Font)              scaled to size 6.25598pt on input line 135.
+(Font)              scaled to size 6.25598pt on input line 139.
 [3
 
  <./dsbd1x4.png>]
 LaTeX Font Info:    Font shape `FMX/futm/m/n' will be
-(Font)              scaled to size 10.07397pt on input line 149.
+(Font)              scaled to size 10.07397pt on input line 153.
 LaTeX Font Info:    Font shape `FMX/futm/m/n' will be
-(Font)              scaled to size 7.63599pt on input line 149.
+(Font)              scaled to size 7.63599pt on input line 153.
 LaTeX Font Info:    Font shape `U/futm/m/n' will be
-(Font)              scaled to size 10.07397pt on input line 149.
+(Font)              scaled to size 10.07397pt on input line 153.
 LaTeX Font Info:    Font shape `U/futm/m/n' will be
-(Font)              scaled to size 7.63599pt on input line 149.
+(Font)              scaled to size 7.63599pt on input line 153.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
 LaTeX Font Info:    Font shape `T1/FiraSans-LF/b/n' in size <10> not available
 (Font)              Font shape `T1/FiraSans-LF/bold/n' tried instead on input l
-ine 155.
+ine 159.
 LaTeX Font Info:    Font shape `T1/FiraSans-LF/bold/n' will be
-(Font)              scaled to size 8.99994pt on input line 155.
+(Font)              scaled to size 8.99994pt on input line 159.
 [4]
-Overfull \hbox (4.64082pt too wide) in paragraph at lines 203--250
- [][] 
- []
-
-
-Underfull \vbox (badness 4859) has occurred while \output is active []
-
-
-Overfull \hbox (4.72495pt too wide) in paragraph at lines 270--271
+Overfull \hbox (3.44598pt too wide) in paragraph at lines 276--277
 \T1/futs/m/n/10.95 (-20) lhança, co-nhe-cido como fun-ção de log-verossimilhanç
-a,
- []
-
-[5]
-LaTeX Font Info:    Font shape `T1/FiraMono-TOsF/m/n' in size <10.95> not avail
-able
-(Font)              Font shape `T1/FiraMono-TOsF/regular/n' tried instead on in
-put line 318.
-LaTeX Font Info:    Font shape `T1/FiraMono-TOsF/regular/n' will be
-(Font)              scaled to size 9.85492pt on input line 318.
-
-Overfull \hbox (3.08307pt too wide) in paragraph at lines 317--319
-\T1/FiraMono-TOsF/regular/n/10.95 the -[] value -[] of -[] keeping -[] the -[] 
-right -[] customers$[]\T1/futs/m/n/10.95 (-20) >.
+a
  []
 
 
-Overfull \hbox (4.71666pt too wide) in paragraph at lines 329--331
-[][]\T1/futs/m/n/10.95 (-20) KUMAR, H.; YA-DAV, R. K. Rule-Based Cus-to-mer Chu
-rn
+Overfull \hbox (9.1077pt too wide) in paragraph at lines 285--286
+\T1/futs/m/n/10.95 (-20) nido por $\FMS/futm/m/n/10.95 ^^@\T1/futs/m/n/10.95 (-
+20) 2\FML/futmi/m/it/10.95 logL \FMS/futm/m/n/10.95 € \T1/futs/m/n/10.95 (-20) 
+2\FML/futmi/m/it/10.95 p$\T1/futs/m/n/10.95 (-20) , onde $\FML/futmi/m/it/10.95
+ logL$ \T1/futs/m/n/10.95 (-20) é a log-verossimilhança
  []
 
+(./paper.bbl [5]
+Underfull \vbox (badness 10000) has occurred while \output is active []
 
-Overfull \hbox (5.0969pt too wide) in paragraph at lines 329--331
-\T1/futs/b/n/10.95 Sys-tems and Com-pu-ting\T1/futs/m/n/10.95 (-20) . [s.l.] Sp
-rin-ger Sin-ga-pore, 2020.
- []
-
+[6])
 - LAST -
-Extra skip:0.0pt
+Extra skip:688.5568pt
 Left:688.5568pt/0.0pt
-Right:688.5568pt/0.0pt
-Output:688.5568pt
-[6]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 341.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 341.
+Right:0.0pt/0.0pt
+Output:344.2784pt
+[7]
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 322.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 322.
 (./paper.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 341.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 341.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 322.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 322.
 Package rerunfilecheck Info: File `paper.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 31676 strings out of 482821
- 626409 string characters out of 5954594
- 1171360 words of memory out of 5000000
- 46049 multiletter control sequences out of 15000+600000
- 733610 words of font info for 350 fonts, out of 8000000 for 9000
+ 31728 strings out of 482821
+ 626985 string characters out of 5954594
+ 1171294 words of memory out of 5000000
+ 46060 multiletter control sequences out of 15000+600000
+ 741014 words of font info for 378 fonts, out of 8000000 for 9000
  16 hyphenation exceptions out of 8191
- 91i,21n,118p,10601b,604s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 91i,21n,118p,10601b,679s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/Users/acsjunior/Library/TinyTeX/texmf-dist/fonts/enc/dvips/base/8r.enc}{/Us
 ers/acsjunior/Library/TinyTeX/texmf-dist/fonts/enc/dvips/fira/fir_tz2nek.enc}{/
 Users/acsjunior/Library/TinyTeX/texmf-dist/fonts/enc/dvips/fira/fir_d67aat.enc}
@@ -1853,10 +1835,10 @@ y/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsso17.pfb></Users/acsjunior/Librar
 y/TinyTeX/texmf-dist/fonts/type1/adobe/utopia/putb8a.pfb></Users/acsjunior/Libr
 ary/TinyTeX/texmf-dist/fonts/type1/adobe/utopia/putr8a.pfb></Users/acsjunior/Li
 brary/TinyTeX/texmf-dist/fonts/type1/adobe/utopia/putri8a.pfb>
-Output written on paper.pdf (6 pages, 504549 bytes).
+Output written on paper.pdf (7 pages, 508984 bytes).
 PDF statistics:
- 240 PDF objects out of 1000 (max. 8388607)
- 206 compressed objects within 3 object streams
- 56 named destinations out of 1000 (max. 500000)
- 45203 words of extra memory for PDF output out of 51595 (max. 10000000)
+ 252 PDF objects out of 1000 (max. 8388607)
+ 217 compressed objects within 3 object streams
+ 55 named destinations out of 1000 (max. 500000)
+ 51339 words of extra memory for PDF output out of 51595 (max. 10000000)
 

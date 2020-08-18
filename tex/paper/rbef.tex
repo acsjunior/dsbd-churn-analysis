@@ -1,14 +1,18 @@
 \documentclass[twocolumn]{rbef}
 
-$if(highlighting-macros)$
-$highlighting-macros$
-$endif$
+% $if(highlighting-macros)$
+% $highlighting-macros$
+% $endif$
 
 \usepackage{lipsum}
 
 \usepackage{bbm}
 \usepackage{subfig}
 \usepackage{pdfpages} % Para incluir a capa.
+
+\hypersetup{%
+    pdfborder = {0 0 0}
+}
 
 \newcommand{\1}{\mathbbm{1}}
 \newcommand{\s}{\mathcal{S}}
@@ -128,5 +132,8 @@ $endif$
 \saythanks
 
 $body$
+
+\bibliographystyle{unsrt}
+\bibliography{referencias}
 
 \end{document}
