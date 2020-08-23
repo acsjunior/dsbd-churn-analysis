@@ -27,17 +27,46 @@ df_test <- read.csv("Data/anonymous_test.csv")
 #--------------------------------------------------------------------------------------------------
 # Stepwise:
 set.seed(SEED)
-full_model <- glm(y ~ .,
+full_model <- glm(factor(y) ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10 +
+                    x11 + x12 + x13 + x14 + x15 + x16 + x17 + x18 + x19 + x20 + x21 + x22 +
+                    x23 + x25 + x26 + x27 + x28 + x29 + x30 + x31 + x32 + x33 + x34,
                   data = df_train,
                   family = binomial())
 
 step_model <- step(full_model, k = qchisq(0.05, df = 1, lower.tail = F), direction = "both")
 
+summary(full_model)
+logLik(full_model)
+
+summary(step_model)
+logLik(step_model)
+
+anova(step_model, full_model, test = "Chisq")
+lrtest(step_model, full_model)
+qchisq(0.05, df = 14, lower.tail = F)
+# a retirada das 14 covariáveis não afetou a qualidade do modelo (H0 não rejeitada)
 
 
 
 
+set.seed(1111)
+full_model <- train(form = factor(y) ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10 +
+                      x11 + x12 + x13 + x14 + x15 + x16 + x17 + x18 + x19 + x20 + x21 + x22 +
+                      x23 + x25 + x26 + x27 + x28 + x29 + x30 + x31 + x32 + x33 + x34,
+                     data = df_train,
+                     method = "glm",
+                     family = "binomial",
+                     trControl = trainControl(method = "cv", number = 5))
 
+step_model <- train(form = factor(y) ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10 +
+                      x11 + x12 + x13 + x14 + x15 + x16 + x17 + x18 + x19 + x20 + x21 + x22 +
+                      x23 + x25 + x26 + x27 + x28 + x29 + x30 + x31 + x32 + x33 + x34,
+                    data = df_train,
+                    method = "glmStepAIC",
+                    family = "binomial",
+                    trControl = trainControl(method = "cv", number = 5))
+
+summary(step_model)
 
 
 

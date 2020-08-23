@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.8.15)  17 AUG 2020 18:03
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.8.15)  22 AUG 2020 21:19
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1490,11 +1490,28 @@ Package epstopdf-base Info: Redefining graphics rule for `.eps' on input line 4
 .cfg
 File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
-))
-
-Package sidecap Warning: Package `ragged2e' not found -- expect bad formatting.
-
-
+)) (/Users/acsjunior/Library/TinyTeX/texmf-dist/tex/latex/ragged2e/ragged2e.sty
+Package: ragged2e 2019/07/28 v2.2 ragged2e Package (MS)
+(/Users/acsjunior/Library/TinyTeX/texmf-dist/tex/latex/ms/everysel.sty
+Package: everysel 2011/10/28 v1.2 EverySelectfont Package (MS)
+ABD: EverySelectfont initializing macros
+LaTeX Info: Redefining \selectfont on input line 126.
+)
+\CenteringLeftskip=\skip171
+\RaggedLeftLeftskip=\skip172
+\RaggedRightLeftskip=\skip173
+\CenteringRightskip=\skip174
+\RaggedLeftRightskip=\skip175
+\RaggedRightRightskip=\skip176
+\CenteringParfillskip=\skip177
+\RaggedLeftParfillskip=\skip178
+\RaggedRightParfillskip=\skip179
+\JustifyingParfillskip=\skip180
+\CenteringParindent=\skip181
+\RaggedLeftParindent=\skip182
+\RaggedRightParindent=\skip183
+\JustifyingParindent=\skip184
+)
 *geometry* driver: auto-detecting
 *geometry* detected driver: pdftex
 *geometry* verbose mode - [ preamble ] result:
@@ -1789,32 +1806,35 @@ Overfull \hbox (9.1077pt too wide) in paragraph at lines 285--286
  logL$ \T1/futs/m/n/10.95 (-20) é a log-verossimilhança
  []
 
-(./paper.bbl [5]
+[5]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
-[6])
+[6] (./paper.bbl
+Underfull \vbox (badness 3792) has occurred while \output is active []
+
+)
 - LAST -
-Extra skip:688.5568pt
+Extra skip:0.0pt
 Left:688.5568pt/0.0pt
-Right:0.0pt/0.0pt
-Output:344.2784pt
+Right:688.5568pt/0.0pt
+Output:688.5568pt
 [7]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 322.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 322.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 357.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 357.
 (./paper.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 322.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 322.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 357.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 357.
 Package rerunfilecheck Info: File `paper.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 31728 strings out of 482821
- 626985 string characters out of 5954594
- 1171294 words of memory out of 5000000
- 46060 multiletter control sequences out of 15000+600000
- 741014 words of font info for 378 fonts, out of 8000000 for 9000
+ 31853 strings out of 482821
+ 629387 string characters out of 5954594
+ 1175294 words of memory out of 5000000
+ 46140 multiletter control sequences out of 15000+600000
+ 742812 words of font info for 397 fonts, out of 8000000 for 9000
  16 hyphenation exceptions out of 8191
- 91i,21n,118p,10601b,679s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 91i,21n,118p,10601b,623s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/Users/acsjunior/Library/TinyTeX/texmf-dist/fonts/enc/dvips/base/8r.enc}{/Us
 ers/acsjunior/Library/TinyTeX/texmf-dist/fonts/enc/dvips/fira/fir_tz2nek.enc}{/
 Users/acsjunior/Library/TinyTeX/texmf-dist/fonts/enc/dvips/fira/fir_d67aat.enc}
@@ -1835,10 +1855,10 @@ y/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsso17.pfb></Users/acsjunior/Librar
 y/TinyTeX/texmf-dist/fonts/type1/adobe/utopia/putb8a.pfb></Users/acsjunior/Libr
 ary/TinyTeX/texmf-dist/fonts/type1/adobe/utopia/putr8a.pfb></Users/acsjunior/Li
 brary/TinyTeX/texmf-dist/fonts/type1/adobe/utopia/putri8a.pfb>
-Output written on paper.pdf (7 pages, 508984 bytes).
+Output written on paper.pdf (7 pages, 516589 bytes).
 PDF statistics:
- 252 PDF objects out of 1000 (max. 8388607)
- 217 compressed objects within 3 object streams
- 55 named destinations out of 1000 (max. 500000)
- 51339 words of extra memory for PDF output out of 51595 (max. 10000000)
+ 283 PDF objects out of 1000 (max. 8388607)
+ 248 compressed objects within 3 object streams
+ 70 named destinations out of 1000 (max. 500000)
+ 51363 words of extra memory for PDF output out of 51595 (max. 10000000)
 
