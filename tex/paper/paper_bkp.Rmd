@@ -124,6 +124,20 @@ A comparação entre dois modelos pode ser realizada através do Critério de In
 
 4. Repete-se os passos 1 a 3 para o novo modelo e o processo continua até que nenhuma exclusão (ou inclusão) que resulte em menor AIC.
 
+## Teste da razão da verossimilhança
+
+Através do teste da razão da verossimilhança, representado através da Equação \@ref(eq:trv), é possível verificar a qualidade do ajuste do \textit{modelo completo}, ajustado com $j$ covariáveis, em comparação com o \textit{modelo restrito}, ajustado com $j-k$ covariáveis, sendo $k$ o número de covariáveis removidas do ajuste \cite{Favero2017}. 
+
+\begin{equation}
+TRV = -2(logL_{completo} - logL_{restrito})(\#eq:trv)
+\end{equation}
+
+Quando a estatística do $TRV$ é inferior ao valor da distribuição do ${\chi}^2$ com $k$ graus de liberdade e 5% de significância, não rejeitamos a hipótese nula, ou seja, concluimos que a remoção de $k$ covariáveis não afeta a qualidade do ajuste do modelo.
+
+## Resíduos quantílicos aleatorizados
+
+Considerando um modelo de regressão linear bem ajustado, espera-se que os resíduos ordinários, definidos pela diferença entre os valores observados e estimados, estejam normalmente distribuídos. Entretanto, os resíduos ordinários de um modelo de regressão para dados não normais, como a regressão logística, não acompanham a distribuição normal, dificultando a análise gráfica. Com a intenção de generalizar o método de análise dos resíduos da regressão linear para todos os modelos lineares generalizados, Dunn e Smyth \cite{Dunn1996} propuseram os resíduos quantílicos aleatorizados, definidos por $r_i = \phi^{-1}(u_i)$, onde $\phi^{-1}$ é a inversa da função de distribuição acumulada da normal padrão e $u_i = F(y_i;\mu_i,\phi)$, com distribuição uniforme entre 0 e 1, é calculado com base na distribuição acumulada do modelo proposto. Portanto, caso o modelo logístico esteja bem ajustado, os resíduos quantílicos aleatorizados irão se apresentar normalmente distribuídos e com variância constante \cite{Taconeli2015}.
+
 ## Validação cruzada por K-fold
 
 A validação cruzada por k-fold é uma técnica de reamostragem aplicada com o propósito de reduzir o vício e a variância do modelo, que funciona da seguinte forma \cite{Kohavi1995}:
@@ -142,13 +156,8 @@ A validação cruzada por k-fold é uma técnica de reamostragem aplicada com o 
 
 O conjunto de dados foi separado aleatoriamente em duas partes, garantindo a proporção aproximada de 47,3% de ocorrência de churn ($Y=1$) em ambas as amostras. A amostra maior, com 75% dos dados, foi utilizada para o ajuste de dois modelos à partir de todas as covariáveis disponíveis. Um deles, denominado \textit{modelo completo}, foi ajustado da maneira tradicional, ao passo que o segundo modelo, denominado \textit{modelo restrito}, teve o ajuste realizado através do algoritmo \textit{stepwise}.
 
-Através do teste da razão da verossimilhança, representado através da Equação \@ref(eq:trv), é possível verificar a qualidade do ajuste do \textit{modelo completo}, ajustado com $j$ covariáveis, em comparação com o \textit{modelo restrito}, ajustado com $j-k$ covariáveis, sendo $k$ o número de covariáveis removidas do ajuste \cite{Favero2017}. 
+Com o teste da razão da verossimilhança foi constatado que a remoção das 14 covariáveis, no \textit{modelo restrito}, não alterou a qualidade do ajuste, uma vez que a estatística do teste foi inferior ao valor da distribuição do ${\chi}^2$ com 14 graus de liberdade e 5% de significância. Portanto, optou-se pelo \textit{modelo restrito} para a continuidade do estudo, uma vez que este possui complexidade inferior com relação ao \textit{modelo completo}, sem perda de qualidade.
 
-\begin{equation}
-TRV = -2(logL_{completo} - logL_{restrito})(\#eq:trv)
-\end{equation}
-
-Quando a estatística do $TRV$ é inferior ao valor da distribuição do ${\chi}^2$ com $k$ graus de liberdade e 5% de significância, não rejeitamos a hipótese nula, ou seja, concluimos que a remoção de $k$ covariáveis não afeta a qualidade do ajuste do modelo. Ao realizar o teste, foi constatado que a remoção das 14 covariáveis, no \textit{modelo restrito}, não alterou a qualidade do ajuste, uma vez que a estatística do teste foi inferior ao valor da distribuição do ${\chi}^2$ com 14 graus de liberdade e 5% de significância. Portanto, optou-se pelo \textit{modelo restrito} para a continuidade do estudo, uma vez que este possui complexidade inferior com relação ao \textit{modelo completo}, sem perda de qualidade.
 
 ```{r include=FALSE, echo=FALSE, message=FALSE, warning=FALSE}
 df_train <- read.csv("../../Data/anonymous_train.csv")
@@ -186,9 +195,7 @@ qqnorm(q_residuals, col = 'blue', xlab = 'Quantis teóricos', ylab = 'Quantís a
 qqline(q_residuals, lty = 2)
 ```
 
-Com a intenção de generalizar o método de análise dos resíduos da regressão linear para todos os modelos lineares generalizados, Dunn e Smyth \cite{Dunn1996} propuseram os resíduos quantílicos aleatorizados, definidos por $r_i = \phi^{-1}(u_i)$, onde $\phi^{-1}$ é a inversa da função de distribuição acumulada da normal padrão e $u_i = F(y_i;\mu_i,\phi)$, com distribuição uniforme entre 0 e 1, é calculado com base na distribuição acumulada do modelo proposto. Caso o modelo logístico esteja bem ajustado, espera-se resíduos quantílicos aleatorizados irão se apresentar normalmente distribuídos e com variância constante \cite{Taconeli2015}. 
-
-A análise da qualidade do ajuste, através dos resíduos, foi realizada de forma gráfica. Ao comparar os resíduos com os valores ajustados (Figura \@ref(fig:resplot)) é possível observar que estes apresentam variabilidade aproximadamente constante e estão centrados predominantemente em 0, entre -2 e 2. No gráfico quantil-quantil \cite{Wilk1968} (Figura \@ref(fig:qqplot)) nota-se que os resíduos estão, de forma razoável, aderentes à distribuição normal. Portanto, pode-se considerar que o modelo está bem ajustado.
+A análise da qualidade do ajuste foi realizada de forma gráfica, por meio dos resíduos quantílicos aleatorizados. Ao comparar os resíduos com os valores ajustados (Figura \@ref(fig:resplot)) é possível observar que apresentam variabilidade aproximadamente constante e estão centrados predominantemente em 0, entre -2 e 2. No gráfico quantil-quantil \cite{Wilk1968} (Figura \@ref(fig:qqplot)) nota-se que os resíduos estão, de forma razoável, aderentes à distribuição normal. Portanto, pode-se considerar que o modelo está bem ajustado.
 
 ### Análise e interpretação dos coeficientes
 
