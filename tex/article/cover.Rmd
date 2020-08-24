@@ -1,0 +1,14 @@
+---
+title: "Utilizando a Regressão Logística para Classificação de Churn em um Ambiente de Startup"
+author: "Antonio C. da Silva Júnior"
+orientador: "Prof. WALMES M. ZEVIANI"
+output:
+  pdf_document:
+    template: Capa.tex
+    keep_tex: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+

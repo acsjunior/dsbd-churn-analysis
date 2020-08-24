@@ -1,9 +1,5 @@
 \documentclass[twocolumn]{rbef}
 
-% $if(highlighting-macros)$
-% $highlighting-macros$
-% $endif$
-
 \usepackage{lipsum}
 
 \usepackage{bbm}
@@ -44,8 +40,8 @@
 \newtheorem{summary}[theorem]{Summary}
 \newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
 
-\titulocabecalho{Utilizando a Regressão Logística para Classificação de Churn em um Ambiente de Startup}
-\autorcabecalho{Antonio C. da Silva Júnior}
+\titulocabecalho{$title$}
+\autorcabecalho{$author$}
 
 \numeracao{01}
 \volume{01}
@@ -56,23 +52,13 @@
 \tipodeartigo{Especialização em Data Science \& Big Data}
 % \addtocounter{page}{566} %% \setcounter produces extra white page!!! use ===\addtocounter===
 
-\author[1]{Antonio C. da Silva Júnior}
+\author[]{$author$}
 
-\affil[1]{Campus Santos, Universidade Paulista
-  Av. Conselheiro Nébias 766, Boqueirão, 11045-002, Santos, SP,
-  Brasil\thanks{\href{emailto:juniorssz@gmail.com}{juniorssz@gmail.com}}
+\affil[]{$affiliation$\thanks{\href{emailto:juniorssz@gmail.com}{$email$}}
 }
-% https://www.unip.br/presencial/universidade/campi/santos.aspx
-% \author[2]{Alan C. Santos}
+\titulo{$title$}
 
-% \affil[2]{Instituto de Física, Universidade Federal Fluminense
-%   Av. General Milton Tavares de Sousa s/n, Gragoatá, 24410-346, Niterói,
-%   RJ, Brasil\thanks{\href{emailto:alancs@if.uff.br}{alancs@if.uff.br}}
-% }
-
-\titulo{Utilizando a Regressão Logística para Classificação de Churn em um Ambiente de Startup (título provisório)}
-
-\subtitulo{Using Logistic Regression for Churn Classification in a Startup Environment}
+\subtitulo{$subtitle$}
 
 % -----------------------------------------------------------------------
 
@@ -87,17 +73,16 @@
   % \end{center}
 
   \begin{abstract}
-    asdfasdf.
-    \palavraschave{asdfasdf, asdfasdf, asdfasdf, asdfasdf, asdfasdf}
+    $resumo$
+    \palavraschave{$palavras_chave$}
 
   \end{abstract}
 
   \begin{otherlanguage}{english}
 
-
     \begin{abstract}
-      asdfasdf.
-      \keywords{asdfasdf, asdfasdf, asdfasdf, asdfasdf, asdfasdf}
+      $abstract$
+      \keywords{$keywords$}
 
     \end{abstract}
   \end{otherlanguage}

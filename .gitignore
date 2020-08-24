@@ -8,3 +8,6 @@ Data/df_train.csv
 Data/df_test.csv
 *.bak
 *.sav
+*.log
+*.out
+tex/article/old/*
