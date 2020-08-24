@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.8.15)  23 AUG 2020 19:06
+This is pdfTeX, Version 3.14159265-2.6-1.40.21 (TeX Live 2020) (preloaded format=pdflatex 2020.8.15)  23 AUG 2020 21:30
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -1766,40 +1766,37 @@ Output:0.0pt
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 LaTeX Font Info:    Font shape `FMX/futm/m/n' will be
-(Font)              scaled to size 7.35999pt on input line 139.
+(Font)              scaled to size 7.35999pt on input line 117.
 LaTeX Font Info:    Font shape `FMX/futm/m/n' will be
-(Font)              scaled to size 6.25598pt on input line 139.
+(Font)              scaled to size 6.25598pt on input line 117.
 LaTeX Font Info:    Font shape `U/futm/m/n' will be
-(Font)              scaled to size 7.35999pt on input line 139.
+(Font)              scaled to size 7.35999pt on input line 117.
 LaTeX Font Info:    Font shape `U/futm/m/n' will be
-(Font)              scaled to size 6.25598pt on input line 139.
+(Font)              scaled to size 6.25598pt on input line 117.
 [3
 
  <./dsbd1x4.png>]
 LaTeX Font Info:    Font shape `FMX/futm/m/n' will be
-(Font)              scaled to size 10.07397pt on input line 153.
+(Font)              scaled to size 10.07397pt on input line 127.
 LaTeX Font Info:    Font shape `FMX/futm/m/n' will be
-(Font)              scaled to size 7.63599pt on input line 153.
+(Font)              scaled to size 7.63599pt on input line 127.
 LaTeX Font Info:    Font shape `U/futm/m/n' will be
-(Font)              scaled to size 10.07397pt on input line 153.
+(Font)              scaled to size 10.07397pt on input line 127.
 LaTeX Font Info:    Font shape `U/futm/m/n' will be
-(Font)              scaled to size 7.63599pt on input line 153.
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
+(Font)              scaled to size 7.63599pt on input line 127.
 LaTeX Font Info:    Font shape `T1/FiraSans-LF/b/n' in size <10> not available
 (Font)              Font shape `T1/FiraSans-LF/bold/n' tried instead on input l
-ine 159.
+ine 133.
 LaTeX Font Info:    Font shape `T1/FiraSans-LF/bold/n' will be
-(Font)              scaled to size 8.99994pt on input line 159.
+(Font)              scaled to size 8.99994pt on input line 133.
 [4]
-Overfull \hbox (3.44598pt too wide) in paragraph at lines 220--221
+Overfull \hbox (3.44598pt too wide) in paragraph at lines 194--195
 \T1/futs/m/n/10.95 (-20) lhança, co-nhe-cido como fun-ção de log-verossimilhanç
 a
  []
 
 
-Overfull \hbox (9.1077pt too wide) in paragraph at lines 229--230
+Overfull \hbox (9.1077pt too wide) in paragraph at lines 203--204
 \T1/futs/m/n/10.95 (-20) nido por $\FMS/futm/m/n/10.95 ^^@\T1/futs/m/n/10.95 (-
 20) 2\FML/futmi/m/it/10.95 logL \FMS/futm/m/n/10.95 € \T1/futs/m/n/10.95 (-20) 
 2\FML/futmi/m/it/10.95 p$\T1/futs/m/n/10.95 (-20) , onde $\FML/futmi/m/it/10.95
@@ -1807,44 +1804,44 @@ Overfull \hbox (9.1077pt too wide) in paragraph at lines 229--230
  []
 
 [5]
-<paper_files/figure-latex/resplot-1.pdf, id=151, 469.755pt x 325.215pt>
+<paper_files/figure-latex/resplot-1.pdf, id=153, 469.755pt x 325.215pt>
 File: paper_files/figure-latex/resplot-1.pdf Graphic file (type pdf)
 <use paper_files/figure-latex/resplot-1.pdf>
 Package pdftex.def Info: paper_files/figure-latex/resplot-1.pdf  used on input 
-line 280.
+line 289.
 (pdftex.def)             Requested size: 242.80688pt x 168.09547pt.
-<paper_files/figure-latex/qqplot-1.pdf, id=152, 469.755pt x 325.215pt>
+<paper_files/figure-latex/qqplot-1.pdf, id=154, 469.755pt x 325.215pt>
 File: paper_files/figure-latex/qqplot-1.pdf Graphic file (type pdf)
 <use paper_files/figure-latex/qqplot-1.pdf>
 Package pdftex.def Info: paper_files/figure-latex/qqplot-1.pdf  used on input l
-ine 289.
+ine 298.
 (pdftex.def)             Requested size: 242.80688pt x 168.09547pt.
-(./paper.bbl [6 <./paper_files/figure-latex/resplot-1.pdf> <./paper_files/figur
-e-latex/qqplot-1.pdf>])
+[6 <./paper_files/figure-latex/resplot-1.pdf> <./paper_files/figure-latex/qqplo
+t-1.pdf>] (./paper.bbl)
 - LAST -
 Extra skip:0.0pt
-Left:345.22722pt/0.0pt
-Right:345.22722pt/0.0pt
-Output:345.22722pt
+Left:688.5568pt/0.0pt
+Right:688.5568pt/0.0pt
+Output:688.5568pt
 [7]
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 356.
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 356.
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 327.
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 327.
 (./paper.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 356.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 356.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 327.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 327.
 Package rerunfilecheck Info: File `paper.out' has not changed.
 (rerunfilecheck)             Checksum: D41D8CD98F00B204E9800998ECF8427E;0.
  ) 
 Here is how much of TeX's memory you used:
- 31887 strings out of 482821
- 630215 string characters out of 5954594
- 1170294 words of memory out of 5000000
- 46154 multiletter control sequences out of 15000+600000
- 744144 words of font info for 409 fonts, out of 8000000 for 9000
+ 31867 strings out of 482821
+ 629958 string characters out of 5954594
+ 1172316 words of memory out of 5000000
+ 46152 multiletter control sequences out of 15000+600000
+ 743064 words of font info for 397 fonts, out of 8000000 for 9000
  16 hyphenation exceptions out of 8191
- 91i,21n,118p,10601b,679s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/Users/acsjunior/Library/TinyTeX/texmf-dist/fonts/enc/dvips/base/8r.enc}{/Us
-ers/acsjunior/Library/TinyTeX/texmf-dist/fonts/enc/dvips/fira/fir_tz2nek.enc}{/
+ 91i,21n,118p,10601b,604s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/Users/acsjunior/Library/TinyTeX/texmf-dist/fonts/enc/dvips/fira/fir_tz2nek.
+enc}{/Users/acsjunior/Library/TinyTeX/texmf-dist/fonts/enc/dvips/base/8r.enc}{/
 Users/acsjunior/Library/TinyTeX/texmf-dist/fonts/enc/dvips/fira/fir_d67aat.enc}
 {/Users/acsjunior/Library/TinyTeX/texmf-dist/fonts/enc/dvips/fira/fir_d4q673.en
 c}</Users/acsjunior/Library/TinyTeX/texmf-dist/fonts/type1/public/fira/FiraMono
@@ -1863,10 +1860,10 @@ y/TinyTeX/texmf-dist/fonts/type1/public/lm/lmsso17.pfb></Users/acsjunior/Librar
 y/TinyTeX/texmf-dist/fonts/type1/adobe/utopia/putb8a.pfb></Users/acsjunior/Libr
 ary/TinyTeX/texmf-dist/fonts/type1/adobe/utopia/putr8a.pfb></Users/acsjunior/Li
 brary/TinyTeX/texmf-dist/fonts/type1/adobe/utopia/putri8a.pfb>
-Output written on paper.pdf (7 pages, 1511052 bytes).
+Output written on paper.pdf (7 pages, 1412169 bytes).
 PDF statistics:
- 295 PDF objects out of 1000 (max. 8388607)
- 256 compressed objects within 3 object streams
- 71 named destinations out of 1000 (max. 500000)
- 51365 words of extra memory for PDF output out of 51595 (max. 10000000)
+ 302 PDF objects out of 1000 (max. 8388607)
+ 263 compressed objects within 3 object streams
+ 69 named destinations out of 1000 (max. 500000)
+ 51357 words of extra memory for PDF output out of 51595 (max. 10000000)
 
