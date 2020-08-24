@@ -10,7 +10,7 @@ output:
     template: rbef_template.tex
     keep_tex: true
     pandoc_args: ["--natbib"]
-bibliography: referencias.bib
+bibliography: ../references.bib
 biblio-style: unsrt
 lang: pt-BR
 resumo: "asdfasdf."
@@ -20,15 +20,13 @@ keywords: "asdfasdf, asdfasdf, asdfasdf, asdfasdf, asdfasdf"
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-
+knitr::opts_chunk$set(echo = FALSE, message=FALSE, warning=FALSE)
 options(knitr.table.format = "latex", scipen = 999)
 
 TABLE_FONT_SIZE <- 10
 SEED <- 111
-library(tidyverse)
-library(kableExtra)
-library(statmod)
+
+source("../../scripts/install.R")
 
 theme_set(theme_bw())
 ```
@@ -55,7 +53,7 @@ Inicialmente foram definidos como churn ($Y=1$) os vendedores que estiveram inat
 
 As métricas desempenho, data à natureza da equação de origem, possuem o comportamento explicado pela Tabela \@ref(tab:metricas). Ao término desta etapa foi obtido um conjunto de dados composto pela variável resposta (churn) e, como covariáveis, 10 métricas de desempenho, onde cada observação representa um vendedor.
 
-```{r dataDeCorte, echo=FALSE}
+```{r dataDeCorte}
 tabela <- data.frame(Vendedor = c("Definido como churn", "Em atividade normal"),
                   Data_de_corte = c("Última atividade", "Realização da análise"))
 
@@ -69,7 +67,7 @@ kable(tabela, booktabs = T, caption = "Definição da data de corte") %>%
 Desempenho = \dfrac{V2}{V1+V2} (\#eq:desempenho)
 \end{equation}
 
-```{r metricas, echo=FALSE}
+```{r metricas}
 tabela <- data.frame(Valor = c("0,5", "> 0,5", "< 0,5"),
                      Desempenho= c("Mantido", "Aumentado", "Reduzido"))
 
@@ -136,18 +134,18 @@ A validação cruzada por k-fold é uma técnica de reamostragem aplicada com o 
 
 ## Ajuste do modelo de regressão logística binária
 
-```{r include=FALSE, echo=FALSE, message=FALSE, warning=FALSE}
+```{r include=FALSE}
 df_train <- read.csv("../../Data/anonymous_train.csv")
 df_test <- read.csv("../../Data/anonymous_test.csv")
 
-set.seed(SEED)
-full_model <- glm(factor(y) ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10 +
-                    x11 + x12 + x13 + x14 + x15 + x16 + x17 + x18 + x19 + x20 + x21 + x22 +
-                    x23 + x25 + x26 + x27 + x28 + x29 + x30 + x31 + x32 + x33 + x34,
-                  data = df_train,
-                  family = binomial())
-
-step_model <- step(full_model, k = qchisq(0.05, df = 1, lower.tail = F), direction = "both")
+# set.seed(SEED)
+# full_model <- glm(factor(y) ~ x1 + x2 + x3 + x4 + x5 + x6 + x7 + x8 + x9 + x10 +
+#                     x11 + x12 + x13 + x14 + x15 + x16 + x17 + x18 + x19 + x20 + x21 + x22 +
+#                     x23 + x25 + x26 + x27 + x28 + x29 + x30 + x31 + x32 + x33 + x34,
+#                   data = df_train,
+#                   family = binomial())
+# 
+# step_model <- step(full_model, k = qchisq(0.05, df = 1, lower.tail = F), direction = "both")
 
 # anova(step_model, full_model, test = "Chisq")
 # qchisq(0.05, df = 14, lower.tail = F)
@@ -156,10 +154,12 @@ step_model <- step(full_model, k = qchisq(0.05, df = 1, lower.tail = F), directi
 # anova(step_model_without_x13, step_model, test = "Chisq")
 # qchisq(0.05, df = 1, lower.tail = F)
 
-final_model <- step_model
+# final_model <- step_model
+# saveRDS(final_model, file = "../../data/final_model.rds")
+final_model <- readRDS("../../data/final_model.rds")
 ```
 
-```{r covars, echo=FALSE}
+```{r covars}
 dicionario <- read.csv("../../Data/reference_names.csv")
 dicionario <- dicionario[c(-1,-3)]
 names(dicionario) <- c("Variável", "Descrição", "Medição")
@@ -186,7 +186,7 @@ TRV = -2(logL_{completo} - logL_{restrito})(\#eq:trv)
 
 Quando a estatística do $TRV$ é inferior ao valor da distribuição do ${\chi}^2$ com $k$ graus de liberdade e 5% de significância, não rejeitamos a hipótese nula, ou seja, concluimos que a remoção de $k$ covariáveis não afeta a qualidade do ajuste do modelo. Ao realizar o teste, foi constatado que a remoção das 14 covariáveis, no \textit{modelo restrito}, não alterou a qualidade do ajuste, uma vez que a estatística do teste foi inferior ao valor da distribuição do ${\chi}^2$ com 14 graus de liberdade e 5% de significância. Portanto, optou-se pelo \textit{modelo restrito} para a continuidade do estudo, uma vez que este possui complexidade inferior com relação ao \textit{modelo completo}, sem perda de qualidade. A Tabela \@ref(tab:covars) exibe as 19 covariáveis selecionadas para o modelo.
 
-```{r resplot, echo=FALSE, warning=FALSE, message=FALSE, fig.cap='Gráficos dos resíduos versus valores ajustados', out.width="100%", fig.align='center'}
+```{r resplot, fig.cap='Gráficos dos resíduos versus valores ajustados', out.width="100%", fig.align='center'}
 q_residuals <- qres.binom(final_model)
 predictions <- predict(final_model)
 df_diagnosis <- data.frame(q_residuals, predictions)
@@ -203,7 +203,7 @@ df_diagnosis %>%
 # lines(lowess(q_residuals ~ predictions), col = 'red', lwd = 2)
 ```
 
-```{r qqplot, echo=FALSE, fig.cap='Gráfico quantil-quantil', out.width="100%", fig.align='center'}
+```{r qqplot, fig.cap='Gráfico quantil-quantil', out.width="100%", fig.align='center'}
 # qqnorm(q_residuals, col = 'blue', xlab = 'Quantis teóricos', ylab = 'Quantís amostrais', main = "")
 # qqline(q_residuals, lty = 2)
 df_diagnosis %>%
@@ -222,7 +222,7 @@ A análise da qualidade do ajuste, através dos resíduos, foi realizada de form
 
 ### Análise e interpretação dos coeficientes
 
-```{r dicionario, echo=FALSE}
+```{r dicionario}
 # dicionario <- read.csv("../../Data/reference_names.csv")
 # dicionario <- dicionario[c(-1,-3)]
 # names(dicionario) <- c("Variável", "Descrição", "Medição")
@@ -235,7 +235,7 @@ A análise da qualidade do ajuste, através dos resíduos, foi realizada de form
 #   pack_rows("Numéricas", 24, 35)
 ```
 
-```{r coefs, echo=FALSE}
+```{r coefs}
 # coeficientes <- summary(step_model)
 # coeficientes <- as.data.frame(coeficientes$coefficients)
 # 
