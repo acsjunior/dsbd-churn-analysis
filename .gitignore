@@ -3,6 +3,7 @@
 .Rhistory
 .RData
 .Ruserdata
+.RDataTmp
 anon_datasets.R
 Data/df_train.csv
 Data/df_test.csv
@@ -10,4 +11,5 @@ Data/df_test.csv
 *.sav
 *.log
 *.out
+*.aux
 tex/article/old/*
