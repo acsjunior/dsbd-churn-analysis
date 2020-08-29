@@ -17,6 +17,8 @@
 \newcommand{\ket}{\rangle}
 \newcommand{\bra}{\langle}
 
+\newcommand*{\secref}[1]{\ref{#1}}
+
 \newtheorem{defi}{Definição}
 \newtheorem{theorem}{Teorema}
 \newtheorem{acknowledgement}[theorem]{Acknowledgement}
@@ -93,13 +95,13 @@
 \hypertarget{introduuxe7uxe3o}{%
 \section{Introdução}\label{introduuxe7uxe3o}}
 
-A importância do relacionamento de longo prazo entre cliente e empresa é um assunto vastamente discutido na literatura. Devido aos efeitos do aprendizado e à redução dos custos de manutenção, atender um cliente se torna menos dispendioso a cada ano adicional de relacionamento \cite{Ganesh2000}. Por conta do aumento dos custos para atração de novos clientes em um mercado competitivo e à potencial redução dos custos associados aos relacionamentos de longo prazo, a retenção de clientes se torna essencial para a sobrevivência e o sucesso econômico das empresas do setor de serviços \cite{HennigThurau2004}. De acordo com \cite{Gallo2014}, dependendo do estudo e do segmento no qual a empresa está inserida, o custo para adquirir um novo cliente pode ser de cinco a vinte e cinco vezes superior ao da manutenção de um cliente já existente.
+A importância do relacionamento de longo prazo entre cliente e empresa é um assunto vastamente discutido na literatura. Devido aos efeitos do aprendizado e à redução dos custos de manutenção, atender um cliente se torna menos dispendioso a cada ano adicional de relacionamento \cite{Ganesh2000}. Por conta do aumento dos custos para atração de novos clientes em um mercado competitivo e à potencial redução dos custos associados aos relacionamentos de longo prazo, a retenção de clientes se torna essencial para a sobrevivência e o sucesso econômico das empresas do setor de serviços \cite{HennigThurau2004}. De acordo com Gallo \cite{Gallo2014}, dependendo do estudo e do segmento no qual a empresa está inserida, o custo para adquirir um novo cliente pode ser de cinco a vinte e cinco vezes superior ao da manutenção de um cliente já existente.
 
 O desenvolvimento de estratégias para retenção de clientes se tornou uma prática comum entre empresas de diversos segmentos, e em consequência, antever o abandono de clientes se tornou um anseio constante. Em um momento de generalizados esforços na direção da cultura orientada a dados, os modelos preditivos para detecção de abandono de clientes, predominantemente utilizados por grandes companhias no setor de telecomunicações, se tornaram ferramentas populares nas empresas, independentemente da magnitude e da área de atuação.
 
 A literatura comprova que a modelagem preditiva de abandono de clientes, também conhecida como modelagem preditiva de churn, é um tema bastante explorado e que possibilita inúmeras maneiras de desfecho: Botelho e Tostes \cite{Botelho2010} ajustaram um modelo de regressão logística para predizer a probabilidade de churn em uma grande empresa de varejo; Vafeiadis et al.~\cite{Vafeiadis2015} tiveram sucesso, entre os métodos comparados, na classificação de churn através do SVM (kernel polinomial) com AdaBoost em uma empresa de telecomunicações; Baseados nos dados de avaliações online de clientes, Kumar e Yadav \cite{Kumar2020} propuseram um modelo preditivo de churn baseado em regras através de redes neurais artificiais e teoria dos conjuntos aproximados.
 
-Com base nos dados de uma startup brasileira que tem como principal produto uma plataforma digital para conectar vendedores de diversos segmentos aos grandes marketplaces, a proposta deste artigo é apresentar um modelo preditivo que possibilite não só a classificação de vendedores propensos a abandonar a empresa, mas que também permita a interpretação dos motivos que possivelmente estejam impactando a predição. Diante da variedade de técnicas disponíveis e das particularidades de cada modelo de negócio, a escolha do algoritmo adequado se torna uma etapa crucial do processo de modelagem. Portanto, tendo como referência a abordagem de \cite{Junior2020}, que utilizaram uma modelagem híbrida multicritério considerando múltiplos decisores para a escolha de um modelo preditivo de churn, o algoritmo escolhido para desenvolver o classificador proposto foi a regressão logística.
+Com base nos dados de uma startup brasileira que tem como principal produto uma plataforma digital para conectar vendedores de diversos segmentos aos grandes marketplaces, a proposta deste artigo é apresentar um modelo preditivo que possibilite não só a classificação de vendedores propensos a abandonar a empresa, mas que também permita a interpretação dos motivos que possivelmente estejam impactando a predição. Diante da variedade de técnicas disponíveis e das particularidades de cada modelo de negócio, a escolha do algoritmo adequado se torna uma etapa crucial do processo de modelagem. Portanto, tendo como referência a abordagem de Silva Júnior, Almeida e Santos \cite{Junior2020}, que utilizaram uma modelagem híbrida multicritério considerando múltiplos decisores para a escolha de um modelo preditivo de churn, o algoritmo escolhido para desenvolver o classificador proposto foi a regressão logística.
 
 \hypertarget{materiais-e-muxe9todos}{%
 \section{Materiais e métodos}\label{materiais-e-muxe9todos}}
@@ -109,12 +111,16 @@ Com base nos dados de uma startup brasileira que tem como principal produto uma 
 
 Os dados utilizados neste trabalho referem-se a clientes de uma startup paranaense, anonimizados e com variáveis quantitativas padronizadas com média 0 e desvio padrão 1. Considerando que estes clientes contrataram uma plataforma digital que possibilita a venda de produtos nos principais marketplaces, neste trabalho eles serão chamados de vendedores. Devido às características da arquitetura do banco de dados e às particularidades do negócio da companhia, houve a necessidade de realizar um longo processo de data wrangling. Este processo inicia-se por um diagnóstico preliminar dos dados, ou seja, se estão no formato adequado, se respondem as perguntas que motivaram a análise e o que é necessário para colocá-los no formato ideal. Em seguida avalia-se a ocorrência de dados faltantes, valores inconsistentes e duplicatas e, por fim, realiza-se um processo de limpeza e transformação, de modo a se obter um conjunto de dados adequado para o estudo \cite{Kandel2011}.
 
-\hypertarget{definiuxe7uxe3o-da-resposta-e-covariuxe1veis-de-desempenho}{%
-\subsubsection{Definição da resposta e covariáveis de desempenho}\label{definiuxe7uxe3o-da-resposta-e-covariuxe1veis-de-desempenho}}
+\hypertarget{definiuxe7uxe3o-da-variuxe1vel-resposta-e-covariuxe1veis-de-desempenho}{%
+\subsubsection{Definição da variável resposta e covariáveis de desempenho}\label{definiuxe7uxe3o-da-variuxe1vel-resposta-e-covariuxe1veis-de-desempenho}}
 
-Inicialmente foram definidos como churn (\(Y=1\)) os vendedores que estiveram inativos por 30 dias corridos desde a data da última atividade e permaneceram no mesmo estado em definitivo, considerando como atividade o acesso à plataforma digital ou a ocorrência de uma venda online. Em seguida, em função da data de corte estabelecida conforme a Tabela \ref{tab:dataDeCorte}, foram mantidos no conjunto de dados somente os vendedores com pelo menos 90 dias de histórico. O período de 90 dias, finalizado na data de corte, foi dividido igualmente em dois subperíodos, onde foram calculadas métricas como faturamento, ticket médio, quantidade de produtos publicados, quantidade de pedidos cancelados, número de dias em atividade e etc., em cada cada um dos subperíodos. Em seguida, através da Equação \eqref{eq:desempenho}, foi calculado desempenho do vendedor em função de diversas métricas, onde \(V1\) e \(V2\) são os valores calculados para cada subperíodo.
+Inicialmente foram definidos como churn (\(Y=1\)) os vendedores que estiveram inativos por 30 dias corridos desde a data da última atividade e permaneceram no mesmo estado em definitivo, considerando como atividade o acesso à plataforma digital ou a ocorrência de uma venda online. Em seguida, em função da data de corte estabelecida conforme a Tabela \ref{tab:dataDeCorte}, foram mantidos no conjunto de dados somente os vendedores com pelo menos 90 dias de histórico. O período de 90 dias, finalizado na data de corte, foi dividido igualmente em dois subperíodos, onde foram calculadas métricas como faturamento, ticket médio, quantidade de produtos publicados, quantidade de pedidos cancelados, número de dias em atividade e etc., em cada cada um dos subperíodos. Em seguida, através da Equação \eqref{eq:desempenho}, foi calculado o desempenho do vendedor em função de diversas métricas, onde \(V1\) e \(V2\) são os valores calculados para cada subperíodo.
 
-As métricas desempenho, data à natureza da equação de origem, possuem o comportamento explicado pela Tabela \ref{tab:metricas}. Ao término desta etapa foi obtido um conjunto de dados composto pela variável resposta (churn) e, como covariáveis, 10 métricas de desempenho, onde cada observação representa um vendedor.
+\begin{equation}
+Desempenho = \dfrac{V2}{V1+V2} \label{eq:desempenho}
+\end{equation}
+
+As métricas desempenho, data à natureza da equação de origem, possuem o comportamento explicado pela Tabela \ref{tab:metricas}. Ao término desta etapa foi obtido um conjunto de dados composto pela variável resposta (churn) e, como covariáveis, 9 métricas de desempenho, onde cada observação representa um vendedor.
 
 \begin{table}
 
@@ -130,10 +136,6 @@ Em atividade normal & Realização da análise\\
 \bottomrule
 \end{tabular}
 \end{table}
-
-\begin{equation}
-Desempenho = \dfrac{V2}{V1+V2} \label{eq:desempenho}
-\end{equation}
 
 \begin{table}
 
@@ -154,17 +156,17 @@ Valor & Desempenho\\
 \hypertarget{adiuxe7uxe3o-de-outras-covariuxe1veis}{%
 \subsubsection{Adição de outras covariáveis}\label{adiuxe7uxe3o-de-outras-covariuxe1veis}}
 
-Foram adicionadas covariáveis qualitativas que representam o estágio do vendedor, o plano contratado e a região de origem, bem como covariáveis quantitativas como o faturamento total, total de produtos publicados, quantidade total de pedidos e etc., resultando em um conjunto de dados com 26 covariáveis.
+Foram adicionadas covariáveis qualitativas que representam o estágio do vendedor, o plano contratado e a região de origem, bem como covariáveis quantitativas como o faturamento total, total de produtos publicados, quantidade total de pedidos e etc., resultando em um conjunto de dados com 23 covariáveis.
 
 \hypertarget{criauxe7uxe3o-de-covariuxe1veis-binuxe1rias}{%
 \subsubsection{Criação de covariáveis binárias}\label{criauxe7uxe3o-de-covariuxe1veis-binuxe1rias}}
 
-Dada a necessidade de analisar o comportamento da variável resposta em função de uma covariável qualitativa com \(n\) categorias, deve-se criar \(n-1\) covariáveis binárias (dummies), que assumem valores iguais a 0 ou 1, ficando por conta do pesquisador decidir qual das categorias será a referência (dummy = 0) \cite{Favero2017}. Portanto, as covariáveis qualitativas adicionadas foram transformadas em binárias, resultando em um conjunto de dados composto por 35 variáveis e 11.131 observações.
+Dada a necessidade de analisar o comportamento da variável resposta em função de uma covariável qualitativa com \(n\) categorias, deve-se criar \(n-1\) covariáveis binárias (dummies), que assumem valores iguais a 0 ou 1, ficando por conta do pesquisador decidir qual das categorias será a referência (dummy = 0) \cite{Favero2017}. Portanto, as covariáveis qualitativas adicionadas foram transformadas em binárias, resultando em um conjunto de dados composto por 32 variáveis e 11.131 observações.
 
-\hypertarget{modelos-de-regressuxe3o-loguxedstica-binuxe1ria}{%
-\subsection{Modelos de regressão logística binária}\label{modelos-de-regressuxe3o-loguxedstica-binuxe1ria}}
+\hypertarget{modelo-de-regressuxe3o-loguxedstica-binuxe1ria}{%
+\subsection{Modelo de regressão logística binária}\label{modelo-de-regressuxe3o-loguxedstica-binuxe1ria}}
 
-O objetivo da regressão logística binária é o estudo da probabilidade de ocorrência de um evento de interesse (\(Y\)), apresentado na forma dicotômica (\(Y=1\) se o evento de interesse ocorrer; \(Y=0\), caso contrário), em função de um vetor vetor de covariáveis (\(X_1, ..., X_n\)). Sua definição ocorre através da Equação \eqref{eq:logito}, onde \(\beta_j\) (\(j = 0,1,2,...,p\)) representam os parâmetros a serem estimados, sendo \(\beta_0\) o intercepto e os demais, parâmetros de cada covariável. E o subscrito \(i\) representa cada observação da amostra (\(i = 1, 2,...,n\)) \cite{Favero2017}.
+O objetivo da regressão logística binária é o estudo da probabilidade de ocorrência de um evento de interesse (\(Y\)), apresentado na forma dicotômica (\(Y=1\) se o evento de interesse ocorrer; \(Y=0\), caso contrário), em função de um vetor de covariáveis (\(X_1, ..., X_n\)). Sua definição ocorre através da Equação \eqref{eq:logito}, onde \(\beta_j\) (\(j = 0,1,2,...,p\)) representa os parâmetros a serem estimados, sendo \(\beta_0\) o intercepto e os demais, parâmetros de cada covariável. E o subscrito \(i\) representa cada observação da amostra (\(i = 1, 2,...,n\)) \cite{Favero2017}.
 \begin{equation}
 ln \left ( \dfrac{\pi_i}{1-\pi_i} \right ) = \beta_0 + \beta_1 X_{i1} + ... +  \beta_p X_{ip}\label{eq:logito}
 \end{equation}
@@ -174,7 +176,7 @@ A Equação \eqref{eq:logito}, conhecida como logito, modela a log-chance de oco
 \pi_i = \dfrac{1}{1 + e^{-(\beta_0 + \beta_1 X_{i1} + ... +  \beta_p X_{ip})}}\label{eq:probabilidade}
 \end{equation}
 
-A estimação dos parâmetros \(\beta_i\) é realizada por máxima verossimilhança, método que consiste em encontrar, através da programação linear, os parâmetros que maximizam a função de verossimilhança representada através da Equação \eqref{eq:verossimilhanca}.
+A estimação dos parâmetros \(\beta_j\) é realizada por máxima verossimilhança, método que consiste em encontrar, através da programação linear, os parâmetros que maximizam a função de verossimilhança representada através da Equação \eqref{eq:verossimilhanca}.
 \begin{equation}
 L =  \prod_{i=1}^{n} \left[ \pi^{Y_i} (1-\pi_i)^{1-Y_i} \right]\label{eq:verossimilhanca}
 \end{equation}
@@ -185,44 +187,10 @@ Entretanto, matematicamente é mais conveniente trabalhar com o logaritmo da fun
 logL = \sum_{i=1}^{n} \left\{ \big[Y_iln(\pi_i)\big] + \big[(1-Y_i)ln(1-\pi_i)\big] \right\}\label{eq:logverossimilhanca}
 \end{equation}
 
-\hypertarget{seleuxe7uxe3o-de-covariuxe1veis-atravuxe9s-do-algoritmo-stepwise}{%
-\subsection{Seleção de covariáveis através do algoritmo stepwise}\label{seleuxe7uxe3o-de-covariuxe1veis-atravuxe9s-do-algoritmo-stepwise}}
-
-A comparação entre dois modelos pode ser realizada através do Critério de Informação de Akaike (AIC), definido por \(-2logL + 2p\), onde \(logL\) é a log-verossimilhança maximizada e \(p\) é o número de parâmetros do modelo, devendo-se selecionar o modelo que apresentar o menor valor de AIC. Entretanto, avaliar todas a regressões possíveis, mesmo para um número moderado de covariáveis, pode ser computacionalmente invivável, mas como alternativa é possível utilizar o algoritmo \textit{stepwise}, que funciona da seguinte forma \cite{Taconeli2019}:
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\item
-  Ajuste do modelo com todas as covariáveis;
-\item
-  Avaliação tanto a exclusão como a inclusão de cada covariável, através do cálculo do AIC;
-\item
-  Exclusão (ou inclusão) da covariável cuja exclusão (ou inclusão) resulta em menor AIC;
-\item
-  Repete-se os passos 1 a 3 para o novo modelo e o processo continua até que nenhuma exclusão (ou inclusão) que resulte em menor AIC.
-\end{enumerate}
-
-\hypertarget{validauxe7uxe3o-cruzada-por-k-fold}{%
-\subsection{Validação cruzada por K-fold}\label{validauxe7uxe3o-cruzada-por-k-fold}}
-
-A validação cruzada por k-fold é uma técnica de reamostragem aplicada com o propósito de reduzir o vício e a variância do modelo, que funciona da seguinte forma \cite{Kohavi1995}:
-
-\begin{enumerate}
-\def\labelenumi{\arabic{enumi}.}
-\item
-  Separação aleatória dos dados de treino em \(k\) partições de tamanho aproximadamente igual (folds);
-\item
-  Isolamento de uma das partições e treino do modelo com os dados das demais partições concatenadas;
-\item
-  Validação do modelo com os dados da partição isolada, através de determinada métrica de avaliação;
-\item
-  Repete-se os passos 2 e 3 até que o modelo seja validado em todas as \(k\) partições;
-\item
-  A métricas de avaliação de cada iteração são resumidas, normalmente através da média aritmética.
-\end{enumerate}
-
 \hypertarget{ajuste-do-modelo-de-regressuxe3o-loguxedstica-binuxe1ria}{%
 \subsection{Ajuste do modelo de regressão logística binária}\label{ajuste-do-modelo-de-regressuxe3o-loguxedstica-binuxe1ria}}
+
+A comparação entre dois modelos de regressão logística pode ser realizada através do Critério de Informação de Akaike (AIC), definido por \(-2logL + 2p\), onde \(logL\) é a log-verossimilhança maximizada e \(p\) é o número de parâmetros do modelo, devendo-se selecionar o modelo que apresentar o menor valor de AIC. Entretanto, avaliar todas a combinações possíveis pode ser computacionalmente invivável, mesmo para um número moderado de covariáveis. Portanto, para ajudar a encontrar o melhor modelo com o menor número de covariáveis possível foi utilizado o algoritmo \textit{stepwise} \cite{Taconeli2019}.
 
 \begin{table*}
 
@@ -235,50 +203,51 @@ Covariável & Descrição & Medição\\
 \midrule
 \addlinespace[0.3em]
 \multicolumn{3}{l}{\textbf{Métricas de desempenho}}\\
-\hspace{1em}x1 & Desempenho do número de pedidos no período & percentual\\
-\hspace{1em}x2 & Desempenho do número de dias em atividade no período & percentual\\
-\hspace{1em}x3 & Desempenho do número de pedidos cancelados ou suspensos no período & percentual\\
-\hspace{1em}x5 & Desempenho da média de dias de atraso (postagens) no período & percentual\\
-\hspace{1em}x6 & Desempenho da média de dias de atraso (entregas) no período & percentual\\
-\hspace{1em}x7 & Desempenho do faturamento no período & percentual\\
-\hspace{1em}x10 & Desempenho do ticket médio no período & percentual\\
+\hspace{1em}X2 & Desempenho do número de pedidos cancelados ou suspensos no período & percentual\\
+\hspace{1em}X4 & Desempenho da média de dias de atraso (postagens) no período & percentual\\
+\hspace{1em}X5 & Desempenho da média de dias de atraso (entregas) no período & percentual\\
+\hspace{1em}X6 & Desempenho do faturamento no período & percentual\\
+\hspace{1em}X9 & Desempenho do ticket médio no período & percentual\\
 \addlinespace[0.3em]
 \multicolumn{3}{l}{\textbf{Qualitativas}}\\
-\hspace{1em}x12 & Necessita de dias adicionais para postagem & 1 = sim; 0 = não\\
-\hspace{1em}x13 & Está no estágio B & 1 = sim; 0 = não\\
-\hspace{1em}x14 & Esta no estágio I & 1 = sim; 0 = não\\
-\hspace{1em}x15 & Está no estágio R & 1 = sim; 0 = não\\
-\hspace{1em}x17 & Possui o plano M & 1 = sim; 0 = não\\
-\hspace{1em}x21 & Localizado na região Sudeste & 1 = sim; 0 = não\\
+\hspace{1em}X11 & Necessita de dias adicionais para postagem & 1 = sim; 0 = não\\
+\hspace{1em}X13 & Esta no estágio I & 1 = sim; 0 = não\\
+\hspace{1em}X14 & Está no estágio R & 1 = sim; 0 = não\\
+\hspace{1em}X20 & Localizado na região Sudeste & 1 = sim; 0 = não\\
 \addlinespace[0.3em]
 \multicolumn{3}{l}{\textbf{Quantitativas}}\\
-\hspace{1em}x23 & Valor do fluxo de caixa & contínua\\
-\hspace{1em}x25 & Valor total do faturamento & contínua\\
-\hspace{1em}x30 & Número total de produtos publicados & discreta\\
-\hspace{1em}x32 & Número de dias desde a contratação até a primeira venda & discreta\\
-\hspace{1em}x33 & Número de dias desde a contratação até estar pronto para operar & discreta\\
-\hspace{1em}x34 & Número de dias em atividade no período & discreta\\
+\hspace{1em}X22 & Valor total do faturamento & contínua\\
+\hspace{1em}X27 & Número total de produtos publicados & discreta\\
+\hspace{1em}X29 & Número de dias desde a contratação até a primeira venda & discreta\\
+\hspace{1em}X30 & Número de dias desde a contratação até estar pronto para operar & discreta\\
+\hspace{1em}X31 & Número de dias em atividade no período & discreta\\
 \bottomrule
 \end{tabular}
 \end{table*}
 
-O conjunto de dados foi separado aleatoriamente em duas partes, garantindo a proporção aproximada de 47,3\% de ocorrência de churn (\(Y=1\)) em ambas as amostras. A amostra maior, com 75\% dos dados, foi utilizada para o ajuste de dois modelos à partir de todas as covariáveis disponíveis. Um deles, denominado \textit{modelo completo}, foi ajustado da maneira tradicional, ao passo que o segundo modelo, denominado \textit{modelo restrito}, teve o ajuste realizado através do algoritmo \textit{stepwise}.
+O conjunto de dados foi separado aleatoriamente em duas partes, garantindo a proporção aproximada de 47,3\% de ocorrência de churn (\(Y=1\)) em ambas as amostras. A amostra menor, com 25\% dos dados, foi separada para a etapa de avaliação do poder preditivo do modelo, ao passo que a amostra maior foi utilizada para o ajuste de dois modelos por valição cruzada K-fold com 5 folds \cite{Kohavi1995}, à partir de todas as covariáveis disponíveis. Um deles, denominado \textit{modelo completo}, foi ajustado da maneira tradicional, ao passo que o segundo modelo, denominado \textit{modelo restrito}, teve o ajuste realizado através do algoritmo \textit{stepwise}.
 
-Através do teste da razão da verossimilhança, representado através da Equação \eqref{eq:trv}, é possível verificar a qualidade do ajuste do \textit{modelo completo}, ajustado com \(j\) covariáveis, em comparação com o \textit{modelo restrito}, ajustado com \(j-k\) covariáveis, sendo \(k\) o número de covariáveis removidas do ajuste \cite{Favero2017}. Quando a estatística do \(TRV\) é inferior ao valor da distribuição do \({\chi}^2\) com \(k\) graus de liberdade e 5\% de significância, não rejeitamos a hipótese nula, ou seja, concluimos que a remoção de \(k\) covariáveis não afeta a qualidade do ajuste do modelo.
+Através do teste da razão da verossimilhança, representado através da Equação \eqref{eq:trv}, é possível verificar a qualidade do ajuste do \textit{modelo completo}, ajustado com \(j\) covariáveis, em comparação com o \textit{modelo restrito}, ajustado com \(j-k\) covariáveis, sendo \(k\) o número de covariáveis removidas do ajuste. Quando a estatística do \(TRV\) é inferior ao valor da distribuição do \({\chi}^2\) com \(k\) graus de liberdade e 5\% de significância, não rejeitamos a hipótese nula, ou seja, concluimos que a remoção de \(k\) covariáveis não afeta a qualidade do ajuste do modelo \cite{Favero2017}.
 
 \begin{equation}
 TRV = -2(logL_{completo} - logL_{restrito})\label{eq:trv}
 \end{equation}
 
-Ao realizar o teste, foi constatado que a remoção das 14 covariáveis, no \textit{modelo restrito}, não alterou a qualidade do ajuste, uma vez que a estatística do teste foi inferior ao valor da distribuição do \({\chi}^2\) com 14 graus de liberdade e 5\% de significância. Portanto, optou-se pelo \textit{modelo restrito} para a continuidade do estudo, uma vez que este possui complexidade inferior com relação ao \textit{modelo completo}, sem perda de qualidade. A Tabela \ref{tab:covars} exibe as 19 covariáveis selecionadas para o modelo.
+Ao realizar o teste, foi constatado que a remoção das 17 covariáveis através do algoritmo \textit{stepwise} não alterou a qualidade do ajuste, uma vez que a estatística do teste foi inferior ao valor da distribuição do \({\chi}^2\) com 17 graus de liberdade e 5\% de significância. Portanto, optou-se pelo \textit{modelo restrito} para a continuidade do estudo, uma vez que este possui complexidade inferior com relação ao \textit{modelo completo}, sem perda de qualidade. A Tabela \ref{tab:covars} exibe as 14 covariáveis selecionadas para o modelo.
 
-A Tabela \ref{tab:coefs} apresenta as estimativas dos parâmetros do modelo para cada covariável utilizada. Através da estatística \(z\) de Wald, definida pela Equação \eqref{eq:wald}, onde \(\hat{\beta_j}\) é a estimativa de um particular parâmetro \(\beta_j\) do modelo e \(ep(\hat{\beta_j)}\) é o seu erro padrão, é possível obter a significância estatística de cada estimativa. Calculadas as estatísticas \(z\) de Wald, através da distribuição normal padrão a um determinado nível de significância, obtemos os respectivos valores críticos e verificamos se estes rejeitam ou não a hipótese nula do teste \(z\) de Wald (\(H_0:\hat{\beta_j}=0\)) \cite{Favero2017}. Em outras palavras, o p-valor do teste \(z\) de Wald indica a probabilidade de \(\beta\) ser tão ou mais extremo que \(|z_{\hat{\beta_j}}|\).
+\hypertarget{resultados-e-discussuxf5es}{%
+\section{Resultados e discussões}\label{resultados-e-discussuxf5es}}
+
+\hypertarget{anuxe1lise-e-interpretauxe7uxe3o-das-estimativas-dos-paruxe2metros}{%
+\subsection{Análise e interpretação das estimativas dos parâmetros}\label{anuxe1lise-e-interpretauxe7uxe3o-das-estimativas-dos-paruxe2metros}}
+
+A Tabela \ref{tab:coefs} apresenta as estimativas dos parâmetros do modelo para cada covariável utilizada. Através da estatística \(z\) de Wald, definida pela Equação \eqref{eq:wald}, onde \(\hat{\beta}_j\) é a estimativa de um particular parâmetro \(\beta_j\) do modelo e \(ep(\hat{\beta}_j)\) é o seu erro padrão, é possível obter a significância estatística de cada estimativa. Calculadas as estatísticas \(z\) de Wald, através da distribuição normal padrão a um determinado nível de significância obtemos os respectivos valores críticos e verificamos se estes rejeitam ou não a hipótese nula do teste \(z\) de Wald (\(H_0:\hat{\beta}_j=0\)) \cite{Favero2017}. Em outras palavras, o p-valor do teste \(z\) de Wald indica a probabilidade de \(\beta\) ser tão ou mais extremo que \(|z_{\hat{\beta}_j}|\).
 
 \begin{equation}
-z_{\hat{\beta_j}}=\dfrac{\hat{\beta_j}}{ep(\hat{\beta_j)}}\label{eq:wald}
+z_{\hat{\beta}_j}=\dfrac{\hat{\beta}_j}{ep(\hat{\beta}_j)}\label{eq:wald}
 \end{equation}
 
-Através da Tabela \ref{tab:coefs} observa-se que somente a estimativa do parâmetro da covariável X13 não foi significativa ao nível de 5\%, entretanto, optou-se por mantê-la no modelo, uma vez que através do teste da razão da verossimilhança foi constatado que a retirada da mesma afeta a qualidade do ajuste.
+Através da Tabela \ref{tab:coefs} observa-se que todas as estimativas apresentaram significância ao nível de 5\%, não sendo necessária qualquer intervenção adicional no modelo final obtido através do algoritmo \textit{stepwise}.
 
 \begin{table}
 
@@ -289,32 +258,28 @@ Através da Tabela \ref{tab:coefs} observa-se que somente a estimativa do parâm
 \toprule
 Covariável & Estimativa & Erro padrão & Wald & P-valor\\
 \midrule
-Intercepto & 2.0202 & 0.2877 & 7.0209 & 0.0000\\
-x1 & 0.9518 & 0.4203 & 2.2645 & 0.0235\\
-x2 & -0.8450 & 0.3671 & -2.3020 & 0.0213\\
-x3 & 0.3707 & 0.0394 & 9.4203 & 0.0000\\
-x5 & -0.3570 & 0.0452 & -7.8964 & 0.0000\\
+Intercepto & 1.5513 & 0.1316 & 11.7902 & 0.0000\\
+X2 & 0.3693 & 0.0387 & 9.5437 & 0.0000\\
+X4 & -0.3558 & 0.0444 & -8.0085 & 0.0000\\
+X5 & -0.2567 & 0.0487 & -5.2749 & 0.0000\\
+X6 & -0.8296 & 0.1052 & -7.8829 & 0.0000\\
 \addlinespace
-x6 & -0.2565 & 0.0492 & -5.2152 & 0.0000\\
-x7 & -1.0116 & 0.2294 & -4.4100 & 0.0000\\
-x10 & 0.5565 & 0.1113 & 4.9997 & 0.0000\\
-x12 & -0.4137 & 0.0705 & -5.8713 & 0.0000\\
-x13 & -0.5755 & 0.3053 & -1.8854 & 0.0594\\
+X9 & 0.4532 & 0.1006 & 4.5028 & 0.0000\\
+X11 & -0.3950 & 0.0697 & -5.6703 & 0.0000\\
+X13 & -2.6981 & 0.1237 & -21.8040 & 0.0000\\
+X14 & -2.2880 & 0.1246 & -18.3608 & 0.0000\\
+X20 & 0.1598 & 0.0628 & 2.5453 & 0.0109\\
 \addlinespace
-x14 & -2.9920 & 0.2846 & -10.5136 & 0.0000\\
-x15 & -2.7657 & 0.2839 & -9.7422 & 0.0000\\
-x17 & -4.7352 & 0.6830 & -6.9334 & 0.0000\\
-x21 & 0.1617 & 0.0633 & 2.5519 & 0.0107\\
-x23 & 0.5037 & 0.0562 & 8.9657 & 0.0000\\
-\addlinespace
-x25 & -0.2098 & 0.0662 & -3.1708 & 0.0015\\
-x30 & -0.2306 & 0.0810 & -2.8470 & 0.0044\\
-x32 & -0.4785 & 0.0324 & -14.7557 & 0.0000\\
-x33 & 0.4674 & 0.0461 & 10.1424 & 0.0000\\
-x34 & -1.6710 & 0.0867 & -19.2738 & 0.0000\\
+X22 & -0.1925 & 0.0629 & -3.0595 & 0.0022\\
+X27 & -0.1717 & 0.0748 & -2.2949 & 0.0217\\
+X29 & -0.4516 & 0.0321 & -14.0894 & 0.0000\\
+X30 & 0.4201 & 0.0457 & 9.1935 & 0.0000\\
+X31 & -1.6460 & 0.0863 & -19.0675 & 0.0000\\
 \bottomrule
 \end{tabular}
 \end{table}
+
+Com a intenção de generalizar o método de análise dos resíduos da regressão linear para todos os modelos lineares generalizados, Dunn e Smyth \cite{Dunn1996} propuseram os resíduos quantílicos aleatorizados, definidos por \(r_i = \phi^{-1}(u_i)\), onde \(\phi^{-1}\) é a inversa da função de distribuição acumulada da normal padrão e \(u_i = F(y_i;\mu_i,\phi)\), com distribuição uniforme entre 0 e 1, é calculado com base na distribuição acumulada do modelo proposto. Caso o modelo logístico esteja bem ajustado, espera-se que os resíduos quantílicos aleatorizados se apresentem normalmente distribuídos e com variância constante \cite{Taconeli2015}. A análise da qualidade do ajuste, através dos resíduos, foi realizada de forma gráfica. Ao comparar os resíduos com os valores ajustados (Figura \ref{fig:resplot}) é possível observar que estes apresentam variabilidade aproximadamente constante e estão centrados predominantemente em 0, entre -2 e 2. No gráfico quantil-quantil \cite{Wilk1968} (Figura \ref{fig:qqplot}) nota-se que os resíduos estão, de forma razoável, aderentes à distribuição normal, mesmo com uma leve fuga nas caldas. Portanto, pode-se considerar que o modelo foi bem ajustado.
 
 \begin{figure}
 
@@ -334,17 +299,122 @@ x34 & -1.6710 & 0.0867 & -19.2738 & 0.0000\\
 \caption{Gráfico quantil-quantil}\label{fig:qqplot}
 \end{figure}
 
-Com a intenção de generalizar o método de análise dos resíduos da regressão linear para todos os modelos lineares generalizados, Dunn e Smyth \cite{Dunn1996} propuseram os resíduos quantílicos aleatorizados, definidos por \(r_i = \phi^{-1}(u_i)\), onde \(\phi^{-1}\) é a inversa da função de distribuição acumulada da normal padrão e \(u_i = F(y_i;\mu_i,\phi)\), com distribuição uniforme entre 0 e 1, é calculado com base na distribuição acumulada do modelo proposto. Caso o modelo logístico esteja bem ajustado, espera-se que os resíduos quantílicos aleatorizados se apresentem normalmente distribuídos e com variância constante \cite{Taconeli2015}. A análise da qualidade do ajuste, através dos resíduos, foi realizada de forma gráfica. Ao comparar os resíduos com os valores ajustados (Figura \ref{fig:resplot}) é possível observar que estes apresentam variabilidade aproximadamente constante e estão centrados predominantemente em 0, entre -2 e 2. No gráfico quantil-quantil \cite{Wilk1968} (Figura \ref{fig:qqplot}) nota-se que os resíduos estão, de forma razoável, aderentes à distribuição normal. Portanto, pode-se considerar que o modelo está bem ajustado.
+Através da Equação \eqref{eq:odds}, obtida a partir da Equação \eqref{eq:logito}, é possível modelar a chance de ocorrência do evento de interesse para uma particular observação e, em consequência, avaliar o quanto a chance de ocorrência do evento de interesse se altera em média, em função de uma particular estimativa. Adicionalmente podemos dizer que o aumento de \(k\) unidades em uma particular covariável, mantidas as demais condições constantes, multiplica a chance de ocorrência do evento de interesse por \(e^{k \cdot \hat{\beta}_j}\), onde \(\hat{\beta}_j\) representa a estimativa do parâmetro desta particular covariável \cite{Favero2017}.
 
-\hypertarget{interpretauxe7uxe3o-das-estimativas-dos-paruxe2metros}{%
-\subsubsection{Interpretação das estimativas dos parâmetros}\label{interpretauxe7uxe3o-das-estimativas-dos-paruxe2metros}}
+\begin{equation}
+\dfrac{\pi_i}{1-\pi_i}= e^{\beta_0 + \beta_1 X_{i1} + ... +  \beta_p X_{ip}}\label{eq:odds}
+\end{equation}
 
-asdfasdf
+As Tabelas \ref{tab:oddsnumericas}, \ref{tab:oddsbinarias} e \ref{tab:oddsmetricas} representam as estimativas dos parâmetros do modelo e estão ordenadas decrescentemente em função da variação absoluta da chance de ocorrência de churn. Suas interpretações podem ser realizadas da seguinte forma, começando pela Tabela \ref{tab:oddsnumericas} que representa as covariáveis quantitativas: a chance de churn fica multiplicada por \(e^{-1,6460}=0,1928\) para 1 unidade a mais na covariável X31, mantidas as demais condições constantes. Em outras palavras, 1 unidade a mais na covariável X31 impacta na redução da chance de churn em 81\%, fixadas as demais covariáveis. Como as covariáveis quantitativas foram padronizadas com média 0 e desvio padrão 1, é importante ressaltar que 1 unidade na covariável X31 não representa 1 dia de atividade, assim sendo, neste estudo a melhor forma de interpretar as estimativas dos parâmetros das covariáveis quantitativas é assimilando que estimativas menores que zero reduzem em média a chance de churn, à medida que o valor de suas respectivas covariáveis elevam, ao passo que a estimativa maior que zero aumenta em média a chance de churn, à medida que o valor de sua respectiva covariável também aumenta, fixadas as demais covariáveis. Quanto às covariáveis qualitativas representadas na Tabela \ref{tab:oddsbinarias}, podemos interpretá-las conforme o exemplo: a chance de churn para os vendedores que estão no estágio I (X13) é 93\% menor com relação aos vendedores que não estão no mesmo estágio, mantidas as demais condições constantes. Por fim, com relação às covariáveis de desempenho (Tabela \ref{tab:oddsmetricas}), dadas as suas suas características representadas na Tabela \ref{tab:metricas}, suas interpretações podem ser realizadas de acordo com o exemplo: a chance de churn de um vendedor que melhorou o seu desempenho nos subperíodos avaliados com relação ao faturamento (\(X6>0,5\)), é em média mais de 34\% menor, fixadas as demais covariáveis. Em contrapartida, a chance de churn de um vendedor que piorou o seu desempenho nos subperídos avaliados com relação ao faturamento (\(X6<0,5\)), é também menor em média, entretanto, em um valor percentual inferior a 34.
+
+\begin{table}
+
+\caption{\label{tab:oddsnumericas}Chances de ocorrência de churn para covariáveis quantitativas}
+\centering
+\fontsize{9}{11}\selectfont
+\begin{tabular}[t]{lrrr}
+\toprule
+Covariável & Estimativa & Chance & Variação (\%)\\
+\midrule
+X31 & -1.6460 & 0.1928 & -81\\
+X30 & 0.4201 & 1.5221 & 52\\
+X29 & -0.4516 & 0.6366 & -36\\
+X22 & -0.1925 & 0.8249 & -18\\
+X27 & -0.1717 & 0.8422 & -16\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}
+
+\caption{\label{tab:oddsbinarias}Chances de ocorrência de churn para covariáveis qualitativas}
+\centering
+\fontsize{9}{11}\selectfont
+\begin{tabular}[t]{lrrr}
+\toprule
+Covariável & Estimativa & Chance & Variação (\%)\\
+\midrule
+X13 & -2.6981 & 0.0673 & -93\\
+X14 & -2.2880 & 0.1015 & -90\\
+X11 & -0.3950 & 0.6737 & -33\\
+X20 & 0.1598 & 1.1733 & 17\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{table}
+
+\caption{\label{tab:oddsmetricas}Chances de ocorrência de churn para covariáveis de desempenho}
+\centering
+\fontsize{9}{11}\selectfont
+\begin{tabular}[t]{lrrr}
+\toprule
+Covariável & Estimativa & Chance (0,5) & Variação (\%)\\
+\midrule
+X6 & -0.8296 & 0.6605 & -34\\
+X9 & 0.4532 & 1.2543 & 25\\
+X2 & 0.3693 & 1.2028 & 20\\
+X4 & -0.3558 & 0.8370 & -16\\
+X5 & -0.2567 & 0.8795 & -12\\
+\bottomrule
+\end{tabular}
+\end{table}
 
 \hypertarget{avaliauxe7uxe3o-do-poder-preditivo-do-modelo}{%
-\subsubsection{Avaliação do poder preditivo do modelo}\label{avaliauxe7uxe3o-do-poder-preditivo-do-modelo}}
+\subsection{Avaliação do poder preditivo do modelo}\label{avaliauxe7uxe3o-do-poder-preditivo-do-modelo}}
 
-asdfasdf
+Para possibilitar a avaliação do poder preditivo do modelo na amostra de validação, é necessário antes definir o valor de \textit{cutoff}, ou seja, um ponto de corte de modo que as observações com probabilidade de ocorrência de churn superior ao \textit{cutoff} sejam classificadas como churn (\(Y=1\)) e, caso contrário, classificadas como não churn (\(Y=0\)). A escolha do \textit{cutoff} foi realizada através da análise da curva de Sensibilidade, que é um gráfico que apresenta os valores da sensibilidade e da especificidade em função dos valores de \textit{cutoff}, e da curva ROC (\textit{Receiver Operating Characteristic}), gráfico que apresenta a variação da sensibilidade em função de (1 - especificidade), que mostra o comportamento do \textit{trade off} entre a sensibilidade e a especificidade em função da alteração do \textit{cutoff} \cite{Favero2017}. Atrávés do cálculo da área sob a curva ROC (AUC - \textit{Area Under the Curve}) é possível avaliar a eficiênca global do modelo, sendo \(AUC=1\) o melhor valor possível. O modelo em estudo apresentou \(AUC = 0,8894\), o que indica que o modelo possui uma boa eficiência global. Analisadas as curvas de Sensibilidade (Figura \ref{fig:senscurve}) e ROC (Figura \ref{fig:roc}) e considerando os requisitos do negócio, optou-se por um valor de \textit{cutoff} que garantisse um pouco mais de sensibilidade com relação à especificidade. Portanto, para continuidade do estudo foram consideradas como churn (Y=1) as observações com probabilidade de ocorrência de churn superior a 0,54.
+
+\begin{figure}
+
+{\centering \includegraphics[width=1\linewidth]{article_files/figure-latex/senscurve-1} 
+
+}
+
+\caption{Curva de Sensibilidade}\label{fig:senscurve}
+\end{figure}
+
+\begin{figure}
+
+{\centering \includegraphics[width=1\linewidth]{article_files/figure-latex/roc-1} 
+
+}
+
+\caption{Curva ROC}\label{fig:roc}
+\end{figure}
+
+Definido o valor de \textit{cutoff}, através do cruzamento dos valores preditos pelo modelo e os valores observados, foi construída a matriz de confusão (Tabela \ref{tab:cmatrix}), que apresenta em sua diagonal principal o número de classificações corretas e, na diagonal secundária, o número de classificações incorretas. A partir da matriz de confusão foram calculadas as seguintes métricas de avaliação: sensibilidade (taxa de classificação correta entre as observações com a ocorrência de churn), especificidade (taxa de classificação correta entre as observações sem a ocorrência de churn) e acurácia (taxa global de classificações corretas), representadas pelas equações \eqref{eq:sensitivity}, \eqref{eq:specificity} e \eqref{eq:accuracy}, respectivamente.
+
+\begin{table}
+
+\caption{\label{tab:cmatrix}Matriz de confusão}
+\centering
+\fontsize{9}{11}\selectfont
+\begin{tabular}[t]{lll}
+\toprule
+\multicolumn{1}{c}{} & \multicolumn{2}{c}{Observado} \\
+\cmidrule(l{3pt}r{3pt}){2-3}
+Predito & 0 & 1\\
+\midrule
+0 & Verdadeiro negativo (VN) & Falso negativo (FN)\\
+1 & Falso positivo (FP) & Verdadeiro positivo (VP)\\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\begin{equation}
+Sensibilidade = \dfrac{VP}{VP+FN}\label{eq:sensitivity}
+\end{equation}
+
+\begin{equation}
+Especificidade = \dfrac{VN}{VN+FP}\label{eq:specificity}
+\end{equation}
+
+\begin{equation}
+Acurácia = \dfrac{VN+VP}{VN+VP+FN+FP}\label{eq:accuracy}
+\end{equation}
+
+Com a sensibilidade de 0,8217, especificidade de 0,8029 e acurácia de 0,8118 (com invervalo de confiança de 0,7968 a 0,8261), o poder preditivo do modelo foi considerado adequado para o negócio.
 
 \hypertarget{conclusuxf5es}{%
 \section{Conclusões}\label{conclusuxf5es}}
