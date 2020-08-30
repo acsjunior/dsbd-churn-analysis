@@ -1,5 +1,5 @@
 ---
-title: "Utilizando a Regressão Logística para Classificação de Churn em um Ambiente de Startup"
+title: "Classificação de Churn Através da Regressão Logística Binária"
 author: "Antonio C. da Silva Júnior"
 orientador: "Prof. WALMES M. ZEVIANI"
 output:

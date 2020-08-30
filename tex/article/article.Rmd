@@ -1,6 +1,6 @@
 ---
-title: "Utilizando a Regressão Logística para Classificação de Churn em Ambiente de Startup"
-subtitle: "Using Logistic Regression for Customer Churn Classification in Startup Environment "
+title: "Classificação de Churn Através da Regressão Logística Binária"
+subtitle: "Customer Churn Classification Through Binary Logistic Regression"
 author: "Antonio C. da Silva Júnior"
 email: "juniorssz@gmail.com"
 affiliation: "Campus Santos, Universidade Paulista Av. Conselheiro Nébias 766, Boqueirão, 11045-002, Santos, SP, Brasil"
@@ -13,7 +13,10 @@ output:
 bibliography: referencias.bib
 biblio-style: unsrt
 lang: pt-BR
-resumo: "asdfasdf."
+resumo: >
+  aaaa \par 
+  bbbb \textit{itálico} \newline
+  ccc
 palavras_chave: "asdfasdf, asdfasdf, asdfasdf, asdfasdf, asdfasdf"
 abstract: "asdfasdf."
 keywords: "asdfasdf, asdfasdf, asdfasdf, asdfasdf, asdfasdf"
@@ -39,21 +42,21 @@ O desenvolvimento de estratégias para retenção de clientes se tornou uma prá
 
 A literatura comprova que a modelagem preditiva de abandono de clientes, também conhecida como modelagem preditiva de churn, é um tema bastante explorado e que possibilita inúmeras maneiras de desfecho: Botelho e Tostes \cite{Botelho2010} ajustaram um modelo de regressão logística para predizer a probabilidade de churn em uma grande empresa de varejo; Vafeiadis et al. \cite{Vafeiadis2015} tiveram sucesso, entre os métodos comparados, na classificação de churn através do SVM (kernel polinomial) com AdaBoost em uma empresa de telecomunicações; Baseados nos dados de avaliações online de clientes, Kumar e Yadav \cite{Kumar2020} propuseram um modelo preditivo de churn baseado em regras através de redes neurais artificiais e teoria dos conjuntos aproximados.
 
-Com base nos dados de uma startup brasileira que tem como principal produto uma plataforma digital para conectar vendedores de diversos segmentos aos grandes marketplaces, a proposta deste artigo é apresentar um modelo preditivo que possibilite não só a classificação de vendedores propensos a abandonar a empresa, mas que também permita a interpretação dos motivos que possivelmente estejam impactando a predição. Diante da variedade de técnicas disponíveis e das particularidades de cada modelo de negócio, a escolha do algoritmo adequado se torna uma etapa crucial do processo de modelagem. Portanto, tendo como referência a abordagem de Silva Júnior, Almeida e Santos \cite{Junior2020}, que utilizaram uma modelagem híbrida multicritério considerando múltiplos decisores para a escolha de um modelo preditivo de churn, o algoritmo escolhido para desenvolver o classificador proposto foi a regressão logística.
+Com base nos dados disponibilizados pelo Olist, startup brasileira que tem como principal produto uma plataforma digital para conectar vendedores de diversos segmentos aos grandes marketplaces, a proposta deste artigo é apresentar um modelo preditivo que possibilite não só a classificação de vendedores propensos a abandonar a empresa, mas que também permita a interpretação dos motivos que possivelmente estejam impactando a predição. Diante da variedade de técnicas disponíveis e das particularidades de cada modelo de negócio, a escolha do algoritmo adequado se torna uma etapa crucial do processo de modelagem. Portanto, tendo como referência a abordagem de Silva Júnior, Almeida e Santos \cite{Junior2020}, que utilizaram uma modelagem híbrida multicritério considerando múltiplos decisores para a escolha de um modelo preditivo de churn, o algoritmo escolhido para desenvolver o classificador proposto foi a regressão logística.
 
 # Materiais e métodos
 
 ## Estruturação do conjunto de dados
 
-Os dados utilizados neste trabalho referem-se a clientes de uma startup paranaense, anonimizados e com variáveis quantitativas padronizadas com média 0 e desvio padrão 1. Considerando que estes clientes contrataram uma plataforma digital que possibilita a venda de produtos nos principais marketplaces, neste trabalho eles serão chamados de vendedores. Devido às características da arquitetura do banco de dados e às particularidades do negócio da companhia, houve a necessidade de realizar um longo processo de data wrangling. Este processo inicia-se por um diagnóstico preliminar dos dados, ou seja, se estão no formato adequado, se respondem as perguntas que motivaram a análise e o que é necessário para colocá-los no formato ideal. Em seguida avalia-se a ocorrência de dados faltantes, valores inconsistentes e duplicatas e, por fim, realiza-se um processo de limpeza e transformação, de modo a se obter um conjunto de dados adequado para o estudo \cite{Kandel2011}.
+Os dados utilizados neste trabalho referem-se a clientes do Olist e foram disponibilizados anonimizados e com variáveis quantitativas padronizadas com média 0 e desvio padrão 1. Considerando que estes clientes contrataram uma plataforma digital que possibilita a venda de produtos nos principais marketplaces, neste trabalho eles serão chamados de vendedores. Devido às características da arquitetura do banco de dados e às particularidades do negócio da companhia, houve a necessidade de realizar um longo processo de data wrangling. Este processo inicia-se por um diagnóstico preliminar dos dados, ou seja, se estão no formato adequado, se respondem as perguntas que motivaram a análise e o que é necessário para colocá-los no formato ideal. Em seguida avalia-se a ocorrência de dados faltantes, valores inconsistentes e duplicatas e, por fim, realiza-se um processo de limpeza e transformação, de modo a se obter um conjunto de dados adequado para o estudo \cite{Kandel2011}.
 
 ### Definição da variável resposta e covariáveis de desempenho
 
-Inicialmente foram definidos como churn ($Y=1$) os vendedores que estiveram inativos por 30 dias corridos desde a data da última atividade e permaneceram no mesmo estado em definitivo, considerando como atividade o acesso à plataforma digital ou a ocorrência de uma venda online. Em seguida, em função da data de corte estabelecida conforme a Tabela \@ref(tab:dataDeCorte), foram mantidos no conjunto de dados somente os vendedores com pelo menos 90 dias de histórico. O período de 90 dias, finalizado na data de corte, foi dividido igualmente em dois subperíodos, onde foram calculadas métricas como faturamento, ticket médio, quantidade de produtos publicados, quantidade de pedidos cancelados, número de dias em atividade e etc., em cada cada um dos subperíodos. Em seguida, através da Equação \@ref(eq:desempenho), foi calculado o desempenho do vendedor em função de diversas métricas, onde $V1$ e $V2$ são os valores calculados para cada subperíodo.
+Inicialmente foram definidos como churn ($Y=1$) os vendedores que estiveram inativos por 30 dias corridos desde a data da última atividade e permaneceram no mesmo estado em definitivo, considerando como atividade o acesso à plataforma digital ou a ocorrência de uma venda online. Em seguida, em função da data de corte estabelecida conforme a Tabela \@ref(tab:dataDeCorte), foram mantidos no conjunto de dados somente os vendedores com pelo menos 90 dias de histórico. O período de 90 dias, finalizado na data de corte, foi dividido igualmente em dois subperíodos, onde foram calculadas métricas como faturamento, ticket médio, quantidade de produtos publicados, quantidade de pedidos cancelados, número de dias em atividade e etc., em cada cada um dos subperíodos. Em seguida, através da equação  $V2 / (V1 + V2)$, foi calculado o desempenho do vendedor em função de diversas métricas, sendo $V1$ e $V2$ os valores calculados para cada subperíodo.
 
-\begin{equation}
-Desempenho = \dfrac{V2}{V1+V2} (\#eq:desempenho)
-\end{equation}
+<!-- \begin{equation} -->
+<!-- \dfrac{V2}{V1+V2} (\#eq:desempenho) -->
+<!-- \end{equation} -->
 
 As métricas desempenho, data à natureza da equação de origem, possuem o comportamento explicado pela Tabela \@ref(tab:metricas). Ao término desta etapa foi obtido um conjunto de dados composto pela variável resposta (churn) e, como covariáveis, 9 métricas de desempenho, onde cada observação representa um vendedor.
 
@@ -106,9 +109,9 @@ Entretanto, matematicamente é mais conveniente trabalhar com o logaritmo da fun
 logL = \sum_{i=1}^{n} \left\{ \big[Y_iln(\pi_i)\big] + \big[(1-Y_i)ln(1-\pi_i)\big] \right\}(\#eq:logverossimilhanca)
 \end{equation}
 
-## Ajuste do modelo de regressão logística binária
+## Ajuste do modelo e seleção de covariáveis
 
-A comparação entre dois modelos de regressão logística pode ser realizada através do Critério de Informação de Akaike (AIC), definido por $-2logL + 2p$, onde $logL$ é a log-verossimilhança maximizada e $p$ é o número de parâmetros do modelo, devendo-se selecionar o modelo que apresentar o menor valor de AIC. Entretanto, avaliar todas a combinações possíveis pode ser computacionalmente invivável, mesmo para um número moderado de covariáveis. Portanto, para ajudar a encontrar o melhor modelo com o menor número de covariáveis possível foi utilizado o algoritmo \textit{stepwise} \cite{Taconeli2019}.
+A comparação entre dois modelos de regressão logística pode ser realizada através do Critério de Informação de Akaike (AIC), definido por $-2logL + 2p$, onde $logL$ é a log-verossimilhança maximizada e $p$ é o número de parâmetros do modelo, devendo-se selecionar o modelo que apresentar o menor valor de AIC. Entretanto, avaliar todas a combinações possíveis pode ser computacionalmente invivável, mesmo para um número moderado de covariáveis. Portanto, para ajudar a encontrar o melhor modelo com o menor número de covariáveis possível foi utilizado o algoritmo \textit{stepwise}, que utiliza a minimização do AIC \cite{Taconeli2019}.
 
 ```{r include=FALSE}
 df_train <- read.csv("../../Data/anonymous_train.csv")
@@ -158,7 +161,7 @@ covariaveis %>%
 
 O conjunto de dados foi separado aleatoriamente em duas partes, garantindo a proporção aproximada de 47,3% de ocorrência de churn ($Y=1$) em ambas as amostras. A amostra menor, com 25% dos dados, foi separada para a etapa de avaliação do poder preditivo do modelo, ao passo que a amostra maior foi utilizada para o ajuste de dois modelos por valição cruzada K-fold com 5 folds \cite{Kohavi1995}, à partir de todas as covariáveis disponíveis. Um deles, denominado \textit{modelo completo}, foi ajustado da maneira tradicional, ao passo que o segundo modelo, denominado \textit{modelo restrito}, teve o ajuste realizado através do algoritmo \textit{stepwise}.
 
-Através do teste da razão da verossimilhança, representado através da Equação \@ref(eq:trv), é possível verificar a qualidade do ajuste do \textit{modelo completo}, ajustado com $j$ covariáveis, em comparação com o \textit{modelo restrito}, ajustado com $j-k$ covariáveis, sendo $k$ o número de covariáveis removidas do ajuste. Quando a estatística do $TRV$ é inferior ao valor da distribuição do ${\chi}^2$ com $k$ graus de liberdade e 5% de significância, não rejeitamos a hipótese nula, ou seja, concluimos que a remoção de $k$ covariáveis não afeta a qualidade do ajuste do modelo \cite{Favero2017}. 
+Através do teste da razão da verossimilhança (TRV), representado através da Equação \@ref(eq:trv), é possível verificar a qualidade do ajuste do \textit{modelo completo}, ajustado com $j$ covariáveis, em comparação com o \textit{modelo restrito}, ajustado com $j-k$ covariáveis, sendo $k$ o número de covariáveis removidas do ajuste. Quando a estatística do TRV é inferior ao valor da distribuição do ${\chi}^2$ com $k$ graus de liberdade e 5% de significância, não rejeita-se a hipótese nula, ou seja, constata-se que a remoção de $k$ covariáveis não afeta a qualidade do ajuste do modelo \cite{Favero2017}. 
 
 \begin{equation}
 TRV = -2(logL_{completo} - logL_{restrito})(\#eq:trv)
@@ -167,6 +170,36 @@ TRV = -2(logL_{completo} - logL_{restrito})(\#eq:trv)
 Ao realizar o teste, foi constatado que a remoção das 17 covariáveis através do algoritmo \textit{stepwise} não alterou a qualidade do ajuste, uma vez que a estatística do teste foi inferior ao valor da distribuição do ${\chi}^2$ com 17 graus de liberdade e 5% de significância. Portanto, optou-se pelo \textit{modelo restrito} para a continuidade do estudo, uma vez que este possui complexidade inferior com relação ao \textit{modelo completo}, sem perda de qualidade. A Tabela \@ref(tab:covars) exibe as 14 covariáveis selecionadas para o modelo.
 
 # Resultados e discussões
+
+## Análise de diagnóstico
+
+Com a intenção de generalizar o método de análise dos resíduos da regressão linear para todos os modelos lineares generalizados, Dunn e Smyth \cite{Dunn1996} propuseram os resíduos quantílicos aleatorizados, definidos por $r_i = \phi^{-1}(u_i)$, onde $\phi^{-1}$ é a inversa da função de distribuição acumulada da normal padrão e $u_i = F(y_i;\mu_i,\phi)$, com distribuição uniforme entre 0 e 1, é calculado com base na distribuição acumulada do modelo proposto. Caso o modelo logístico esteja bem ajustado, espera-se que os resíduos quantílicos aleatorizados se apresentem normalmente distribuídos e com variância constante \cite{Taconeli2015}. A análise da qualidade do ajuste, através dos resíduos, foi realizada de forma gráfica. Ao comparar os resíduos com os valores ajustados (Figura \@ref(fig:resplot)) é possível observar que estes apresentam variabilidade aproximadamente constante e estão centrados predominantemente em 0, entre -2 e 2. No gráfico quantil-quantil \cite{Wilk1968} (Figura \@ref(fig:qqplot)) nota-se que os resíduos estão, de forma razoável, aderentes à distribuição normal, mesmo com uma leve fuga nas caldas. Portanto, nesta etapa foi concluído que o modelo foi bem ajustado.
+
+```{r resplot, fig.cap='Gráficos dos resíduos versus valores ajustados', out.width="100%", fig.align='center'}
+q_residuals <- qres.binom(final_model)
+predictions <- predict(final_model)
+df_diagnosis <- data.frame(q_residuals, predictions)
+
+df_diagnosis %>%
+  ggplot(aes(x = predictions, y = q_residuals)) +
+  geom_point(colour = "blue", alpha = 0.3) +
+  geom_smooth(method="loess", colour = "red") +
+  labs(x = "Valores ajustados", y = "Resíduos") +
+  theme(axis.text=element_text(size=12),
+        axis.title=element_text(size=14, face="bold"),
+        title=element_text(size=16, face="bold"))
+```
+
+```{r qqplot, fig.cap='Gráfico quantil-quantil', out.width="100%", fig.align='center'}
+df_diagnosis %>%
+  ggplot(aes(sample = q_residuals)) +
+  stat_qq(colour = "blue", alpha = 0.3, size = 3) +
+  stat_qq_line(colour = "red") +
+  labs(x = "Quantis teóricos", y = "Quantis amostrais") +
+  theme(axis.text=element_text(size=12),
+        axis.title=element_text(size=14, face="bold"),
+        title=element_text(size=16, face="bold"))
+```
 
 ## Análise e interpretação das estimativas dos parâmetros
 
@@ -205,40 +238,15 @@ coeficientes %>%
   kable_styling(font_size = TABLE_FONT_SIZE)
 ```
 
-Com a intenção de generalizar o método de análise dos resíduos da regressão linear para todos os modelos lineares generalizados, Dunn e Smyth \cite{Dunn1996} propuseram os resíduos quantílicos aleatorizados, definidos por $r_i = \phi^{-1}(u_i)$, onde $\phi^{-1}$ é a inversa da função de distribuição acumulada da normal padrão e $u_i = F(y_i;\mu_i,\phi)$, com distribuição uniforme entre 0 e 1, é calculado com base na distribuição acumulada do modelo proposto. Caso o modelo logístico esteja bem ajustado, espera-se que os resíduos quantílicos aleatorizados se apresentem normalmente distribuídos e com variância constante \cite{Taconeli2015}. A análise da qualidade do ajuste, através dos resíduos, foi realizada de forma gráfica. Ao comparar os resíduos com os valores ajustados (Figura \@ref(fig:resplot)) é possível observar que estes apresentam variabilidade aproximadamente constante e estão centrados predominantemente em 0, entre -2 e 2. No gráfico quantil-quantil \cite{Wilk1968} (Figura \@ref(fig:qqplot)) nota-se que os resíduos estão, de forma razoável, aderentes à distribuição normal, mesmo com uma leve fuga nas caldas. Portanto, pode-se considerar que o modelo foi bem ajustado.
-
-```{r resplot, fig.cap='Gráficos dos resíduos versus valores ajustados', out.width="100%", fig.align='center'}
-q_residuals <- qres.binom(final_model)
-predictions <- predict(final_model)
-df_diagnosis <- data.frame(q_residuals, predictions)
-
-df_diagnosis %>%
-  ggplot(aes(x = predictions, y = q_residuals)) +
-  geom_point(colour = "blue", alpha = 0.3) +
-  geom_smooth(method="loess", colour = "red") +
-  labs(x = "Valores ajustados", y = "Resíduos") +
-  theme(axis.text=element_text(size=12),
-        axis.title=element_text(size=14, face="bold"),
-        title=element_text(size=16, face="bold"))
-```
-
-```{r qqplot, fig.cap='Gráfico quantil-quantil', out.width="100%", fig.align='center'}
-df_diagnosis %>%
-  ggplot(aes(sample = q_residuals)) +
-  stat_qq(colour = "blue", alpha = 0.3, size = 3) +
-  stat_qq_line(colour = "red") +
-  labs(x = "Quantis teóricos", y = "Quantis amostrais") +
-  theme(axis.text=element_text(size=12),
-        axis.title=element_text(size=14, face="bold"),
-        title=element_text(size=16, face="bold"))
-```
-Através da Equação \@ref(eq:odds), obtida a partir da Equação \@ref(eq:logito), é possível modelar a chance de ocorrência do evento de interesse para uma particular observação e, em consequência, avaliar o quanto a chance de ocorrência do evento de interesse se altera em média, em função de uma particular estimativa. Adicionalmente podemos dizer que o aumento de $k$ unidades em uma particular covariável, mantidas as demais condições constantes, multiplica a chance de ocorrência do evento de interesse por $e^{k \cdot \hat{\beta}_j}$, onde $\hat{\beta}_j$ representa a estimativa do parâmetro desta particular covariável \cite{Favero2017}.
+Através da Equação \@ref(eq:odds), obtida a partir da Equação \@ref(eq:logito), é possível modelar a chance de ocorrência do evento de interesse para uma particular observação e, em consequência, avaliar o quanto a chance de ocorrência do evento de interesse se altera em média, em função de uma particular estimativa. Adicionalmente podemos dizer que o aumento de $k$ unidades em uma particular covariável, mantidas as demais condições constantes, multiplica a chance de ocorrência do evento de interesse por $e^{k\hat{\beta}_j}$, onde $\hat{\beta}_j$ representa a estimativa do parâmetro desta particular covariável \cite{Favero2017}.
 
 \begin{equation}
 \dfrac{\pi_i}{1-\pi_i}= e^{\beta_0 + \beta_1 X_{i1} + ... +  \beta_p X_{ip}}(\#eq:odds)
 \end{equation}
 
-As Tabelas \@ref(tab:oddsnumericas), \@ref(tab:oddsbinarias) e \@ref(tab:oddsmetricas) representam as estimativas dos parâmetros do modelo e estão ordenadas decrescentemente em função da variação absoluta da chance de ocorrência de churn. Suas interpretações podem ser realizadas da seguinte forma, começando pela Tabela \@ref(tab:oddsnumericas) que representa as covariáveis quantitativas: a chance de churn fica multiplicada por $e^{-1,6460}=0,1928$ para 1 unidade a mais na covariável X31, mantidas as demais condições constantes. Em outras palavras, 1 unidade a mais na covariável X31 impacta na redução da chance de churn em 81%, fixadas as demais covariáveis. Como as covariáveis quantitativas foram padronizadas com média 0 e desvio padrão 1, é importante ressaltar que 1 unidade na covariável X31 não representa 1 dia de atividade, assim sendo, neste estudo a melhor forma de interpretar as estimativas dos parâmetros das covariáveis quantitativas é assimilando que estimativas menores que zero reduzem em média a chance de churn, à medida que o valor de suas respectivas covariáveis elevam, ao passo que a estimativa maior que zero aumenta em média a chance de churn, à medida que o valor de sua respectiva covariável também aumenta, fixadas as demais covariáveis. Quanto às covariáveis qualitativas representadas na Tabela \@ref(tab:oddsbinarias), podemos interpretá-las conforme o exemplo: a chance de churn para os vendedores que estão no estágio I (X13) é 93% menor com relação aos vendedores que não estão no mesmo estágio, mantidas as demais condições constantes. Por fim, com relação às covariáveis de desempenho (Tabela \@ref(tab:oddsmetricas)), dadas as suas suas características representadas na Tabela \@ref(tab:metricas), suas interpretações podem ser realizadas de acordo com o exemplo: a chance de churn de um vendedor que melhorou o seu desempenho nos subperíodos avaliados com relação ao faturamento ($X6>0,5$), é em média mais de 34% menor, fixadas as demais covariáveis. Em contrapartida, a chance de churn de um vendedor que piorou o seu desempenho nos subperídos avaliados com relação ao faturamento ($X6<0,5$), é também menor em média, entretanto, em um valor percentual inferior a 34.
+As Tabelas \@ref(tab:oddsnumericas), \@ref(tab:oddsbinarias) e \@ref(tab:oddsmetricas) representam as estimativas dos parâmetros do modelo e estão ordenadas decrescentemente em função da variação absoluta da chance de ocorrência de churn. Suas interpretações podem ser realizadas da seguinte forma, começando pela Tabela \@ref(tab:oddsnumericas) que representa as covariáveis quantitativas: a chance de churn fica multiplicada por $e^{-1,6460}=0,1928$ para 1 unidade a mais na covariável X31, mantidas as demais condições constantes. Em outras palavras, o acréscimo de 1 unidade na covariável X31 impacta na redução da chance de churn em 81%, fixadas as demais covariáveis. Como as covariáveis quantitativas foram padronizadas com média 0 e desvio padrão 1, é importante ressaltar que 1 unidade na covariável X31 não representa 1 dia de atividade, assim sendo, neste estudo a melhor forma de interpretar as estimativas dos parâmetros das covariáveis quantitativas é assimilando que estimativas menores que zero reduzem em média a chance de churn, mediante ao aumento do valor de suas respectivas covariáveis, ao passo que a estimativa maior que zero aumenta em média a chance de churn, à medida que o valor de sua respectiva covariável também aumenta, fixadas as demais covariáveis. Quanto às covariáveis qualitativas representadas na Tabela \@ref(tab:oddsbinarias), podemos interpretá-las conforme o exemplo: a chance de churn para os vendedores que estão no estágio I (X13) é 93% menor com relação aos vendedores que não estão no mesmo estágio, mantidas as demais condições constantes. Por fim, com relação às covariáveis de desempenho (Tabela \@ref(tab:oddsmetricas)), dadas as suas suas características representadas na Tabela \@ref(tab:metricas), suas interpretações podem ser realizadas de acordo com o exemplo: a chance de churn de um vendedor que melhorou o seu desempenho nos subperíodos avaliados com relação ao faturamento ($X6>0,5$), é em média mais de 34% menor, fixadas as demais covariáveis. Em contrapartida, a chance de churn de um vendedor que piorou o seu desempenho nos subperídos avaliados com relação ao faturamento ($X6<0,5$), é também menor em média, entretanto, em um valor percentual inferior a 34.
+
+Nesta etapa foi constatado que o aumento do número de dias em atividade no perído (X31), estar tanto no estágio I (X13) como no estágio R (X14) e a melhora do desempenho quanto ao faturamento (X6), são os fatores que mais impactam a redução da chance de churn.
 
 ```{r odds}
 odds <- coeficientes[c("Covariável", "Estimativa")]
@@ -427,20 +435,30 @@ cmatrix %>%
 ```
 
 \begin{equation}
-Sensibilidade = \dfrac{VP}{VP+FN}(\#eq:sensitivity)
+\dfrac{VP}{VP+FN}(\#eq:sensitivity)
 \end{equation}
 
 \begin{equation}
-Especificidade = \dfrac{VN}{VN+FP}(\#eq:specificity)
+\dfrac{VN}{VN+FP}(\#eq:specificity)
 \end{equation}
 
 \begin{equation}
-Acurácia = \dfrac{VN+VP}{VN+VP+FN+FP}(\#eq:accuracy)
+\dfrac{VN+VP}{VN+VP+FN+FP}(\#eq:accuracy)
 \end{equation}
 
 Com a sensibilidade de 0,8217, especificidade de 0,8029 e acurácia de 0,8118 (com invervalo de confiança de 0,7968 a 0,8261), o poder preditivo do modelo foi considerado adequado para o negócio.
 
 # Conclusões
+
+Através deste trabalho pretendeu-se construir um modelo para classificação de churn interpretável e com poder preditivo adequado para o negócio. Entre as diversas técnicas disponíveis, a regressão logística binária foi escolhida por ser altamente confiável, por possibilitar a interpretação direta das estimativas dos parâmetros e por oferecer uma resposta na escala de probabilidade, permitindo aos decisores não só identificar os vendedores propensos a abandonar a empresa, mas também ordená-los em função da probabilidade da ocorrência do churn.
+
+Por meio dos resultados apresentados, pôde-se constatar que o modelo proposto é capaz de atender a necessidade do negócio, uma vez que além do bom poder preditivo apresentado, oferece insights para ações de marketing personalizadas e otimizadas para retenção dos vendedores propensos a abandonar a empresa.
+
+Por fim, a abordagem utilizada na definição da variável resposta e na criação de métricas para avaliação de desempenho demonstrou-se eficaz no processo de modelagem, portanto, espera-se que este trabalho seja capaz de apoiar estudos futuros em condições semelhantes.
+
+# Agradecimentos
+
+Ao Olist por disponibilizar os dados para o desenvolvimento do trabalho e ao corpo docente da Especialização em Data Science e Big Data da UFPR pela qualidade do ensino oferecido, em especial ao meu orientador Prof. Walmes Zeviani por toda inspiração, apoio e disponibilidade, inclusive nos finais de semana, e ao Prof. Cesar Taconeli que através das suas excelentes aulas me inspirou o interesse por Modelos Lineares Generalizados.
 
 ```{r}
 # ## Validação cruzada K-fold {#sec:kfoldcv}
@@ -469,4 +487,4 @@ Com a sensibilidade de 0,8217, especificidade de 0,8029 e acurácia de 0,8118 (c
 
 ```
 
-asdfasdf
+
