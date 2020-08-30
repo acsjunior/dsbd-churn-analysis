@@ -12,4 +12,6 @@ Data/df_test.csv
 *.log
 *.out
 *.aux
+*.bbl
+*.blg
 tex/article/old/*
