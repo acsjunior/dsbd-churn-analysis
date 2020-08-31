@@ -1,6 +1,6 @@
 ---
-title: "Classificação de Churn Através da Regressão Logística Binária"
-subtitle: "Customer Churn Classification Through Binary Logistic Regression"
+title: "Classificação de Churn Utilizando um Modelo de Regressão Logística Binária"
+subtitle: "Customer Churn Classification Using a Binary Logistic Regression Model"
 author: "Antonio C. da Silva Júnior"
 email: "juniorssz@gmail.com"
 affiliation: "Campus Santos, Universidade Paulista Av. Conselheiro Nébias 766, Boqueirão, 11045-002, Santos, SP, Brasil"
@@ -16,8 +16,8 @@ lang: pt-BR
 resumo: >
   O desenvolvimento de estratégias para retenção de clientes se tornou uma prática comum entre companhias de diversos segmentos, uma vez que relacionamentos de longo prazo com clientes estão associados à sobrevivência econômica e ao sucesso das empresas. Portanto, com a intenção antever os clientes propensos a abandonar o relacionamento com uma startup brasileira, fenômeno conhecido como \textit{churn}, a proposta deste artigo é apresentar um modelo preditivo que possibilite não só a classificação de \textit{churn}, mas que também permita a interpretação dos motivos que possivelmente estejam impactando a predição. Após árduo processo de data wrangling, aplicou-se a regressão logística binária fazendo uso da validação cruzada K-fold e do algortimo \textit{stepwise} para seleção de covariáveis. O modelo final, composto por 14 covariáveis, passou por uma análise de diagnóstico por meio dos resíduos quantilicos aleatorizados e teve o poder preditivo avaliado através da curva ROC, matriz de confusão e de métricas de avaliação. Em todas as etapas do estudo o modelo foi considerado adequado para o negócio, e além de exibir um bom poder preditivo, demonstrou-se capaz de fornecer insights para ações de marketing personalizadas e otimizadas com foco na retenção dos clientes propensos a dar \textit{churn}.
 palavras_chave: "Churn, Retenção de clientes, CRM, Regressão logística binária, Stepwise."
-abstract: "Developing strategies for customer retention has become a common practice among companies from different segments, since long-term relationships with customers are associated to the economic survival and success of companies. Therefore, with the intention of predict the customers churn of a Brazilian startup, the purpose of this article is to present a predicitve model that allows "
-keywords: "asdfasdf, asdfasdf, asdfasdf, asdfasdf, asdfasdf"
+abstract: "Developing strategies for customer retention has become a common practice among companies from different segments, since long-term relationships with customers are associated to the economic survival and success of companies. Therefore, with the intention of predict the customers churn of a Brazilian startup, the purpose of this article is to present a predicitve model that allows to interpret the reasons that are possibly impact the prediction. After an arduous data wrangling proccess, the binary logistic regression was applied using K-fold cross-validation and the stepwise algorithm for covariate selection. The final model composed by 14 covariates has undergone a diagnostic analysis through randomized quantile residuals and its predict power was evatuated by the ROC curve, confusion matrix and evaluating metrics. The model was considered appropriate for the business in all stages of the study and besides proved its good predict power, it also demonstrated to be able to provide insights for optimized and customized marketing actions focused on retention of customers likely to churn."
+keywords: "Customer churn, Customer retention, CRM, Binary logistic regression, Stepwise"
 ---
 
 ```{r setup, include=FALSE}
@@ -456,7 +456,7 @@ Por fim, a abordagem utilizada na definição da variável resposta e na criaç�
 
 # Agradecimentos
 
-Ao Olist por disponibilizar os dados para o desenvolvimento do trabalho e ao corpo docente da Especialização em Data Science e Big Data da UFPR pela qualidade do ensino oferecido, em especial ao meu orientador Prof. Walmes Zeviani por toda inspiração, apoio e disponibilidade, inclusive nos finais de semana, e ao Prof. Cesar Taconeli que através das suas excelentes aulas me inspirou o interesse por Modelos Lineares Generalizados.
+Ao Olist por disponibilizar os dados para o desenvolvimento do trabalho. Ao corpo docente da Especialização em Data Science e Big Data da Universidade Federal do Paraná - UFPR, pela qualidade do ensino oferecido, em especial ao  Prof. Walmes Zeviani pela orientação, inspiração e disponibilidade, inclusive nos finais de semana, e ao Prof. Cesar Taconeli, que através das suas excelentes aulas me inspirou o interesse por Modelos Lineares Generalizados. Ao Prof. Marcos Santos do Instituto Militar de Engenharia - IME, pelo suporte e incentivo à pesquisa.
 
 ```{r}
 # ## Validação cruzada K-fold {#sec:kfoldcv}

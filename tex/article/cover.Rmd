@@ -1,7 +1,14 @@
 ---
-title: "Classificação de Churn Através da Regressão Logística Binária"
+title: "Classificação de Churn Utilizando um Modelo de Regressão Logística Binária"
 author: "Antonio C. da Silva Júnior"
 orientador: "Prof. WALMES M. ZEVIANI"
+instituicao: "Universidade Federal do Paraná"
+setor: "Setor de Ciências Exatas"
+departamento: "Departamento de Estatística"
+programa: >
+  Programa de Especialização em \textit{Data Science} e \textit{Big Data}
+local: "Curitiba"
+ano: "2020"
 output:
   pdf_document:
     template: Capa.tex
