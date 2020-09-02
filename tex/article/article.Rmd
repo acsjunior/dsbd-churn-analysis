@@ -1,7 +1,7 @@
 ---
 title: "Classificação de Churn Utilizando um Modelo de Regressão Logística"
 subtitle: "Customer Churn Classification Using a Logistic Regression Model"
-author: "Antonio Carlos da Silva Júnior"
+author: "Antonio C. da Silva Júnior"
 email: "juniorssz@gmail.com"
 affiliation: "Campus Santos, Universidade Paulista, Av. Conselheiro Nébias 766, Boqueirão, 11045-002, Santos, SP, Brasil"
 # date: "8/24/2020"
@@ -17,7 +17,7 @@ resumo: >
   O desenvolvimento de estratégias para retenção de clientes se tornou uma prática comum entre companhias de diversos segmentos, uma vez que relacionamentos de longo prazo com clientes estão associados à sobrevivência econômica e ao sucesso das empresas. Portanto, com o objetivo de antever clientes propensos a abandonar o relacionamento com uma startup brasileira, fenômeno conhecido como \textit{churn}, este artigo apresenta um modelo preditivo que possibilita a classificação de \textit{churn} e permite a interpretação dos motivos que impactam o desfecho. Após um extensivo processo de \textit{data wrangling}, aplicou-se a regressão logística fazendo uso de validação cruzada K-fold e do algortimo \textit{stepwise} para seleção de covariáveis. O modelo final, composto por 14 covariáveis, passou por uma análise de diagnóstico por meio dos resíduos quantilicos aleatorizados e teve o poder preditivo avaliado através da curva ROC, matriz de confusão e de métricas de avaliação. Em todas as etapas do estudo o modelo foi considerado adequado para o negócio e, além de exibir um bom poder preditivo, demonstrou-se capaz de fornecer \textit{insights} para ações de marketing personalizadas e otimizadas com foco na retenção dos clientes propensos a dar \textit{churn}.
 palavras_chave: "Churn, Retenção de clientes, CRM, Regressão logística, Stepwise."
 abstract: >
-  Developing strategies for customer retention became a common practice among companies from different segments, since long-term relationships with customers are associated to the economic survival and success of companies. Therefore, with the goal of predicting the customer churn of a Brazilian startup, this article presents a predicitve model that classifies the customer churn and allows interpreting the reasons impact the outcome. After an extensive data wrangling proccess, the logistic regression was applied using K-fold cross-validation and the stepwise algorithm for covariate selection. The final model, composed by 14 covariates, has undergone a diagnostic analysis through randomized quantile residuals and its prediction power was evatuated by the ROC curve, confusion matrix and evaluating metrics. The model was considered appropriate for the business in all stages of the study not only proved to have a good prediction power but also demonstrated itself capable of providing insights for executing optimized and customized marketing actions focusing on the retention of customers likely to churn.
+  Developing strategies for customer retention became a common practice among companies from different segments, since long-term relationships with customers are associated to the economic survival and success of companies. Therefore, with the goal of predicting the customer churn of a Brazilian startup, this article presents a predicitve model that classifies the customer churn and allows interpreting the reasons that impact the outcome. After an extensive data wrangling proccess, the logistic regression was applied using K-fold cross-validation and the stepwise algorithm for covariate selection. The final model, composed by 14 covariates, has undergone a diagnostic analysis through randomized quantile residuals and its prediction power was evatuated by the ROC curve, confusion matrix and evaluating metrics. The model was considered appropriate for the business in all stages of the study and not only proved to have a good prediction power but also demonstrated itself capable of providing insights for executing optimized and customized marketing actions focusing on the retention of customers likely to churn.
 keywords: "Customer churn, Customer retention, CRM, Logistic regression, Stepwise"
 ---
 
@@ -85,7 +85,7 @@ Dada a necessidade de analisar o comportamento da variável resposta em função
 
 O objetivo da regressão logística é o estudo da probabilidade de ocorrência de um evento de interesse ($Y$), apresentado na forma dicotômica ($Y=1$ se o evento de interesse ocorrer; $Y=0$, caso contrário), em função de um vetor de covariáveis ($X_1, ..., X_n$). Sua definição ocorre através da Equação \@ref(eq:logito), onde $\beta_j$ ($j = 0,1,2,...,p$) representa os parâmetros a serem estimados, sendo $\beta_0$ o intercepto e os demais, parâmetros de cada covariável. E o subscrito $i$ representa cada observação da amostra ($i = 1, 2,...,n$) \cite{Favero2017}.
 \begin{equation}
-ln \left ( \dfrac{\pi_i}{1-\pi_i} \right ) = \beta_0 + \beta_1 X_{i1} + ... +  \beta_p X_{ip}(\#eq:logito)
+\ln \left ( \dfrac{\pi_i}{1-\pi_i} \right ) = \beta_0 + \beta_1 X_{i1} + ... +  \beta_p X_{ip}(\#eq:logito)
 \end{equation}
 
 A Equação \@ref(eq:logito) modela a log-chance de ocorrência do evento de interesse, portanto, para obter uma expressão para a probabilidade de ocorrência do evento é necessário isolar matematicamente $\pi_i$, resultando na Equação \@ref(eq:probabilidade).

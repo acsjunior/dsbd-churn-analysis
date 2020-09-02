@@ -15,3 +15,4 @@ Data/df_test.csv
 *.bbl
 *.blg
 tex/article/old/*
+tex/article/article_files/*

@@ -43,7 +43,7 @@
 \newenvironment{proof}[1][Proof]{\noindent\textbf{#1.} }{\ \rule{0.5em}{0.5em}}
 
 \titulocabecalho{Classificação de Churn Utilizando um Modelo de Regressão Logística}
-\autorcabecalho{Antonio Carlos da Silva Júnior}
+\autorcabecalho{Antonio C. da Silva Júnior}
 
 \numeracao{01}
 \volume{01}
@@ -54,7 +54,7 @@
 \tipodeartigo{Especialização em Data Science \& Big Data}
 % \addtocounter{page}{566} %% \setcounter produces extra white page!!! use ===\addtocounter===
 
-\author[]{Antonio Carlos da Silva Júnior}
+\author[]{Antonio C. da Silva Júnior}
 
 \affil[]{Campus Santos, Universidade Paulista, Av. Conselheiro Nébias 766, Boqueirão, 11045-002, Santos, SP, Brasil\thanks{\href{emailto:juniorssz@gmail.com}{\href{mailto:juniorssz@gmail.com}{\nolinkurl{juniorssz@gmail.com}}}}
 }
@@ -83,7 +83,7 @@
   \begin{otherlanguage}{english}
 
     \begin{abstract}
-      Developing strategies for customer retention became a common practice among companies from different segments, since long-term relationships with customers are associated to the economic survival and success of companies. Therefore, with the goal of predicting the customer churn of a Brazilian startup, this article presents a predicitve model that classifies the customer churn and allows interpreting the reasons impact the outcome. After an extensive data wrangling proccess, the logistic regression was applied using K-fold cross-validation and the stepwise algorithm for covariate selection. The final model, composed by 14 covariates, has undergone a diagnostic analysis through randomized quantile residuals and its prediction power was evatuated by the ROC curve, confusion matrix and evaluating metrics. The model was considered appropriate for the business in all stages of the study not only proved to have a good prediction power but also demonstrated itself capable of providing insights for executing optimized and customized marketing actions focusing on the retention of customers likely to churn.
+      Developing strategies for customer retention became a common practice among companies from different segments, since long-term relationships with customers are associated to the economic survival and success of companies. Therefore, with the goal of predicting the customer churn of a Brazilian startup, this article presents a predicitve model that classifies the customer churn and allows interpreting the reasons that impact the outcome. After an extensive data wrangling proccess, the logistic regression was applied using K-fold cross-validation and the stepwise algorithm for covariate selection. The final model, composed by 14 covariates, has undergone a diagnostic analysis through randomized quantile residuals and its prediction power was evatuated by the ROC curve, confusion matrix and evaluating metrics. The model was considered appropriate for the business in all stages of the study and not only proved to have a good prediction power but also demonstrated itself capable of providing insights for executing optimized and customized marketing actions focusing on the retention of customers likely to churn.
       \keywords{Customer churn, Customer retention, CRM, Logistic regression, Stepwise}
 
     \end{abstract}
@@ -164,7 +164,7 @@ Dada a necessidade de analisar o comportamento da variável resposta em função
 
 O objetivo da regressão logística é o estudo da probabilidade de ocorrência de um evento de interesse (\(Y\)), apresentado na forma dicotômica (\(Y=1\) se o evento de interesse ocorrer; \(Y=0\), caso contrário), em função de um vetor de covariáveis (\(X_1, ..., X_n\)). Sua definição ocorre através da Equação \eqref{eq:logito}, onde \(\beta_j\) (\(j = 0,1,2,...,p\)) representa os parâmetros a serem estimados, sendo \(\beta_0\) o intercepto e os demais, parâmetros de cada covariável. E o subscrito \(i\) representa cada observação da amostra (\(i = 1, 2,...,n\)) \cite{Favero2017}.
 \begin{equation}
-ln \left ( \dfrac{\pi_i}{1-\pi_i} \right ) = \beta_0 + \beta_1 X_{i1} + ... +  \beta_p X_{ip}\label{eq:logito}
+\ln \left ( \dfrac{\pi_i}{1-\pi_i} \right ) = \beta_0 + \beta_1 X_{i1} + ... +  \beta_p X_{ip}\label{eq:logito}
 \end{equation}
 
 A Equação \eqref{eq:logito} modela a log-chance de ocorrência do evento de interesse, portanto, para obter uma expressão para a probabilidade de ocorrência do evento é necessário isolar matematicamente \(\pi_i\), resultando na Equação \eqref{eq:probabilidade}.
