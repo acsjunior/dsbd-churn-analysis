@@ -12,7 +12,7 @@
 "growth_freight_ratio","x10","numeric","Desempenho da razão dos preços de frete e pedido no período","percentual"
 "has_availability_days","x11","integer","Necessita de dias adicionais para postagem","1 = sim; 0 = não"
 "seller_stage_Bolsão","x12","integer","Está no estágio B","1 = sim; 0 = não"
-"seller_stage_Implementação","x13","integer","Esta no estágio I","1 = sim; 0 = não"
+"seller_stage_Implementação","x13","integer","Está no estágio I","1 = sim; 0 = não"
 "seller_stage_Relacionamento","x14","integer","Está no estágio R","1 = sim; 0 = não"
 "plan_type_lite","x15","integer","Possui o plano L","1 = sim; 0 = não"
 "plan_type_mid","x16","integer","Possui o plano M","1 = sim; 0 = não"
