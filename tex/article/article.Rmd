@@ -101,12 +101,12 @@ L =  \prod_{i=1}^{n} \left[ \pi_i^{Y_i} (1-\pi_i)^{1-Y_i} \right](\#eq:verossimi
 Entretanto, matematicamente é mais conveniente trabalhar com o logaritmo da função de verossimilhança, conhecido como função de log-verossimilhança \cite{Favero2017,Botelho2010}, representado através da Equação \@ref(eq:logverossimilhanca).
 
 \begin{equation}
-\log\text{L} = \sum_{i=1}^{n} \left\{ \big[Y_iln(\pi_i)\big] + \big[(1-Y_i)ln(1-\pi_i)\big] \right\}(\#eq:logverossimilhanca)
+\log L = \sum_{i=1}^{n} \left\{ \big[Y_i\ln(\pi_i)\big] + \big[(1-Y_i)\ln(1-\pi_i)\big] \right\}(\#eq:logverossimilhanca)
 \end{equation}
 
 ## Ajuste do modelo e seleção de covariáveis
 
-A comparação entre dois modelos de regressão logística pode ser realizada através do Critério de Informação de Akaike (AIC), definido por $-2\log\text{L} + 2p$, onde $\log\text{L}$ é a log-verossimilhança maximizada e $2p$ é o termo de penalização, sendo $p$ o número de parâmetros do modelo, devendo-se selecionar o modelo que apresentar o menor valor de AIC. Entretanto, avaliar todas a combinações possíveis pode ser computacionalmente invivável, mesmo para um número moderado de covariáveis. Portanto, para ajudar a encontrar o melhor modelo com o menor número de covariáveis possível foi utilizado o algoritmo \textit{stepwise} \cite{Taconeli2019}. Por padrão o \textit{stepwise} utiliza a minimização do AIC como critério para seleção das covariáveis, porém, neste estudo optou-se por alterar o múltiplo de penalização do AIC de 2 para 3,841459, que corresponde ao valor do quantil da distribuição do $\chi^2$ com 1 grau de liberdade e 5% de significância, permitindo assim que fosse considerado o p-valor = 0,05 como valor crítico para a seleção das covariáveis em cada iteração do algoritmo.
+A comparação entre dois modelos de regressão logística pode ser realizada através do Critério de Informação de Akaike (AIC), definido por $-2\log L + 2p$, onde $\log L$ é a log-verossimilhança maximizada e $2p$ é o termo de penalização, sendo $p$ o número de parâmetros do modelo, devendo-se selecionar o modelo que apresentar o menor valor de AIC. Entretanto, avaliar todas a combinações possíveis pode ser computacionalmente invivável, mesmo para um número moderado de covariáveis. Portanto, para ajudar a encontrar o melhor modelo com o menor número de covariáveis possível foi utilizado o algoritmo \textit{stepwise} \cite{Taconeli2019}. Por padrão o \textit{stepwise} utiliza a minimização do AIC como critério para seleção das covariáveis, porém, neste estudo optou-se por alterar o múltiplo de penalização do AIC de 2 para 3,841459, que corresponde ao valor do quantil da distribuição do $\chi^2$ com 1 grau de liberdade e 5% de significância, permitindo assim que fosse considerado o p-valor = 0,05 como valor crítico para a seleção das covariáveis em cada iteração do algoritmo.
 
 ```{r include=FALSE}
 df_train <- read.csv("../../Data/anonymous_train.csv")
