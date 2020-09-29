@@ -3,7 +3,7 @@ title: "Classificação de Churn Utilizando um Modelo de Regressão Logística"
 subtitle: "Customer Churn Classification Using a Logistic Regression Model"
 author: "Antonio C. da Silva Júnior"
 email: "juniorssz@gmail.com"
-affiliation: "Campus Santos, Universidade Paulista, Av. Conselheiro Nébias 766, Boqueirão, 11045-002, Santos, SP, Brasil"
+affiliation: "Olist Serviços Digitais, Curitiba, PR, Brasil"
 # date: "8/24/2020"
 output:
   bookdown::pdf_document2:

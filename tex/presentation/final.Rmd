@@ -184,8 +184,8 @@ knitr::include_graphics('img/tabela4_estimativas.png')
 ## Interpretação das estimativas dos parâmetros
 
 - Fatores que mais impactam na redução da chance de \textit{churn}:
-  - Aumento do número de dias em atividade no perído (X31)
   - Estar no estágio I (X13) ou no estágio R (X14)
+  - Aumento do número de dias em atividade no perído (X31)
   - Melhora do desempenho do faturamento (X6)
 
 ## Interpretação das estimativas dos parâmetros
@@ -200,83 +200,41 @@ knitr::include_graphics('img/tabela5_chances.png')
 knitr::include_graphics('img/tabela6_chances.png')
 ```
 
-## Escolha do cutoff
+## Escolha do cutoff e avaliação da curva ROC
 
-sadfas
+- Cutoff: 0,55
 
-<!-- - Variável resposta: clientes inativos por 30 dias corridos = *churn* (Y=1) -->
-<!-- - Avaliação dos últimos 90 dias de histórico do cliente -->
-<!--   - Período dividido em duas partes e avaliado o desempenho -->
-<!--   - Criação de diversas métricas de desempenho  -->
-<!-- - Inclusão de covariáveis qualitativas e quantitativas globais (calculadas não só no período de 90 dias) -->
-<!-- - 32 variáveis e 11.131 observações -->
+```{r, out.width='80%'}
+knitr::include_graphics('img/sensibilidade_especificidade.png')
+```
 
-<!-- ## Ajuste do modelo de regressão logistica -->
+## Escolha do cutoff e avaliação da curva ROC
 
-<!-- - Seleção de covariáveis com o algoritmo *stepwise* -->
-<!--   - Múltiplo de penalização: 3,841459 ($\chi^2$ com 1 grau de liberdade e 5% de significância) -->
-<!-- - Validação cruzada K-fold com 5 folds -->
+- AUC: 0,89
 
-<!-- # Resultados e discussão -->
+```{r, out.width='80%'}
+knitr::include_graphics('img/roc.png')
+```
 
-<!-- ## Teste da razão da verossimilhança -->
+## Avaliação do poder preditivo do modelo
 
-<!-- - Comparação do modelo completo com o modelo obtido pelo algoritmo *stepwise* -->
-<!-- - Constatado que a eliminação de 17 covariáveis não afetou a qualidade do ajuste do modelo -->
+```{r, out.width='80%'}
+knitr::include_graphics('img/tabela7_matrixconfusao.png')
+```
 
-<!-- ## Análise de diagnóstico -->
+- $\text{Sensibilidade} = VP / (VP + FN)$: 0,82
+- $\text{Especificidade} = VN / (VN + FP)$: 0,81
+- $\text{Acurácia} = VN + VP / (VN + VP + FN + FP)$: 0,81 (IC de 0,80 até 0,83)
 
-<!-- - Resíduos quantílicos aleatorizados -->
+# Conclusões
 
-<!-- ```{r, out.width='80%'} -->
-<!-- knitr::include_graphics('img/residuos_ajustados.png') -->
-<!-- ``` -->
+## Considerações finais
 
-<!-- ## Análise de diagnóstico -->
+- O modelo proposto equilibra poder de predição e interpretabilidade
+- Oferece insights para ações de marketing personalizadas com foco na retenção de clientes
+- A abordagem para a definição da variável resposta e criação das métricas de desempenho demonstrou-se eficaz 
 
-<!-- - Resíduos quantílicos aleatorizados -->
+##
 
-<!-- ```{r, out.width='80%'} -->
-<!-- knitr::include_graphics('img/quantil_quantil.png') -->
-<!-- ``` -->
-
-<!-- ## Análise de diagnóstico -->
-
-<!-- ```{r, out.width='80%'} -->
-<!-- knitr::include_graphics('img/estimativas.png') -->
-<!-- ``` -->
-
-<!-- ## Interpretação das estimativas -->
-
-<!-- - Covariáveis que mais impactam na redução da chance de *churn*: -->
-<!--   - X31 (número de dias em atividade no período) -->
-<!--   - X13 (cliente estar no estágio I) -->
-<!--   - X14 (cliente estar no estágio R) -->
-<!--   - X16 (melhora no desempenho do faturamento) -->
-
-<!-- ## Avaliação do poder preditivo do modelo -->
-
-<!-- ```{r, out.width='90%'} -->
-<!-- knitr::include_graphics('img/sensibilidade_especificidade.png') -->
-<!-- ``` -->
-
-<!-- ## Avaliação do poder preditivo do modelo -->
-
-<!-- ```{r, out.width='90%'} -->
-<!-- knitr::include_graphics('img/roc.png') -->
-<!-- ``` -->
-
-<!-- ## Avaliação do poder preditivo do modelo -->
-
-<!-- - Sensibilidade: 0,8164 -->
-<!-- - Especificidade: 0,8111 -->
-<!-- - Acurácia: 0,8136 -->
-
-<!-- # Conclusões -->
-
-<!-- ## Considerações finais -->
-
-<!-- - O modelo proposto é capaz de atender a necessidade do negócio -->
-<!--   - Poder de predição -->
-<!--   - Interpretabilidade -->
-<!-- - A abordagem utilizada na definição da variável resposta e métricas de desempenho demonstrou-se eficaz -->
+\centering \Large
+  Obrigado.
