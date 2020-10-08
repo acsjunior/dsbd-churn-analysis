@@ -1,10 +1,12 @@
 ---
 title: "Classificação de Churn Utilizando um Modelo de Regressão Logística"
-author: "Antonio C. da Silva Júnior"
-role: "Aluno do programa de Especialização em Data Science & Big Data"
-email: "acsjunior@ufpr.br"
-orientador: "Walmes M. Zeviani"
-orientador_role: "Professor do Departamento de Estatística - DEST/UFPR"
+authors_dict:
+  - {name: Antonio C. da Silva Júnior,
+     index: 1,
+     role: "Aluno do programa de Especialização em Data Science & Big Data, [acsjunior@ufpr.br](mailto:acsjunior@ufpr.br)."}
+  - {name: Walmes M. Zeviani,
+     index: 2,
+     role: "Professor do Departamento de Estatística - DEST/UFPR, [walmes@ufpr.br](mailto:walmes@ufpr.br)."}
 ano: "2020"
 references: "src/referencias.bib"
 biblio-style: unsrt
@@ -25,7 +27,7 @@ keywords: "Customer churn, Customer retention, CRM, Logistic regression, Stepwis
 knitr::opts_chunk$set(echo = FALSE, message=FALSE, warning=FALSE)
 options(knitr.table.format = "latex", scipen = 999)
 
-TABLE_FONT_SIZE <- 9
+TABLE_FONT_SIZE <- 8.5
 SEED <- 111
 
 source("../../scripts/install.R")
