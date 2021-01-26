@@ -1,10 +1,10 @@
 ---
 title: "Classificação de Churn Utilizando um Modelo de Regressão Logística"
 authors_dict:
-  - {name: Antonio C. da Silva Júnior,
+  - {name: Antonio Carlos da Silva Júnior,
      index: 1,
      role: "Aluno do programa de Especialização em Data Science & Big Data, [acsjunior@ufpr.br](mailto:acsjunior@ufpr.br)."}
-  - {name: Walmes M. Zeviani,
+  - {name: Walmes Marques Zeviani,
      index: 2,
      role: "Professor do Departamento de Estatística - DEST/UFPR, [walmes@ufpr.br](mailto:walmes@ufpr.br)."}
 ano: "2020"
